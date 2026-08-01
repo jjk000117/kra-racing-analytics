@@ -34,6 +34,7 @@ KRA OpenAPI
 - [단계별 구현 기준](docs/implementation-gates.md)
 - [API4_3 수집 실행 기록](docs/api4_3-collection.md)
 - [API179_1 수집 실행 기록](docs/api179-collection.md)
+- [2C Raw 데이터 프로파일링](docs/raw-data-profiling.md)
 - [데이터베이스 선택 ADR](docs/decisions/0001-database-selection.md)
 - [Python 환경 선택 ADR](docs/decisions/0002-python-environment.md)
 
