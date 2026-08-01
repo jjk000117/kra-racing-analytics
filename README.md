@@ -2,7 +2,7 @@
 
 KRA 공식 OpenAPI 과거 데이터를 이용하는 Python + SQL 기반 독립 분석 프로젝트입니다.
 
-현재 상태는 **1단계: Python과 DuckDB 개발 기반 구성**입니다. 아직 API 수집기와 업무 데이터 테이블은 구현하지 않았습니다.
+현재 상태는 **2A단계: API4_3 경주 결과 Historical Collector 완료**입니다. API179_1 매출 수집은 2B단계에서 진행합니다.
 
 ## 확정된 방향
 
@@ -32,6 +32,7 @@ KRA OpenAPI
 - [상태코드 정책](docs/status-code-policy.md)
 - [Point-in-Time 및 누수 방지](docs/point-in-time-policy.md)
 - [단계별 구현 기준](docs/implementation-gates.md)
+- [API4_3 수집 실행 기록](docs/api4_3-collection.md)
 - [데이터베이스 선택 ADR](docs/decisions/0001-database-selection.md)
 - [Python 환경 선택 ADR](docs/decisions/0002-python-environment.md)
 
@@ -50,4 +51,13 @@ C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics python -m
 C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics python -m kra_analytics database init
 C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics python -m kra_analytics database check
 C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics jupyter lab
+```
+
+## API4_3 수집 명령
+
+`KRA_API_KEY`가 프로세스 환경에 설정된 상태에서 실행합니다. 키는 명령 출력, Raw 경로, Manifest URL에 기록하지 않습니다.
+
+```powershell
+python -m kra_analytics collect race-results --year 2024 --year 2025 --year 2026 --meet 1 --meet 3 --all-pages --page-size 1000
+python -m kra_analytics collect audit <batch_id>
 ```

@@ -4,16 +4,20 @@ import os
 import platform
 import sys
 from pathlib import Path
+from typing import Annotated
 
 import typer
 
 from kra_analytics import __version__
+from kra_analytics.collectors.api4_3 import ALLOWED_MEETS, Api43Collector, audit_batch
 from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.paths import ProjectPaths
 
 app = typer.Typer(help="KRA racing analytics local pipeline.", no_args_is_help=True)
 database_app = typer.Typer(help="Initialize and inspect the local DuckDB warehouse.")
+collect_app = typer.Typer(help="Collect immutable KRA OpenAPI Raw responses.")
 app.add_typer(database_app, name="database")
+app.add_typer(collect_app, name="collect")
 
 
 @app.command()
@@ -63,3 +67,54 @@ def database_check() -> None:
         typer.echo(f"missing_schemas={','.join(sorted(missing))}", err=True)
         raise typer.Exit(code=1)
     typer.echo("database_status=OK")
+
+
+@collect_app.command("race-results")
+def collect_race_results(
+    years: Annotated[list[int], typer.Option("--year", help="Request year; repeat as needed.")],
+    meets: Annotated[list[int], typer.Option("--meet", help="1=Seoul, 3=Busan-Gyeongnam.")],
+    page: Annotated[int, typer.Option(min=1, help="First page to request.")] = 1,
+    page_size: Annotated[int, typer.Option(min=1, max=1000, help="Rows per API page.")] = 1000,
+    all_pages: Annotated[bool, typer.Option(help="Continue through totalCount.")] = False,
+    dry_run: Annotated[
+        bool, typer.Option(help="Print the plan without API or database writes.")
+    ] = False,
+) -> None:
+    """Collect API4_3 historical race-result pages."""
+    if any(meet not in ALLOWED_MEETS for meet in meets):
+        raise typer.BadParameter("--meet must be 1 or 3")
+    if dry_run:
+        typer.echo("api=API4_3")
+        typer.echo(f"years={','.join(map(str, years))}")
+        typer.echo(f"meets={','.join(map(str, meets))}")
+        typer.echo(f"first_page={page}")
+        typer.echo(f"page_size={page_size}")
+        typer.echo(f"all_pages={all_pages}")
+        typer.echo("writes=NONE")
+        return
+
+    outcome = Api43Collector(page_size=page_size).collect(
+        years=years,
+        meets=meets,
+        all_pages=all_pages,
+        page=page,
+    )
+    typer.echo(f"batch_id={outcome.batch_id}")
+    typer.echo(f"requests={outcome.request_count}")
+    typer.echo(f"successes={outcome.success_count}")
+    typer.echo(f"no_data={outcome.no_data_count}")
+    typer.echo(f"failures={outcome.failure_count}")
+    if outcome.failure_count:
+        raise typer.Exit(code=1)
+
+
+@collect_app.command("audit")
+def collect_audit(batch_id: str = typer.Argument(..., help="Collection batch identifier.")) -> None:
+    """Verify Manifest counts and recompute every Raw file hash in a batch."""
+    issues = audit_batch(batch_id=batch_id)
+    typer.echo(f"batch_id={batch_id}")
+    typer.echo(f"issues={len(issues)}")
+    for issue in issues:
+        typer.echo(issue, err=True)
+    if issues:
+        raise typer.Exit(code=1)
