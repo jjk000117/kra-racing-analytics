@@ -1,0 +1,46 @@
+# 단계별 구현 및 Go/No-Go 기준
+
+## 0. 프로젝트 계약
+
+Go: 목적, 범위, 계층, 키, 상태코드, Point-in-Time, 보안, 완료 기준이 문서화되어 있다.
+
+## 1. 개발 기반
+
+산출물: Python 패키지, 설정, 테스트, SQL 구조, 로깅, 로컬 실행 안내.
+
+Go: 빈 환경에서 설치·테스트가 재현되고 비밀정보가 저장소에 포함되지 않는다.
+
+## 2. Historical Collector와 Manifest
+
+산출물: API4_3/API179_1 수동 전체 수집, Immutable Raw, SQL Manifest.
+
+Go: 요청·응답·파일·SHA256이 연결되고 `SUCCESS`, `NO_DATA`, 실패 상태가 구분된다.
+
+## 3. SQL Staging
+
+산출물: 원천 보존형 테이블과 멱등 적재.
+
+Go: 원천 행 수·행 순서·lineage가 재현되고 반복 실행이 부당한 중복을 만들지 않는다.
+
+## 4. Canonical과 품질 검사
+
+산출물: 경주·출전·엔터티·매출 Canonical, 상태코드 매핑, 품질 이슈.
+
+Go: 업무 키가 유일하고 충돌이 격리되며 모든 Canonical 행이 Raw까지 추적된다.
+
+## 5. Star Schema
+
+산출물: Dimension, Fact, Power BI용 View/Mart.
+
+Go: 관계 무결성, 집계 대조, Canonical과 Mart 간 합계가 일치한다.
+
+## 6. Power BI
+
+산출물: 경주, 참여자, 조합, 매출, 데이터 품질 페이지.
+
+Go: Power BI가 Mart만 사용하고 핵심 Measure가 SQL 검증값과 일치한다.
+
+## 7. 후속 확장
+
+증분 수집, 예약 실행, 알림, Feature Snapshot, 예측 모델은 별도 승인 후 추가한다. `request_id`, `batch_id`, SHA256, 적재시각과 변환 버전을 이용해 기존 계층을 교체하지 않고 확장한다.
+

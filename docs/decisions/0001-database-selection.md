@@ -1,0 +1,68 @@
+# ADR-0001: 초기 로컬 데이터베이스로 DuckDB 선택
+
+- 상태: Accepted
+- 결정일: 2026-08-01
+
+## 맥락
+
+프로젝트는 Python/Jupyter 기반 로컬 개발과 Power BI 분석을 모두 지원해야 한다. Raw는 파일로 보존하고 Manifest, Staging, Canonical, Mart는 SQL에 둔다.
+
+## 후보
+
+### SQL Server Developer Edition
+
+- Power BI 연결이 자연스럽다.
+- Microsoft 생태계와 운영 확장에 유리하다.
+- 로컬 환경과 설치가 상대적으로 무겁다.
+
+### PostgreSQL
+
+- Python, SQL, JSON 처리와 서버 확장성이 좋다.
+- 오픈소스이며 이식성이 높다.
+- Power BI 연결 드라이버와 로컬 서버 관리가 필요하다.
+
+### DuckDB
+
+- 설치와 Jupyter 분석이 가장 간단하다.
+- 단일 파일과 Parquet 처리에 적합하다.
+- Power BI 직접 연결과 향후 다중 사용자 운영에는 제약이 있다.
+
+## 결정
+
+초기 로컬 데이터베이스로 DuckDB를 사용한다.
+
+데이터베이스 파일의 기본 위치는 `data/warehouse/kra.duckdb`로 계획하며 Git에는 포함하지 않는다. Python과 Jupyter는 DuckDB에 직접 연결하고, Power BI에는 `mart` 계층을 Parquet로 내보내 연결한다.
+
+## 근거
+
+- 현재 데이터 규모에 충분하다.
+- 별도의 데이터베이스 서버, 계정, 포트 및 서비스 관리가 필요 없다.
+- Python, Jupyter, Parquet와의 연결이 단순하다.
+- SQL 학습 경험이 있는 사용자가 데이터 계층과 분석에 바로 집중할 수 있다.
+- 현재 범위는 수동 과거 전체 재구축이며 다중 사용자 동시 쓰기가 필요하지 않다.
+
+## 제약
+
+- Power BI는 DuckDB를 운영 연결 원본으로 직접 사용하지 않고 버전이 고정된 Mart Parquet를 읽는다.
+- 여러 프로세스가 동시에 쓰는 운영 구조를 전제로 하지 않는다.
+- 증분 자동화나 다중 사용자 운영이 필요해지면 데이터베이스 선택을 재검토한다.
+
+## 이전 가능성
+
+향후 SQL Server 또는 PostgreSQL로 이전할 수 있도록 다음을 지킨다.
+
+- Raw 파일과 Manifest의 논리 계약을 데이터베이스 제품과 분리한다.
+- Staging, Canonical, Mart DDL과 변환 SQL을 파일로 버전 관리한다.
+- DuckDB 전용 SQL은 격리하고 사용 이유를 기록한다.
+- 업무 키와 lineage 필드는 특정 데이터베이스의 자동 증가 키에만 의존하지 않는다.
+- Power BI는 데이터베이스 내부 테이블이 아니라 명시적인 Mart 계약에 의존한다.
+
+## 재검토 조건
+
+다음 중 하나가 발생하면 이 결정을 재검토한다.
+
+- 최신 증분 수집과 예약 실행을 운영함
+- 여러 사용자가 동시에 읽고 쓰는 중앙 데이터베이스가 필요함
+- Power BI Service의 정기 새로고침이 필요함
+- DuckDB 단일 writer 제약이 실제 운영을 방해함
+- 데이터 규모 또는 처리시간이 사전 기준을 지속적으로 초과함
