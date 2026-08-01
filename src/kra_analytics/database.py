@@ -9,7 +9,7 @@ from duckdb import DuckDBPyConnection
 
 from kra_analytics.paths import ProjectPaths
 
-REQUIRED_SCHEMAS = ("raw", "staging", "canonical", "quality", "mart")
+REQUIRED_SCHEMAS = ("raw", "staging", "canonical", "quality", "analytics", "mart")
 
 
 @contextmanager
