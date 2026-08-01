@@ -20,6 +20,7 @@ dependencies = [
 dev = [
     "jupyterlab>=4.4,<5",
     "ipykernel>=6.29,<8",
+    "matplotlib>=3.10,<4",
     "mypy>=1.17,<2",
     "pandas-stubs>=2.3,<3",
     "pytest>=8.4,<9",
