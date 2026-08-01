@@ -37,6 +37,10 @@ Go: 원천 행 수·행 순서·lineage가 재현되고 반복 실행이 부당�
 
 Go: 업무 키가 유일하고 충돌이 격리되며 모든 Canonical 행이 Raw까지 추적된다.
 
+- 완료. 4,600경주, 49,386 출전결과, 32,074 경주·승식 행을 별도 Canonical 테이블로 생성했다.
+- 상태정책 `race_status_v1`을 seed 테이블로 적용하고 공식 착순을 1~16으로 제한했다.
+- 품질 경고 911건을 기록했으며 `ERROR`는 0건이다. Canonical 감사 결과는 `issues=0`이다.
+
 ## 5. Star Schema
 
 산출물: Dimension, Fact, 후속 보고서용 View/Mart.

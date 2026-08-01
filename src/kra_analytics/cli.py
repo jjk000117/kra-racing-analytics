@@ -8,6 +8,7 @@ from typing import Annotated
 import typer
 
 from kra_analytics import __version__
+from kra_analytics.canonical import audit_canonical, build_canonical
 from kra_analytics.collectors.api4_3 import (
     ALLOWED_MEETS,
     Api43Collector,
@@ -23,9 +24,11 @@ app = typer.Typer(help="KRA racing analytics local pipeline.", no_args_is_help=T
 database_app = typer.Typer(help="Initialize and inspect the local DuckDB warehouse.")
 collect_app = typer.Typer(help="Collect immutable KRA OpenAPI Raw responses.")
 staging_app = typer.Typer(help="Load immutable Raw items into DuckDB Staging.")
+canonical_app = typer.Typer(help="Build and audit standardized Canonical tables.")
 app.add_typer(database_app, name="database")
 app.add_typer(collect_app, name="collect")
 app.add_typer(staging_app, name="staging")
+app.add_typer(canonical_app, name="canonical")
 
 
 @app.command()
@@ -186,6 +189,34 @@ def staging_check(
     """Reconcile Staging rows, Raw lineage, ordering, and parse flags."""
     issues = audit_staging_batch(batch_id)
     typer.echo(f"batch_id={batch_id}")
+    typer.echo(f"issues={len(issues)}")
+    for issue in issues:
+        typer.echo(issue, err=True)
+    if issues:
+        raise typer.Exit(code=1)
+
+
+@canonical_app.command("build")
+def canonical_build(
+    race_batch_id: Annotated[str, typer.Option(help="Staged API4_3 batch identifier.")],
+    sales_batch_id: Annotated[str, typer.Option(help="Staged API179_1 batch identifier.")],
+) -> None:
+    """Rebuild Canonical and Quality tables in one transaction."""
+    outcome = build_canonical(
+        race_batch_id=race_batch_id,
+        sales_batch_id=sales_batch_id,
+    )
+    typer.echo(f"transform_version={outcome.transform_version}")
+    typer.echo(f"races={outcome.race_count}")
+    typer.echo(f"runners={outcome.runner_count}")
+    typer.echo(f"sales={outcome.sales_count}")
+    typer.echo(f"issues={outcome.issue_count}")
+
+
+@canonical_app.command("check")
+def canonical_check() -> None:
+    """Audit Canonical counts, finish policy, and source lineage."""
+    issues = audit_canonical()
     typer.echo(f"issues={len(issues)}")
     for issue in issues:
         typer.echo(issue, err=True)

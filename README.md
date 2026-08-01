@@ -2,7 +2,7 @@
 
 KRA 공식 OpenAPI 과거 데이터를 이용하는 Python + SQL 기반 독립 분석 프로젝트입니다.
 
-현재 상태는 **3단계: SQL Staging 완료**입니다. 정식 전체 배치의 Raw 원문을 lineage와 함께 DuckDB 관계형 테이블에 적재했습니다.
+현재 상태는 **4단계: Canonical과 품질 검사 완료**입니다. Staging 원문을 변경하지 않고 별도의 표준 경주·출전결과·매출 테이블과 품질 이슈를 생성했습니다.
 
 ## 확정된 방향
 
@@ -36,6 +36,7 @@ KRA OpenAPI
 - [API179_1 수집 실행 기록](docs/api179-collection.md)
 - [2C Raw 데이터 프로파일링](docs/raw-data-profiling.md)
 - [3단계 SQL Staging](docs/staging-load.md)
+- [4단계 Canonical과 품질 검사](docs/canonical-build.md)
 - [데이터베이스 선택 ADR](docs/decisions/0001-database-selection.md)
 - [Python 환경 선택 ADR](docs/decisions/0002-python-environment.md)
 
