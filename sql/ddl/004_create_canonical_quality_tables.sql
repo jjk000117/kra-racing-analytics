@@ -25,18 +25,18 @@ CREATE TABLE IF NOT EXISTS canonical.result_status_policy (
 INSERT INTO canonical.result_status_policy VALUES
     ('race_status_v1', 0, 'NON_STANDARD_UNRESOLVED', FALSE, FALSE,
      'Meaning not inferred without official evidence'),
-    ('race_status_v1', 91, 'PARTICIPATED_NON_FINISH', TRUE, FALSE,
-     'Inherited project policy: counts as participation, not finish'),
-    ('race_status_v1', 92, 'PARTICIPATED_NON_FINISH', TRUE, FALSE,
-     'Inherited project policy: counts as participation, not finish'),
-    ('race_status_v1', 93, 'NON_STANDARD_UNRESOLVED', FALSE, FALSE,
+    ('race_status_v1', 91, 'DISQUALIFIED', TRUE, FALSE,
+     'Disqualified after participation'),
+    ('race_status_v1', 92, 'RACE_STOPPED', TRUE, FALSE,
+     'Stopped during the race after participation'),
+    ('race_status_v1', 93, 'EXCLUDED', FALSE, FALSE,
      'DNS only when the separate composite rule also matches rcTime=0'),
-    ('race_status_v1', 94, 'NON_STANDARD_UNRESOLVED', FALSE, FALSE,
+    ('race_status_v1', 94, 'EXCLUDED', FALSE, FALSE,
      'DNS only when the separate composite rule also matches rcTime=0'),
-    ('race_status_v1', 95, 'NON_STANDARD_UNRESOLVED', FALSE, FALSE,
+    ('race_status_v1', 95, 'SCRATCHED', FALSE, FALSE,
      'DNS only when the separate composite rule also matches rcTime=0'),
-    ('race_status_v1', 99, 'NON_STANDARD_UNRESOLVED', FALSE, FALSE,
-     'Meaning not inferred without official evidence')
+    ('race_status_v1', 99, 'CANCELLED_STOPPED_OR_DISQUALIFIED', FALSE, FALSE,
+     'KRA defines 99 as horse cancellation, race stop, or disqualification')
 ON CONFLICT (policy_version, ord_code) DO UPDATE SET
     result_status = excluded.result_status,
     is_valid_start = excluded.is_valid_start,

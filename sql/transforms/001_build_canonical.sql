@@ -9,7 +9,11 @@ SELECT transform_version, race_batch_id, sales_batch_id, policy_version,
        started_at, NULL, 'RUNNING', 0, 0, 0, 0
 FROM canonical_context;
 
-INSERT INTO canonical.race
+INSERT INTO canonical.race (
+    race_id, race_date, meet_code, meet_name, race_no, race_name, race_grade,
+    distance_m, weather, track_condition, runner_count, source_batch_id,
+    policy_version, created_at
+)
 SELECT
     strftime(strptime(rcDate, '%Y%m%d'), '%Y-%m-%d') || '|' ||
         CASE WHEN meet IN ('1', '서울') THEN '1' ELSE '3' END || '|R' ||
@@ -34,6 +38,12 @@ HAVING count(DISTINCT coalesce(rcName, '')) <= 1
    AND count(DISTINCT coalesce(weather, '')) <= 1
    AND count(DISTINCT coalesce(track, '')) <= 1;
 
+UPDATE canonical.race r
+SET race_status = e.race_status
+FROM canonical.race_status_exception e
+WHERE e.policy_version = (SELECT policy_version FROM canonical_context)
+  AND e.race_id = r.race_id;
+
 INSERT INTO canonical.runner_result
 SELECT
     r.race_id || '|H' || s.hrNo, r.race_id, s.hrNo,
@@ -45,13 +55,18 @@ SELECT
     try_cast(s.wgBudam AS DECIMAL(8, 2)), try_cast(s.wgHr AS DECIMAL(8, 2)),
     try_cast(s.rcTime AS INTEGER), try_cast(s.winOdds AS DECIMAL(12, 4)),
     try_cast(s.plcOdds AS DECIMAL(12, 4)), s.ord,
-    CASE WHEN s.ord_numeric BETWEEN 1 AND 16 THEN s.ord_numeric END,
-    CASE WHEN s.ord_numeric BETWEEN 1 AND 16 THEN 'FINISHED'
+    CASE WHEN r.race_status = 'COMPLETED' AND s.ord_numeric BETWEEN 1 AND 16
+         THEN s.ord_numeric END,
+    CASE WHEN r.race_status = 'RACE_CANCELLED' THEN 'RACE_CANCELLED'
+         WHEN r.race_status = 'RESULT_NOT_FINALIZED' THEN 'RESULT_NOT_FINALIZED'
+         WHEN s.ord_numeric BETWEEN 1 AND 16 THEN 'FINISHED'
          WHEN s.ord_numeric IS NULL THEN 'MISSING'
          ELSE coalesce(cr.result_status, p.result_status, 'NON_STANDARD_UNRESOLVED') END,
-    CASE WHEN s.ord_numeric BETWEEN 1 AND 16 THEN TRUE
+    CASE WHEN r.race_status <> 'COMPLETED' THEN FALSE
+         WHEN s.ord_numeric BETWEEN 1 AND 16 THEN TRUE
          ELSE coalesce(cr.is_valid_start, p.is_valid_start, FALSE) END,
-    CASE WHEN s.ord_numeric BETWEEN 1 AND 16 THEN TRUE
+    CASE WHEN r.race_status <> 'COMPLETED' THEN FALSE
+         WHEN s.ord_numeric BETWEEN 1 AND 16 THEN TRUE
          ELSE coalesce(cr.is_valid_finish, p.is_valid_finish, FALSE) END,
     s.staging_row_id, s.batch_id,
     (SELECT policy_version FROM canonical_context), now()

@@ -117,4 +117,20 @@ def test_build_canonical_creates_separate_idempotent_tables(
             "SELECT result_status, is_valid_start, is_valid_finish "
             "FROM canonical.runner_result WHERE ord_raw = '94'"
         ).fetchone()
+        cancellation = connection.execute(
+            "SELECT race_status, evidence_note "
+            "FROM canonical.race_status_exception "
+            "WHERE race_id = '2024-09-29|1|R02'"
+        ).fetchone()
+        race_columns = {
+            row[0]
+            for row in connection.execute(
+                "SELECT column_name FROM information_schema.columns "
+                "WHERE table_schema = 'canonical' AND table_name = 'race'"
+            ).fetchall()
+        }
     assert dns == ("DNS", False, False)
+    assert cancellation is not None
+    assert cancellation[0] == "RACE_CANCELLED"
+    assert "mass fall" in cancellation[1]
+    assert "status_reason" not in race_columns
