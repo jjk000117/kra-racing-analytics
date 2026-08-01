@@ -11,6 +11,7 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "duckdb>=1.4,<2",
     "httpx>=0.28,<1",
+    "pandas>=2.3,<3",
     "python-dotenv>=1.1,<2",
     "typer>=0.16,<1",
 ]
@@ -20,6 +21,7 @@ dev = [
     "jupyterlab>=4.4,<5",
     "ipykernel>=6.29,<8",
     "mypy>=1.17,<2",
+    "pandas-stubs>=2.3,<3",
     "pytest>=8.4,<9",
     "ruff>=0.12,<1",
 ]

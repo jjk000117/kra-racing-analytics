@@ -27,6 +27,10 @@ Go: 요청·응답·파일·SHA256이 연결되고 `SUCCESS`, `NO_DATA`, 실패 
 
 Go: 원천 행 수·행 순서·lineage가 재현되고 반복 실행이 부당한 중복을 만들지 않는다.
 
+- 완료. API4_3 49,386행과 API179_1 32,074행을 정식 배치에서 적재했다.
+- Raw Manifest와 Staging 행 수가 일치하고 모든 행이 요청·Raw 파일·SHA256까지 추적된다.
+- 동일 배치 재실행 결과 `inserted_rows=0`, 두 배치 감사 결과 `issues=0`이다.
+
 ## 4. Canonical과 품질 검사
 
 산출물: 경주·출전·엔터티·매출 Canonical, 상태코드 매핑, 품질 이슈.

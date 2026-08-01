@@ -6,6 +6,7 @@ import httpx
 
 from kra_analytics.collectors.api179_1 import Api179Collector, audit_batch, validate_response
 from kra_analytics.paths import ProjectPaths
+from kra_analytics.staging import audit_staging_batch, load_staging_batch
 
 
 def payload(*, year: int = 2024, meet: int = 1, total: int = 1) -> bytes:
@@ -53,3 +54,10 @@ def test_collect_writes_raw_and_manifest(tmp_path, monkeypatch) -> None:
     client.close()
     assert outcome.success_count == 1
     assert audit_batch(batch_id=outcome.batch_id, paths=paths) == []
+    first = load_staging_batch(outcome.batch_id, paths=paths)
+    second = load_staging_batch(outcome.batch_id, paths=paths)
+    assert first.staged_rows == 1
+    assert first.inserted_rows == 1
+    assert second.staged_rows == 1
+    assert second.inserted_rows == 0
+    assert audit_staging_batch(outcome.batch_id, paths=paths) == []

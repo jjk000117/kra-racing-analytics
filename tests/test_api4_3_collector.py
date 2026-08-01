@@ -10,6 +10,7 @@ from pytest import MonkeyPatch
 from kra_analytics.collectors.api4_3 import Api43Collector, audit_batch, validate_response
 from kra_analytics.database import connect_database
 from kra_analytics.paths import ProjectPaths
+from kra_analytics.staging import audit_staging_batch, load_staging_batch
 
 
 def api_document(*, items: list[dict[str, str]], total_count: int) -> bytes:
@@ -112,6 +113,10 @@ def test_collect_all_pages_writes_raw_and_manifest(
     assert len(files) == 2
     assert all(len(file[1]) == 64 and file[2] > 0 for file in files)
     assert audit_batch(batch_id=outcome.batch_id, paths=paths) == []
+    staged = load_staging_batch(outcome.batch_id, paths=paths)
+    assert staged.expected_rows == 3
+    assert staged.staged_rows == 3
+    assert audit_staging_batch(outcome.batch_id, paths=paths) == []
 
 
 def test_failed_json_is_saved_and_recorded(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:

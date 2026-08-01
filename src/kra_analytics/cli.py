@@ -17,12 +17,15 @@ from kra_analytics.collectors.api4_3 import (
 from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.paths import ProjectPaths
+from kra_analytics.staging import audit_staging_batch, load_staging_batch
 
 app = typer.Typer(help="KRA racing analytics local pipeline.", no_args_is_help=True)
 database_app = typer.Typer(help="Initialize and inspect the local DuckDB warehouse.")
 collect_app = typer.Typer(help="Collect immutable KRA OpenAPI Raw responses.")
+staging_app = typer.Typer(help="Load immutable Raw items into DuckDB Staging.")
 app.add_typer(database_app, name="database")
 app.add_typer(collect_app, name="collect")
+app.add_typer(staging_app, name="staging")
 
 
 @app.command()
@@ -155,6 +158,33 @@ def collect_sales(
 def collect_audit(batch_id: str = typer.Argument(..., help="Collection batch identifier.")) -> None:
     """Verify Manifest counts and recompute every Raw file hash in a batch."""
     issues = audit_batch(batch_id=batch_id)
+    typer.echo(f"batch_id={batch_id}")
+    typer.echo(f"issues={len(issues)}")
+    for issue in issues:
+        typer.echo(issue, err=True)
+    if issues:
+        raise typer.Exit(code=1)
+
+
+@staging_app.command("load")
+def staging_load(
+    batch_id: str = typer.Argument(..., help="Completed collection batch identifier."),
+) -> None:
+    """Load one completed Raw batch; safe to run repeatedly."""
+    outcome = load_staging_batch(batch_id)
+    typer.echo(f"batch_id={outcome.batch_id}")
+    typer.echo(f"api={outcome.api_name}")
+    typer.echo(f"expected_rows={outcome.expected_rows}")
+    typer.echo(f"staged_rows={outcome.staged_rows}")
+    typer.echo(f"inserted_rows={outcome.inserted_rows}")
+
+
+@staging_app.command("check")
+def staging_check(
+    batch_id: str = typer.Argument(..., help="Staged collection batch identifier."),
+) -> None:
+    """Reconcile Staging rows, Raw lineage, ordering, and parse flags."""
+    issues = audit_staging_batch(batch_id)
     typer.echo(f"batch_id={batch_id}")
     typer.echo(f"issues={len(issues)}")
     for issue in issues:

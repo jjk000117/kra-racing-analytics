@@ -2,7 +2,7 @@
 
 KRA 공식 OpenAPI 과거 데이터를 이용하는 Python + SQL 기반 독립 분석 프로젝트입니다.
 
-현재 상태는 **2단계: Historical Collector와 Manifest 완료**입니다. API4_3 경주 결과와 API179_1 매출·확정배당을 같은 기간으로 수집했습니다.
+현재 상태는 **3단계: SQL Staging 완료**입니다. 정식 전체 배치의 Raw 원문을 lineage와 함께 DuckDB 관계형 테이블에 적재했습니다.
 
 ## 확정된 방향
 
@@ -35,6 +35,7 @@ KRA OpenAPI
 - [API4_3 수집 실행 기록](docs/api4_3-collection.md)
 - [API179_1 수집 실행 기록](docs/api179-collection.md)
 - [2C Raw 데이터 프로파일링](docs/raw-data-profiling.md)
+- [3단계 SQL Staging](docs/staging-load.md)
 - [데이터베이스 선택 ADR](docs/decisions/0001-database-selection.md)
 - [Python 환경 선택 ADR](docs/decisions/0002-python-environment.md)
 
