@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import platform
 import sys
 from pathlib import Path
@@ -9,7 +8,13 @@ from typing import Annotated
 import typer
 
 from kra_analytics import __version__
-from kra_analytics.collectors.api4_3 import ALLOWED_MEETS, Api43Collector, audit_batch
+from kra_analytics.collectors.api4_3 import (
+    ALLOWED_MEETS,
+    Api43Collector,
+    audit_batch,
+    get_api_key,
+)
+from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.paths import ProjectPaths
 
@@ -30,12 +35,17 @@ def version() -> None:
 def doctor() -> None:
     """Check the local project environment without exposing secrets."""
     paths = ProjectPaths.from_root()
+    try:
+        get_api_key(paths)
+        api_key_configured = True
+    except RuntimeError:
+        api_key_configured = False
     checks = {
         "project_root": paths.root.is_dir(),
         "project_charter": (paths.root / "PROJECT_CHARTER.md").is_file(),
         "python_3_12": sys.version_info[:2] == (3, 12),
         "sql_directory": paths.sql.is_dir(),
-        "api_key_configured": bool(os.getenv("KRA_API_KEY")),
+        "api_key_configured": api_key_configured,
     }
     typer.echo(f"platform={platform.system()} {platform.release()}")
     typer.echo(f"python={platform.python_version()}")
@@ -98,6 +108,39 @@ def collect_race_results(
         meets=meets,
         all_pages=all_pages,
         page=page,
+    )
+    typer.echo(f"batch_id={outcome.batch_id}")
+    typer.echo(f"requests={outcome.request_count}")
+    typer.echo(f"successes={outcome.success_count}")
+    typer.echo(f"no_data={outcome.no_data_count}")
+    typer.echo(f"failures={outcome.failure_count}")
+    if outcome.failure_count:
+        raise typer.Exit(code=1)
+
+
+@collect_app.command("sales")
+def collect_sales(
+    years: Annotated[list[int], typer.Option("--year", help="Request year; repeat as needed.")],
+    meets: Annotated[list[int], typer.Option("--meet", help="1=Seoul, 3=Busan-Gyeongnam.")],
+    page: Annotated[int, typer.Option(min=1, help="First page to request.")] = 1,
+    page_size: Annotated[int, typer.Option(min=1, max=1000, help="Rows per API page.")] = 1000,
+    all_pages: Annotated[bool, typer.Option(help="Continue through totalCount.")] = False,
+    dry_run: Annotated[bool, typer.Option(help="Print the plan without writes.")] = False,
+) -> None:
+    """Collect API179_1 historical sales and confirmed-dividend pages."""
+    if any(meet not in ALLOWED_MEETS for meet in meets):
+        raise typer.BadParameter("--meet must be 1 or 3")
+    if dry_run:
+        typer.echo("api=API179_1")
+        typer.echo(f"years={','.join(map(str, years))}")
+        typer.echo(f"meets={','.join(map(str, meets))}")
+        typer.echo(f"first_page={page}")
+        typer.echo(f"page_size={page_size}")
+        typer.echo(f"all_pages={all_pages}")
+        typer.echo("writes=NONE")
+        return
+    outcome = Api179Collector(page_size=page_size).collect(
+        years=years, meets=meets, all_pages=all_pages, page=page
     )
     typer.echo(f"batch_id={outcome.batch_id}")
     typer.echo(f"requests={outcome.request_count}")

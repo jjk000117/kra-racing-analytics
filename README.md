@@ -2,7 +2,7 @@
 
 KRA 공식 OpenAPI 과거 데이터를 이용하는 Python + SQL 기반 독립 분석 프로젝트입니다.
 
-현재 상태는 **2A단계: API4_3 경주 결과 Historical Collector 완료**입니다. API179_1 매출 수집은 2B단계에서 진행합니다.
+현재 상태는 **2단계: Historical Collector와 Manifest 완료**입니다. API4_3 경주 결과와 API179_1 매출·확정배당을 같은 기간으로 수집했습니다.
 
 ## 확정된 방향
 
@@ -33,6 +33,7 @@ KRA OpenAPI
 - [Point-in-Time 및 누수 방지](docs/point-in-time-policy.md)
 - [단계별 구현 기준](docs/implementation-gates.md)
 - [API4_3 수집 실행 기록](docs/api4_3-collection.md)
+- [API179_1 수집 실행 기록](docs/api179-collection.md)
 - [데이터베이스 선택 ADR](docs/decisions/0001-database-selection.md)
 - [Python 환경 선택 ADR](docs/decisions/0002-python-environment.md)
 
@@ -60,4 +61,10 @@ C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics jupyter l
 ```powershell
 python -m kra_analytics collect race-results --year 2024 --year 2025 --year 2026 --meet 1 --meet 3 --all-pages --page-size 1000
 python -m kra_analytics collect audit <batch_id>
+```
+
+API179_1은 같은 기간을 다음 명령으로 수집합니다.
+
+```powershell
+python -m kra_analytics collect sales --year 2024 --year 2025 --year 2026 --meet 1 --meet 3 --all-pages --page-size 1000
 ```
