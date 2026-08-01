@@ -1,7 +1,7 @@
 # 프로젝트 진행 현황
 
-이 문서는 중요한 구현 완료 시 갱신한다. 새로운 작업을 시작하기 전에
-`progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
+이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
+작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
 마지막 갱신: 2026-08-02
 

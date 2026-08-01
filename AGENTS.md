@@ -8,13 +8,13 @@
 
 ## Continuity documents
 
-Before starting a new project task, read:
+When the current project state is needed to plan or perform a task, read:
 
 1. `docs/progress.md`
 2. `docs/decision_log.md`
 3. `docs/experiment_log.md`
 
-After completing important implementation or analysis work, update the relevant documents:
+After completing a major project milestone, update the relevant documents:
 
 - `progress.md`: completed work, current work, and recommended next work
 - `decision_log.md`: important decisions or design changes, rationale, and date
@@ -22,6 +22,12 @@ After completing important implementation or analysis work, update the relevant 
 
 Append new dated decisions and experiments. Do not rewrite historical entries merely because a later
 decision supersedes them.
+
+## Git push authorization
+
+- Commit completed work when requested or when the agreed workflow calls for a milestone commit.
+- Push to a remote only when the user explicitly instructs Codex to push.
+- A request to commit does not imply permission to push.
 
 ## Discussion versus implementation
 
