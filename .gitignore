@@ -136,6 +136,16 @@ ENV/
 env.bak/
 venv.bak/
 
+# KRA runtime data and local database
+data/raw/*
+data/quarantine/*
+data/warehouse/*
+data/exports/*
+logs/*
+*.duckdb
+*.duckdb.wal
+*.parquet
+
 # Spyder project settings
 .spyderproject
 .spyproject

@@ -5,7 +5,7 @@
 
 ## 맥락
 
-프로젝트는 Python/Jupyter 기반 로컬 개발과 Power BI 분석을 모두 지원해야 한다. Raw는 파일로 보존하고 Manifest, Staging, Canonical, Mart는 SQL에 둔다.
+프로젝트는 Python/Jupyter 기반 로컬 개발과 후속 보고서·포트폴리오를 지원해야 한다. Raw는 파일로 보존하고 Manifest, Staging, Canonical, Mart는 SQL에 둔다.
 
 ## 후보
 
@@ -31,7 +31,7 @@
 
 초기 로컬 데이터베이스로 DuckDB를 사용한다.
 
-데이터베이스 파일의 기본 위치는 `data/warehouse/kra.duckdb`로 계획하며 Git에는 포함하지 않는다. Python과 Jupyter는 DuckDB에 직접 연결하고, Power BI에는 `mart` 계층을 Parquet로 내보내 연결한다.
+데이터베이스 파일의 기본 위치는 `data/warehouse/kra.duckdb`로 계획하며 Git에는 포함하지 않는다. Python과 Jupyter는 DuckDB에 직접 연결한다. 보고서·포트폴리오 도구는 후속 단계에서 선택하고 `mart` 계층의 Parquet를 공통 교환 형식으로 지원한다.
 
 ## 근거
 
@@ -43,7 +43,7 @@
 
 ## 제약
 
-- Power BI는 DuckDB를 운영 연결 원본으로 직접 사용하지 않고 버전이 고정된 Mart Parquet를 읽는다.
+- 후속 보고서 도구는 DuckDB의 Raw/Staging이 아니라 버전이 고정된 Mart 또는 Mart Parquet를 읽는다.
 - 여러 프로세스가 동시에 쓰는 운영 구조를 전제로 하지 않는다.
 - 증분 자동화나 다중 사용자 운영이 필요해지면 데이터베이스 선택을 재검토한다.
 
@@ -55,7 +55,7 @@
 - Staging, Canonical, Mart DDL과 변환 SQL을 파일로 버전 관리한다.
 - DuckDB 전용 SQL은 격리하고 사용 이유를 기록한다.
 - 업무 키와 lineage 필드는 특정 데이터베이스의 자동 증가 키에만 의존하지 않는다.
-- Power BI는 데이터베이스 내부 테이블이 아니라 명시적인 Mart 계약에 의존한다.
+- 보고서 도구는 데이터베이스 내부 구현이 아니라 명시적인 Mart 계약에 의존한다.
 
 ## 재검토 조건
 
@@ -63,6 +63,6 @@
 
 - 최신 증분 수집과 예약 실행을 운영함
 - 여러 사용자가 동시에 읽고 쓰는 중앙 데이터베이스가 필요함
-- Power BI Service의 정기 새로고침이 필요함
+- 선택한 보고서 서비스의 정기 새로고침이 필요함
 - DuckDB 단일 writer 제약이 실제 운영을 방해함
 - 데이터 규모 또는 처리시간이 사전 기준을 지속적으로 초과함

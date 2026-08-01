@@ -30,17 +30,16 @@ Go: 업무 키가 유일하고 충돌이 격리되며 모든 Canonical 행이 Ra
 
 ## 5. Star Schema
 
-산출물: Dimension, Fact, Power BI용 View/Mart.
+산출물: Dimension, Fact, 후속 보고서용 View/Mart.
 
 Go: 관계 무결성, 집계 대조, Canonical과 Mart 간 합계가 일치한다.
 
-## 6. Power BI
+## 6. 보고서·포트폴리오
 
-산출물: 경주, 참여자, 조합, 매출, 데이터 품질 페이지.
+산출물: 목적에 맞게 선택한 도구의 경주, 참여자, 조합, 매출, 데이터 품질 보고서.
 
-Go: Power BI가 Mart만 사용하고 핵심 Measure가 SQL 검증값과 일치한다.
+Go: 선택한 도구가 Mart 계약만 사용하고 핵심 지표가 SQL 검증값과 일치한다.
 
 ## 7. 후속 확장
 
 증분 수집, 예약 실행, 알림, Feature Snapshot, 예측 모델은 별도 승인 후 추가한다. `request_id`, `batch_id`, SHA256, 적재시각과 변환 버전을 이용해 기존 계층을 교체하지 않고 확장한다.
-

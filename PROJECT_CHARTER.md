@@ -2,14 +2,14 @@
 
 ## 1. 목적
 
-KRA 공식 OpenAPI의 과거 경주결과와 매출 데이터를 수집·검증하여 Python, SQL, Power BI 기반의 독립적인 경마 데이터 분석 프로젝트를 구축한다.
+KRA 공식 OpenAPI의 과거 경주결과와 매출 데이터를 수집·검증하여 Python과 SQL 기반의 독립적인 경마 데이터 분석 프로젝트를 구축한다.
 
 초기 버전의 목표는 예측 모델이나 자동 운영이 아니라 다음을 재현 가능하게 완성하는 것이다.
 
 - API 응답 원본의 불변 보존과 수집 이력 추적
 - SQL Staging, Canonical, Star Schema의 단계적 구축
 - 상태코드와 Point-in-Time 정책이 적용된 신뢰 가능한 분석 데이터
-- Power BI에서 경주, 출전마, 말, 기수, 조교사, 매출을 분석할 수 있는 모델
+- 후속 보고서·포트폴리오에서 경주, 출전마, 말, 기수, 조교사, 매출을 분석할 수 있는 Mart
 
 기존 `horse_racing` 저장소는 참고 자료이자 읽기 전용 원천이다. 기존 R 코드를 Python으로 번역하거나 기존 산출물을 신규 프로젝트의 공식 Canonical 데이터로 간주하지 않는다.
 
@@ -22,7 +22,7 @@ KRA 공식 OpenAPI의 과거 경주결과와 매출 데이터를 수집·검증�
 - 매출·확정배당: KRA API179_1
 - 기간: API에서 재수집 가능한 과거 범위 중 기존 프로젝트와 동등한 범위를 우선 목표로 하며, 실제 시작일·종료일은 수집 전 API 범위 점검 결과로 고정한다.
 - 실행 방식: 사용자가 명시적으로 실행하는 수동 전체 수집 및 전체 재구축
-- 분석 환경: 로컬 Python, Jupyter, DuckDB, Power BI
+- 분석 환경: 기존 Anaconda의 프로젝트 전용 Conda 환경, 브라우저 JupyterLab, DuckDB
 
 ### 제외
 
@@ -45,7 +45,7 @@ KRA OpenAPI
   → SQL 품질 검사
   → SQL Canonical
   → SQL Star Schema / Mart
-  → Jupyter 검증 및 Power BI 분석
+  → Jupyter 검증 및 후속 보고서·포트폴리오
 ```
 
 각 계층은 독립적으로 재실행할 수 있어야 한다. 상태코드나 Canonical 규칙이 변경되어도 API를 다시 호출하지 않고 Raw 또는 Staging부터 재처리할 수 있어야 한다.
@@ -55,9 +55,9 @@ KRA OpenAPI
 - Python: API 호출, Raw 저장, 파일 수준 검증, Manifest 기록, Staging 적재, 실행 CLI
 - SQL: 타입 검사, 업무 규칙 검사, 중복·충돌 처리, Canonical 및 Star Schema 생성
 - Jupyter: 탐색, 샘플 대조, 품질 및 지표 검증. 공식 운영 로직은 노트북에만 두지 않는다.
-- Power BI: `mart` 계층만 조회한다. Raw와 Staging을 직접 조회하지 않는다.
+- 보고서·포트폴리오: 도구 선택을 후속 단계로 미룬다. 어떤 도구도 Raw와 Staging을 직접 조회하지 않고 `mart` 또는 그 Export만 사용한다.
 
-초기 데이터베이스는 DuckDB로 확정한다. Python과 Jupyter는 DuckDB를 직접 사용하고 Power BI는 DuckDB의 `mart` 계층에서 내보낸 Parquet를 사용한다.
+초기 데이터베이스는 DuckDB로 확정한다. Python과 Jupyter는 DuckDB를 직접 사용한다. 보고서·포트폴리오 도구는 데이터 계층 완성 후 선택하며, 교환 형식으로 Mart Parquet를 지원한다.
 
 ## 5. 저장 및 추적 계약
 

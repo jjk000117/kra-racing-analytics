@@ -27,9 +27,9 @@ source_max_event_date < feature_as_of
 - `history_complete`로 이력 없음과 원천 범위 불완전을 구분한다.
 - 말, 기수, 조교사와 이들의 조합에 동일한 시간 제약을 적용한다.
 
-## 모델 및 Power BI 경계
+## 모델 및 보고서 경계
 
-- Power BI는 승인된 Canonical/Mart만 조회한다.
+- 후속 보고서·포트폴리오 도구는 승인된 Canonical/Mart 또는 Mart Export만 조회한다.
 - 향후 모델은 승인된 Feature Snapshot만 읽는다.
 - Sales와 확정배당은 사후 시장·정산 분석에만 사용한다.
 - 시간 기반 모델 평가에서는 한 경주의 행을 여러 데이터 분할로 나누지 않는다.
@@ -44,4 +44,3 @@ source_max_event_date < feature_as_of
 - 이력이 시간순으로 정렬되지 않음
 - 사후 Sales/Dividend 컬럼이 사전 분석 데이터셋에 존재함
 - 가용시점이 승인되지 않은 지표가 Mart 또는 Feature Snapshot에 포함됨
-

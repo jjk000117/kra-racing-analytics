@@ -1,8 +1,8 @@
 # KRA Racing Analytics
 
-KRA 공식 OpenAPI 과거 데이터를 이용하는 Python + SQL + Power BI 기반 독립 분석 프로젝트입니다.
+KRA 공식 OpenAPI 과거 데이터를 이용하는 Python + SQL 기반 독립 분석 프로젝트입니다.
 
-현재 상태는 **0단계: 프로젝트 계약 확정**입니다. 아직 수집기, SQL 스키마 또는 Power BI 모델은 구현하지 않았습니다.
+현재 상태는 **1단계: Python과 DuckDB 개발 기반 구성**입니다. 아직 API 수집기와 업무 데이터 테이블은 구현하지 않았습니다.
 
 ## 확정된 방향
 
@@ -13,12 +13,14 @@ KRA OpenAPI
   → SQL Staging
   → SQL Canonical
   → SQL Star Schema / Mart
-  → Jupyter 검증 및 Power BI
+  → Jupyter 검증 및 후속 보고서/포트폴리오
 ```
 
 - 초기에는 과거 데이터를 수동 전체 수집합니다.
 - 초기 데이터베이스는 DuckDB이며 기본 파일 위치는 `data/warehouse/kra.duckdb`입니다.
-- Python과 Jupyter는 DuckDB를 직접 사용하고 Power BI는 Mart Parquet를 읽습니다.
+- Python은 기존 Anaconda의 전용 `kra-racing-analytics` Conda 환경에서 실행합니다.
+- 브라우저 JupyterLab은 탐색과 검증에 사용합니다.
+- 시각화·보고서 도구는 데이터 계층 완성 후 선택하고 Mart Parquet를 공통 인터페이스로 지원합니다.
 - 최신 증분 수집과 자동 운영은 후속 확장으로 남깁니다.
 - `request_id`, `batch_id`, SHA256, 적재시각과 변환 버전을 유지하여 나중에 증분 처리를 추가할 수 있게 합니다.
 - 기존 `horse_racing` 저장소는 읽기 전용 참고 자료입니다.
@@ -31,3 +33,21 @@ KRA OpenAPI
 - [Point-in-Time 및 누수 방지](docs/point-in-time-policy.md)
 - [단계별 구현 기준](docs/implementation-gates.md)
 - [데이터베이스 선택 ADR](docs/decisions/0001-database-selection.md)
+- [Python 환경 선택 ADR](docs/decisions/0002-python-environment.md)
+
+## 개발 환경
+
+기존 Anaconda의 `base`와 분리된 프로젝트 환경을 사용합니다.
+
+```powershell
+C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics python --version
+```
+
+패키지 설치 후 주요 명령은 다음과 같습니다.
+
+```powershell
+C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics python -m kra_analytics doctor
+C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics python -m kra_analytics database init
+C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics python -m kra_analytics database check
+C:\Users\jjk00\anaconda3\Scripts\conda.exe run -n kra-racing-analytics jupyter lab
+```

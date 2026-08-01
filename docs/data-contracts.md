@@ -54,7 +54,7 @@ Staging 검사는 오류 행을 조용히 삭제하지 않는다. `quality.data_
 
 ## Mart
 
-Power BI 분석용 Star Schema다. Canonical 의미를 바꾸지 않으며 Fact와 Dimension으로 재구성한다. 초기에는 중복 저장을 줄이기 위해 일부 Mart를 SQL View로 구현할 수 있다.
+후속 보고서·포트폴리오 분석용 Star Schema다. Canonical 의미를 바꾸지 않으며 Fact와 Dimension으로 재구성한다. 초기에는 중복 저장을 줄이기 위해 일부 Mart를 SQL View로 구현할 수 있다.
 
 ## 재구축 계약
 
@@ -62,4 +62,3 @@ Power BI 분석용 Star Schema다. Canonical 의미를 바꾸지 않으며 Fact�
 - Staging부터 Canonical과 Mart를 재생성할 수 있어야 한다.
 - 정책 변경 때문에 API를 다시 호출하도록 강제하지 않는다.
 - 동일 입력과 동일 변환 버전은 동일 Canonical 결과를 만들어야 한다.
-
