@@ -104,23 +104,28 @@
 - 별도 결합모델과 순위 기반 공동확률은 복승 기준모델 이후 고도화 후보로 유지
 - 연승 확률을 복승 조합확률로 자동 변환하지 않도록 모델 경계를 명시
 
+### 6A: 연승 모델링 데이터 계약 설계
+
+- 예측 단위를 `경주 × 베팅 가능 출전마`, 타깃을 공식 PLC 적중마 여부로 확정
+- 연승 발매 마감 직전을 운영 예측시점으로 두고 일 단위 이력은 경주일 미만으로 제한
+- 완료·PLC 공식 결과·모집단 복원 가능 경주만 지도학습 후보로 정의
+- Feature 분류와 추가 API 판단 원칙만 확정하고 실제 목록은 6B로 이관
+- 시간순 Train·Validation·Final Test와 확률평가·Calibration 계약 확정
+- 현재 데이터의 발매 대상 모집단 복원 가능성을 6B의 선행 확인사항으로 지정
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 6A: 연승 모델링 데이터 계약 설계
+### 6B: Feature 가용성 검토 및 설계
 
-1. 모델링 모집단과 `경주 × 출전마` 타깃 Grain을 정의한다.
-2. 공식 연승 적중 여부의 타깃 생성 규칙과 예외 처리를 정한다.
-3. 예측 기준시각과 Feature별 Point-in-Time 허용 조건을 정한다.
-4. Feature 분류 원칙과 추가 API 필요성 판단 원칙을 정의한다.
-5. 날짜순 Train·Validation·Test와 확률평가 계약을 설계한다.
-6. 복승 조합 직접 분류에서 재사용할 데이터 구조의 경계를 정의한다.
-
-실제 Feature 목록은 6B에서 설계한다. 추가 API 목록과 수집 여부도 6B 이후 Feature 가용성
-검토 결과를 바탕으로 결정한다.
+1. 현재 데이터로 발매 마감 당시의 베팅 가능 모집단을 복원할 수 있는지 확인한다.
+2. 실제 Feature 후보를 분류하고 현재 데이터의 가용성과 시점을 점검한다.
+3. 월별 경주·행·양성 분포를 확인해 날짜순 분할 경계를 제안한다.
+4. 모집단 제외가 지역·등급·출전두수 분포를 편향시키는지 확인한다.
+5. 검토 결과를 바탕으로 추가 API 후보와 수집 필요성을 제안한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -134,6 +139,7 @@
 - `docs/winning-payout-canonical-build.md`
 - `docs/pool-candidate-pareto-analysis.md`
 - `docs/model-scope-decision.md`
+- `docs/place-model-data-contract.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `sql/analysis/`
