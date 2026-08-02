@@ -213,6 +213,7 @@ def canonical_build(
     typer.echo(f"races={outcome.race_count}")
     typer.echo(f"runners={outcome.runner_count}")
     typer.echo(f"sales={outcome.sales_count}")
+    typer.echo(f"winning_payouts={outcome.winning_payout_count}")
     typer.echo(f"issues={outcome.issue_count}")
 
 

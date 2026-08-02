@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import shutil
+from decimal import Decimal
 from pathlib import Path
 
 import httpx
@@ -49,6 +50,7 @@ def test_build_canonical_creates_separate_idempotent_tables(
             "meet": "서울",
             "rcNo": "1",
             "hrNo": "H1",
+            "chulNo": "1",
             "ord": "1",
             "rcName": "일반",
             "rank": "국6등급",
@@ -58,6 +60,7 @@ def test_build_canonical_creates_separate_idempotent_tables(
             "meet": "서울",
             "rcNo": "1",
             "hrNo": "H2",
+            "chulNo": "2",
             "ord": "94",
             "rcTime": "0",
             "rcName": "일반",
@@ -70,7 +73,7 @@ def test_build_canonical_creates_separate_idempotent_tables(
         "rcNo": "1",
         "pool": "단식",
         "amt": "1000",
-        "odds": "1-2.3",
+        "odds": "①-2.3",
     }
     race_client = httpx.Client(
         transport=httpx.MockTransport(
@@ -110,6 +113,7 @@ def test_build_canonical_creates_separate_idempotent_tables(
     assert first.race_count == 1
     assert first.runner_count == 2
     assert first.sales_count == 1
+    assert first.winning_payout_count == 1
     assert first.issue_count == 1
     assert audit_canonical(paths=paths) == []
     with connect_database(paths=paths, read_only=True) as connection:
@@ -129,8 +133,30 @@ def test_build_canonical_creates_separate_idempotent_tables(
                 "WHERE table_schema = 'canonical' AND table_name = 'race'"
             ).fetchall()
         }
+        payout = connection.execute(
+            """
+            SELECT sales_id, combination_no, selection_count,
+                   horse_no_1, horse_no_2, horse_no_3,
+                   combination_key, order_matters, confirmed_odds,
+                   parse_status, parser_version
+            FROM canonical.winning_payout
+            """
+        ).fetchone()
     assert dns == ("DNS", False, False)
     assert cancellation is not None
     assert cancellation[0] == "RACE_CANCELLED"
     assert "mass fall" in cancellation[1]
     assert "status_reason" not in race_columns
+    assert payout == (
+        "2024-01-05|1|R01|P단식",
+        1,
+        1,
+        1,
+        None,
+        None,
+        "1",
+        False,
+        Decimal("2.3000"),
+        "PARSED",
+        "winning_payout_v1",
+    )

@@ -76,19 +76,30 @@
 - 중복 마번·중복 조합·0 이하 배당·파싱 오류 0건
 - 실행된 Jupyter Notebook, 재사용 가능한 프로파일링 파서와 단위 테스트 작성
 
+### 5E-2: 공식 적중배당 Canonical 테이블
+
+- `경주 × 승식 × 공식 적중 조합` Grain의 `canonical.winning_payout` 구현
+- 32,074개 매출·배당 원문에서 50,494개 조합 적재
+- 마번 1~16, 순서형·비순서형 조합, 숫자형 배당과 원문 lineage 보존
+- `canonical_v2`, `winning_payout_v1` 변환·파서 버전 적용
+- 동착 순위와 승식별 조합 수 자동 대사 구현
+- 연승식의 발매시점 출주두수 불확실성을 반영해 공식 원문을 우선하도록 처리
+- Canonical과 기존 Star Schema 감사 `issues=0`
+- Pytest 16개, Ruff, mypy와 실제 전체 재구축 멱등성 검사 통과
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 5E-2: 공식 적중배당 Canonical 테이블 구현
+### 5F: 승식 후보 비교 분석
 
-1. 목표 Grain을 `경주 × 승식 × 공식 적중 조합`으로 구현한다.
-2. 원문, 조합 순서, 정수 마번, 확정배당과 lineage를 보존한다.
-3. 순서형 승식은 원문 순서를 유지하고 비순서형 승식은 canonical 조합을 함께 저장한다.
-4. 파싱 실패, 중복 조합, 선택 수 불일치와 비양수 배당 감사를 추가한다.
-5. Canonical·Star 전체 대사와 재실행 멱등성을 검증한다.
+1. 승식별 확정배당 중앙값·분위수·극단값 의존도를 비교한다.
+2. 출전두수와 조합 수로 나이브 적중확률 기준을 정의한다.
+3. 배당과 나이브 적중확률의 관계를 시장성 지표로 비교한다.
+4. 동착 경주는 별도 표시하고 일반 경주 결과와 민감도 분석을 수행한다.
+5. 시장 규모·조합 난도·구현 복잡도를 함께 보고 모델 후보 승식을 결정한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -99,6 +110,7 @@
 - `docs/star-schema-build.md`
 - `docs/market-structure-analysis.md`
 - `docs/confirmed-odds-profiling.md`
+- `docs/winning-payout-canonical-build.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `sql/analysis/`

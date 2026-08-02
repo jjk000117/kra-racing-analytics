@@ -1,12 +1,17 @@
 DELETE FROM quality.data_issue;
+DELETE FROM canonical.winning_payout;
 DELETE FROM canonical.sales_dividend;
 DELETE FROM canonical.runner_result;
 DELETE FROM canonical.race;
 DELETE FROM canonical.transform_run;
 
-INSERT INTO canonical.transform_run
+INSERT INTO canonical.transform_run (
+    transform_version, race_batch_id, sales_batch_id, policy_version,
+    started_at, completed_at, status, race_count, runner_count, sales_count,
+    issue_count, winning_payout_count
+)
 SELECT transform_version, race_batch_id, sales_batch_id, policy_version,
-       started_at, NULL, 'RUNNING', 0, 0, 0, 0
+       started_at, NULL, 'RUNNING', 0, 0, 0, 0, 0
 FROM canonical_context;
 
 INSERT INTO canonical.race (

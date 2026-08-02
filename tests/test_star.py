@@ -44,17 +44,30 @@ def test_build_star_creates_complete_market_mart(
 ) -> None:
     monkeypatch.setenv("KRA_API_KEY", "test-secret")
     paths = _project(tmp_path)
-    race_item = {
-        "rcDate": "20240105",
-        "meet": "서울",
-        "rcNo": "1",
-        "hrNo": "H1",
-        "ord": "1",
-        "rcName": "일반",
-        "rank": "국6등급",
-        "rcDist": "1200",
-    }
+    race_item = [
+        {
+            "rcDate": "20240105",
+            "meet": "서울",
+            "rcNo": "1",
+            "hrNo": f"H{index}",
+            "chulNo": str(index),
+            "ord": str(index),
+            "rcName": "일반",
+            "rank": "국6등급",
+            "rcDist": "1200",
+        }
+        for index in range(1, 4)
+    ]
     pools = ["단식", "연식", "복식", "쌍식", "복연", "삼복", "삼쌍"]
+    odds_by_pool = {
+        "단식": "①-2.3",
+        "연식": "①-1.2  ②-1.5",
+        "복식": "①②-3.0",
+        "쌍식": "①②-4.0",
+        "복연": "①②-1.5  ①③-2.0  ②③-2.5",
+        "삼복": "①②③-5.0",
+        "삼쌍": "①②③-8.0",
+    }
     sales_items = [
         {
             "rcDate": "20240105",
@@ -62,7 +75,7 @@ def test_build_star_creates_complete_market_mart(
             "rcNo": "1",
             "pool": pool,
             "amt": str(index * 1000),
-            "odds": "1-2.3",
+            "odds": odds_by_pool[pool],
         }
         for index, pool in enumerate(pools, start=1)
     ]
