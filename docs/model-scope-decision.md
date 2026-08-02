@@ -59,9 +59,10 @@
 1. 모델링 모집단과 제외 조건
 2. `경주 × 출전마` 업무키와 연승 타깃 생성 규칙
 3. 예측 기준시각과 Feature별 Point-in-Time 허용 조건
-4. 기존 데이터로 만들 수 있는 Feature와 추가 API가 필요한 Feature의 구분
+4. Feature 분류 원칙과 추가 API 필요성 판단 원칙
 5. 날짜순 Train·Validation·Test 구간
 6. Log Loss, Brier Score와 Calibration 중심의 평가 계약
 7. 복승식 조합 직접 분류에서 재사용할 데이터 구조의 경계
 
-6A 결과가 승인된 뒤에만 필요한 추가 API 범위와 구현 순서를 결정한다.
+6A에서는 실제 Feature 목록이나 추가 API 목록을 확정하지 않는다. 실제 Feature 목록은 6B에서
+설계하고, API 목록과 수집 여부는 6B 이후 Feature 가용성 검토 결과를 바탕으로 결정한다.
