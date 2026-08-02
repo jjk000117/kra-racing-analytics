@@ -96,18 +96,28 @@
 - 단승식·쌍승식·삼쌍승식은 다른 승식에 지배되어 1차 후보에서 제외
 - 등록두수 기준과 동착 제외 민감도에서도 후보 집합이 유지됨을 확인
 
+### 5G: 첫 모델과 복승 후속 방향 결정
+
+- 첫 완성 모델을 연승식 적중 여부의 말 단위 확률모델로 확정
+- 첫 모델의 목적을 Feature 파이프라인·날짜순 검증·확률평가·Calibration 완성으로 정의
+- 복승식을 핵심 후속 목표로 유지하고 조합 직접 분류를 첫 기본안으로 결정
+- 별도 결합모델과 순위 기반 공동확률은 복승 기준모델 이후 고도화 후보로 유지
+- 연승 확률을 복승 조합확률로 자동 변환하지 않도록 모델 경계를 명시
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 5G: 첫 모델 후보 승식 결정
+### 6A: 연승 모델링 데이터 계약 설계
 
-1. 파레토 후보 네 개 중 첫 구현 목적에 맞는 승식을 결정한다.
-2. 연승식·복승식을 우선 검토하고 복연승식·삼복승식을 대안으로 유지한다.
-3. 선택한 승식의 예측 단위, 타깃과 평가·정산 방식을 정의한다.
-4. 선택에 필요한 추가 API와 Point-in-Time 데이터 범위를 결정한다.
+1. 모델링 모집단과 `경주 × 출전마` 타깃 Grain을 정의한다.
+2. 공식 연승 적중 여부의 타깃 생성 규칙과 예외 처리를 정한다.
+3. 예측 기준시각과 Feature별 Point-in-Time 허용 조건을 정한다.
+4. 기존 데이터 Feature와 추가 API 필요 Feature를 구분한다.
+5. 날짜순 Train·Validation·Test와 확률평가 계약을 설계한다.
+6. 복승 조합 직접 분류에서 재사용할 데이터 구조의 경계를 정의한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -120,6 +130,7 @@
 - `docs/confirmed-odds-profiling.md`
 - `docs/winning-payout-canonical-build.md`
 - `docs/pool-candidate-pareto-analysis.md`
+- `docs/model-scope-decision.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `sql/analysis/`
