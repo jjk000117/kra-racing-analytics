@@ -113,19 +113,30 @@
 - 시간순 Train·Validation·Final Test와 확률평가·Calibration 계약 확정
 - 현재 데이터의 발매 대상 모집단 복원 가능성을 6B의 선행 확인사항으로 지정
 
+### 6B: Feature 가용성 검토 및 설계
+
+- 4,582경주에서 `is_valid_start` 기반 개발 프록시 48,524행과 공식 양성 13,740행 확인
+- 공식 연승 적중마 미결합과 invalid-start 양성 0건 확인
+- DNS 659행·605경주의 발매 대상 불확실성을 확인하고 DNS 없는 3,977경주·42,632행을
+  민감도 집합으로 정의
+- 현재 기본 컬럼과 Point-in-Time 과거 이력 Feature 후보를 분류
+- 마체중 100% 결측과 말 이력 없음 4,973행 등 가용성 한계 확인
+- 부족한 정보를 계약 필수·기준모델 우선·성능 고도화·있으면 좋음으로 구분
+- 추가 API는 기준모델과 가용성 검토 근거가 생긴 뒤 결정하도록 유지
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 6B: Feature 가용성 검토 및 설계
+### 6C: Feature Snapshot 범위 결정 및 구현
 
-1. 현재 데이터로 발매 마감 당시의 베팅 가능 모집단을 복원할 수 있는지 확인한다.
-2. 실제 Feature 후보를 분류하고 현재 데이터의 가용성과 시점을 점검한다.
-3. 월별 경주·행·양성 분포를 확인해 날짜순 분할 경계를 제안한다.
-4. 모집단 제외가 지역·등급·출전두수 분포를 편향시키는지 확인한다.
-5. 검토 결과를 바탕으로 추가 API 후보와 수집 필요성을 제안한다.
+1. valid-start 주 개발 집합과 DNS 없는 민감도 집합 사용 여부를 승인한다.
+2. 첫 Snapshot에 넣을 기준 Feature와 각 계산식을 명세한다.
+3. `history_available`, `history_complete`와 Point-in-Time 검사를 포함한다.
+4. 날짜순 Train·Validation·Final Test 경계를 확정한다.
+5. 승인된 명세만 SQL/Python으로 구현하고 모델 학습은 다음 단계로 분리한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -140,6 +151,8 @@
 - `docs/pool-candidate-pareto-analysis.md`
 - `docs/model-scope-decision.md`
 - `docs/place-model-data-contract.md`
+- `docs/feature-availability-review.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
+- `notebooks/06b_feature_availability_analysis.ipynb`
 - `sql/analysis/`
