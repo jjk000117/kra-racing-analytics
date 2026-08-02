@@ -124,6 +124,15 @@
 - 부족한 정보를 계약 필수·기준모델 우선·성능 고도화·있으면 좋음으로 구분
 - 추가 API는 기준모델과 가용성 검토 근거가 생긴 뒤 결정하도록 유지
 
+### 6C 사전 검증: DNS 모델링 모집단 정책
+
+- DNS 605경주의 경주별 DNS 수와 경주 진행·공식 승식 무결성을 재검증
+- DNS 1두 555경주, 2두 46경주, 3두 4경주로 99.34%가 1~2두 취소임을 확인
+- 경주 취소·결과 미확정·공식 승식 누락·타깃 이상 0건 확인
+- DNS 말 659행만 제외하고 605경주와 실제 출전마 5,892행을 유지하도록 확정
+- 주행정지 말 동반 13경주는 실제 출전 후 비완주로 보존
+- DNS 없는 집합은 주 모집단이 아니라 선택적 민감도 비교로 변경
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
@@ -132,7 +141,7 @@
 
 ### 6C: Feature Snapshot 범위 결정 및 구현
 
-1. valid-start 주 개발 집합과 DNS 없는 민감도 집합 사용 여부를 승인한다.
+1. DNS 말 제외·경주 유지 정책을 적용한다.
 2. 첫 Snapshot에 넣을 기준 Feature와 각 계산식을 명세한다.
 3. `history_available`, `history_complete`와 Point-in-Time 검사를 포함한다.
 4. 날짜순 Train·Validation·Final Test 경계를 확정한다.
@@ -152,7 +161,9 @@
 - `docs/model-scope-decision.md`
 - `docs/place-model-data-contract.md`
 - `docs/feature-availability-review.md`
+- `docs/dns-population-policy-validation.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`
+- `notebooks/06c_dns_policy_validation.ipynb`
 - `sql/analysis/`

@@ -59,14 +59,15 @@ source_event_date < race_date
 - 실제 베팅 대상이었던 말만 예측 모집단에 포함하는 것이 원칙이다.
 - `FINISHED`, `DISQUALIFIED`, `RACE_STOPPED`처럼 실제 출전이 확인된 말은 결과와 무관하게
   모집단에 남긴다.
-- 발매 마감 전에 취소·제외되어 환불 대상이 된 말은 모집단에서 제외한다.
-- `DNS`, `SCRATCHED`, `EXCLUDED`, `NON_STANDARD_UNRESOLVED`,
+- `DNS`는 말 단위로 모집단에서 제외하되 DNS 존재만으로 경주 전체를 제외하지 않는다.
+- `SCRATCHED`, `EXCLUDED`, `NON_STANDARD_UNRESOLVED`,
   `CANCELLED_STOPPED_OR_DISQUALIFIED`는 현재 사후 상태만으로 발매 마감 당시의 베팅 가능 여부를
-  추정하지 않는다.
+  추정하지 않고, 미해결 상태가 있는 경주는 초기 Snapshot에서 제외한다.
 
 현재 Canonical의 `is_valid_start`는 결과 해석용 필드이며 예측시점의 발매 대상 여부와 동일하다고
-간주하지 않는다. 6B에서 현 데이터로 모집단을 복원할 수 있는지 확인하고, 불가능하면 해당 상태가
-있는 경주를 초기 모델에서 제외하거나 별도의 사전 출전정보가 필요한 것으로 분류한다.
+간주하지 않는다. 다만 개발 Snapshot에서는 `is_valid_start=true`인 말 행을 프록시 모집단으로
+사용한다. 실제 운영에는 별도의 사전 출전정보가 필요하다. DNS 세부 근거와 경주 제외 조건은
+`docs/dns-population-policy-validation.md`를 따른다.
 
 ## 타깃 계약
 
@@ -169,4 +170,3 @@ ROI와 확정배당은 별도의 사후 백테스트 계약에서 다룬다.
 3. 월별 경주·행·양성 수를 기준으로 적절한 분할 날짜는 무엇인가?
 4. 모집단 제외가 지역·등급·출전두수 분포를 편향시키는가?
 5. 가용하지 않은 Feature 중 추가 API 검토 가치가 있는 것은 무엇인가?
-
