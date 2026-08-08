@@ -120,7 +120,8 @@
 - DNS 659행·605경주의 발매 대상 불확실성을 확인하고 DNS 없는 3,977경주·42,632행을
   민감도 집합으로 정의
 - 현재 기본 컬럼과 Point-in-Time 과거 이력 Feature 후보를 분류
-- 마체중 100% 결측과 말 이력 없음 4,973행 등 가용성 한계 확인
+- Canonical 마체중 결측과 말 이력 없음 4,973행 등 가용성 한계 확인. 후속 검증에서 마체중 원문은
+  staging에 존재하고 결측 원인은 문자열 파싱 공백임을 확인
 - 부족한 정보를 계약 필수·기준모델 우선·성능 고도화·있으면 좋음으로 구분
 - 추가 API는 기준모델과 가용성 검토 근거가 생긴 뒤 결정하도록 유지
 
@@ -144,7 +145,7 @@
 ### 6C 설계: 첫 역사적 Feature Snapshot 명세
 
 - A안을 승인하고 첫 Snapshot 원천을 API4_3으로 한정
-- 현재 기본정보 8개, 말 이력 14개, 기수 이력 3개, 조교사 이력 3개의 최소 Feature 28개 확정
+- 현재 기본정보 9개, 말 이력 14개, 기수 이력 3개, 조교사 이력 3개의 최소 Feature 29개 확정
 - 정상 완주·주행중지·실격·DNS의 출전수·완주수·착순·PLC 적중·최근 폼 처리 규칙 확정
 - 과거 PLC 적중률의 분모를 실제 출전수로 정의하고 완주율·평균착순과 분리
 - 이력 부족, NULL, 좌측 절단, 같은 날짜 제외와 Point-in-Time 감사 컬럼 정의
@@ -159,6 +160,18 @@
 - 레이팅·부담중량·등록두수와 경주·출전 기본정보 13개는 API4 과거값과 8/8 일치
 - Snapshot 구현과 API26 대량 수집은 수행하지 않음
 
+### 6C 사전 검증: API26 `ilsu`와 속도·구간기록 원천
+
+- `ilsu`가 말의 출전 간격이 아닌 경마장·경주일 단위 `경주일수`임을 확인
+- API26의 조건·상금 관련 중복 필드 12개를 API4와 8/8 대조
+- 첫 Snapshot 즉시 추가 권장 후보를 `rating` 하나로 좁힘
+- API4에 valid-start 48,524행의 최종·구간기록, 날씨, 주로·함수율, 마체중·증감, 착차 원문이
+  이미 있음을 확인
+- API37 누적 구간기록은 요청 경주일 포함으로 PIT 위험이 있어 사용 금지
+- 추가 API 호출·대량 수집·Snapshot·모델 구현은 수행하지 않음
+- 검증 결과를 승인해 `rating`을 첫 모델 입력에 추가하고 29개 Feature 명세로 갱신
+- `ilsu`는 제외하고 속도·구간·주로·마체중은 기준모델 이후 API4 개별 과거 기록으로 직접 계산
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
@@ -167,11 +180,10 @@
 
 ### 6C: Feature Snapshot 구현
 
-1. API26 검증으로 PIT 후보가 된 레이팅을 첫 Snapshot에 추가할지 결정한다.
-2. 최종 승인된 Feature와 관리·감사 컬럼을 SQL/Python으로 구현한다.
-3. 상태별 분모·분자와 최근 5회 경계 단위 검사를 작성한다.
-4. `source_max_event_date < race_date`와 같은 날짜 결과 제외를 검사한다.
-5. 구현 결과의 행 수·업무키·타깃 결합·NULL 분포를 위험 범위에 맞게 검증한다.
+1. 승인된 29개 Feature와 관리·감사 컬럼을 SQL/Python으로 구현한다.
+2. 상태별 분모·분자와 최근 5회 경계 단위 검사를 작성한다.
+3. `source_max_event_date < race_date`와 같은 날짜 결과 제외를 검사한다.
+4. 구현 결과의 행 수·업무키·타깃 결합·NULL 분포를 위험 범위에 맞게 검증한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -191,6 +203,7 @@
 - `docs/feature-api-metadata-review.md`
 - `docs/feature-snapshot-spec.md`
 - `docs/api26-pit-validation.md`
+- `docs/api26-ilsu-speed-source-validation.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`

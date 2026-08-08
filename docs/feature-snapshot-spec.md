@@ -1,7 +1,7 @@
 # 6C 첫 역사적 Feature Snapshot 명세
 
 결정일: 2026-08-08  
-상태: A안 승인, Feature 명세 확정, Snapshot 미구현
+상태: A안 승인, 29개 Feature 명세 확정, Snapshot 미구현
 
 ## 1. 목적과 범위
 
@@ -76,6 +76,7 @@ Feature로 만들지 않는다. DNS는 실제 출전이 아니므로 분모와 �
 | `horse_sex` | 말 성별 | `runner_result.horse_sex` | trim한 원천값 그대로 범주형 | NULL은 `UNKNOWN` 범주 | 동일 | 모델 |
 | `horse_age` | 경주일 기준 원천 연령 | `runner_result.horse_age` | 정수 원천값 | NULL은 NULL + 결측 처리 | 동일 | 모델 |
 | `carried_weight` | 현재 경기 부담중량 | `runner_result.carried_weight` | 원천 수치 그대로 | NULL은 NULL + 결측 처리 | 동일; 향후 사전 출전표로 교체 필요 | 모델 |
+| `rating` | 현재 경주의 말 레이팅 | API4 staging `rating` | 정수 원천값 | NULL은 NULL + 결측 처리 | 과거 API26 표본과 8/8 일치한 경주별 사전정보 | 모델 |
 
 이 기본 Feature는 API4_3에서 사후 수집됐지만 의미상 경기 전에 정해지는 값이라는 개발 가정으로
 사용한다. 실제 발매마감 시점 운영 성능의 증거로 표현하지 않는다.
@@ -179,6 +180,7 @@ source_max_event_date < feature_as_of = race_date
 - 현재 경주 착순·경주기록·결과상태
 - 마체중, 날씨, 주로상태
 - 과거 구간기록과 세부 페이스 Feature
+- `ilsu` 경주일수
 - 마주 성적, 말–기수·말–조교사·기수–조교사 조합 Feature
 - 경마장별·등급별 말 성적
 - 기수·조교사의 최근 N회 성적
@@ -187,11 +189,24 @@ source_max_event_date < feature_as_of = race_date
 제외는 영구 폐기가 아니다. 첫 기준모델 이후 동일한 날짜 분할에서 ablation 근거가 생길 때
 Snapshot 차기 버전 후보로 검토한다.
 
+속도·구간기록·주로 적합성·마체중 Feature는 기준모델 이후 고도화 후보로 유지한다. 향후에는
+API37의 최고·최저·평균 누적 구간기록을 사용하지 않고, 현재 API4에 존재하는 개별 과거 경기
+기록만 `historical.race_date < feature_as_of` 조건으로 집계해 PIT-safe Feature를 직접 계산한다.
+거리·경마장·주로상태와 경주 전개의 차이를 고려해야 하므로 구체적인 속도지수 계산식은 별도
+설계에서 확정한다.
+
+API4 staging의 마체중 `wgHr`는 원천 부재가 아니라 `377(-10)`, `388(+1)`처럼 중량과 증감이
+결합된 문자열이다. 현재 Canonical 결측은 파싱 공백이며, 첫 Snapshot에서는 사용하지 않고 후속
+개선에서 중량과 증감을 분리 파싱한 뒤 과거 경기 Feature로 검토한다.
+
+`ilsu`는 말의 출전 간격이 아니라 경마장·경주일 단위의 경주일수이므로 Feature 후보에서 제외한다.
+`horse_days_since_last_start`는 기존 명세대로 과거 실제 출전일에서 직접 계산한다.
+
 ## 9. 구현 전 승인 요약
 
-첫 모델 입력은 현재 기본정보 8개, 말 이력 14개, 기수 이력 3개, 조교사 이력 3개로 총 28개다.
+첫 모델 입력은 현재 기본정보 9개, 말 이력 14개, 기수 이력 3개, 조교사 이력 3개로 총 29개다.
 이 중 count·rate·가용 플래그는 서로 다른 의미를 가지므로 함께 유지한다. 관리·감사 컬럼과
-`place_hit`은 28개에 포함하지 않는다.
+`place_hit`은 29개에 포함하지 않는다.
 
 다음 단계에서는 이 명세를 그대로 SQL/Python Snapshot으로 구현하고, 구현 과정에서 Feature를
 추가하지 않는다. 명세 변경이 필요하면 구현 전에 문서 버전을 먼저 갱신한다.
