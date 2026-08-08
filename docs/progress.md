@@ -150,6 +150,15 @@
 - 이력 부족, NULL, 좌측 절단, 같은 날짜 제외와 Point-in-Time 감사 컬럼 정의
 - Feature Snapshot 구현은 수행하지 않음
 
+### API26_2 과거 출전표 Point-in-Time 표본 검증
+
+- 서울·부산경남 2두의 2024~2025 과거 경주일 8건을 실제 호출
+- API26 Raw 응답 8건과 redacted 요청·SHA256 Manifest를 기존 구조로 보존
+- 통산·최근1년 출전 및 1·2·3위 횟수가 말별 모든 과거 날짜에서 고정됨을 확인
+- 누적 8개 필드를 현재값/사후값으로 판정해 Historical Feature 사용 금지 유지
+- 레이팅·부담중량·등록두수와 경주·출전 기본정보 13개는 API4 과거값과 8/8 일치
+- Snapshot 구현과 API26 대량 수집은 수행하지 않음
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
@@ -158,10 +167,11 @@
 
 ### 6C: Feature Snapshot 구현
 
-1. 승인된 28개 Feature와 관리·감사 컬럼을 SQL/Python으로 구현한다.
-2. 상태별 분모·분자와 최근 5회 경계 단위 검사를 작성한다.
-3. `source_max_event_date < race_date`와 같은 날짜 결과 제외를 검사한다.
-4. 구현 결과의 행 수·업무키·타깃 결합·NULL 분포를 위험 범위에 맞게 검증한다.
+1. API26 검증으로 PIT 후보가 된 레이팅을 첫 Snapshot에 추가할지 결정한다.
+2. 최종 승인된 Feature와 관리·감사 컬럼을 SQL/Python으로 구현한다.
+3. 상태별 분모·분자와 최근 5회 경계 단위 검사를 작성한다.
+4. `source_max_event_date < race_date`와 같은 날짜 결과 제외를 검사한다.
+5. 구현 결과의 행 수·업무키·타깃 결합·NULL 분포를 위험 범위에 맞게 검증한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -180,6 +190,7 @@
 - `docs/dns-population-policy-validation.md`
 - `docs/feature-api-metadata-review.md`
 - `docs/feature-snapshot-spec.md`
+- `docs/api26-pit-validation.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`
