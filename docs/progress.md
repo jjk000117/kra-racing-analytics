@@ -3,7 +3,7 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
-마지막 갱신: 2026-08-02
+마지막 갱신: 2026-08-08
 
 ## 현재 완료한 작업
 
@@ -133,19 +133,26 @@
 - 주행정지 말 동반 13경주는 실제 출전 후 비완주로 보존
 - DNS 없는 집합은 주 모집단이 아니라 선택적 민감도 비교로 변경
 
+### 6C 사전 설계: Feature 후보와 KRA API 메타데이터 대조
+
+- 연승 예측 Feature를 경주 맥락·출전마·과거 폼·관계자·부담·준비도·혈통·환경·시장·최종 출전 범주로 정리
+- 현재 API4_3 기반 Point-in-Time 이력과 추가 KRA API의 제공 필드·예측시점 가용성을 비교
+- 첫 역사적 Snapshot은 현 데이터로 진행하고 API26_2는 미래 경기의 사전 스냅샷 축적 후보로 제안
+- API26_2 누적 성적·상금 11개 필드는 기존 Point-in-Time 오류 정책에 따라 계속 사용 금지
+- Feature 계산식·Snapshot 구현·추가 API 수집은 수행하지 않음
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 6C: Feature Snapshot 범위 결정 및 구현
+### 6C: Feature 범위와 추가 수집 여부 결정
 
-1. DNS 말 제외·경주 유지 정책을 적용한다.
-2. 첫 Snapshot에 넣을 기준 Feature와 각 계산식을 명세한다.
-3. `history_available`, `history_complete`와 Point-in-Time 검사를 포함한다.
-4. 날짜순 Train·Validation·Final Test 경계를 확정한다.
-5. 승인된 명세만 SQL/Python으로 구현하고 모델 학습은 다음 단계로 분리한다.
+1. 현재 데이터만 사용할지, API26_2 또는 API26_2+API72_2를 추가할지 결정한다.
+2. 승인 범위에 포함할 실제 Feature 후보를 확정한다.
+3. 추가 수집이 승인되면 Raw·Manifest 정책으로 별도 수집·가용시점 검증을 수행한다.
+4. 이후 첫 Snapshot의 계산식과 Point-in-Time 검사를 명세·구현한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -162,6 +169,7 @@
 - `docs/place-model-data-contract.md`
 - `docs/feature-availability-review.md`
 - `docs/dns-population-policy-validation.md`
+- `docs/feature-api-metadata-review.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`
