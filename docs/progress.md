@@ -141,18 +141,27 @@
 - API26_2 누적 성적·상금 11개 필드는 기존 Point-in-Time 오류 정책에 따라 계속 사용 금지
 - Feature 계산식·Snapshot 구현·추가 API 수집은 수행하지 않음
 
+### 6C 설계: 첫 역사적 Feature Snapshot 명세
+
+- A안을 승인하고 첫 Snapshot 원천을 API4_3으로 한정
+- 현재 기본정보 8개, 말 이력 14개, 기수 이력 3개, 조교사 이력 3개의 최소 Feature 28개 확정
+- 정상 완주·주행중지·실격·DNS의 출전수·완주수·착순·PLC 적중·최근 폼 처리 규칙 확정
+- 과거 PLC 적중률의 분모를 실제 출전수로 정의하고 완주율·평균착순과 분리
+- 이력 부족, NULL, 좌측 절단, 같은 날짜 제외와 Point-in-Time 감사 컬럼 정의
+- Feature Snapshot 구현은 수행하지 않음
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 6C: Feature 범위와 추가 수집 여부 결정
+### 6C: Feature Snapshot 구현
 
-1. 현재 데이터만 사용할지, API26_2 또는 API26_2+API72_2를 추가할지 결정한다.
-2. 승인 범위에 포함할 실제 Feature 후보를 확정한다.
-3. 추가 수집이 승인되면 Raw·Manifest 정책으로 별도 수집·가용시점 검증을 수행한다.
-4. 이후 첫 Snapshot의 계산식과 Point-in-Time 검사를 명세·구현한다.
+1. 승인된 28개 Feature와 관리·감사 컬럼을 SQL/Python으로 구현한다.
+2. 상태별 분모·분자와 최근 5회 경계 단위 검사를 작성한다.
+3. `source_max_event_date < race_date`와 같은 날짜 결과 제외를 검사한다.
+4. 구현 결과의 행 수·업무키·타깃 결합·NULL 분포를 위험 범위에 맞게 검증한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -170,6 +179,7 @@
 - `docs/feature-availability-review.md`
 - `docs/dns-population-policy-validation.md`
 - `docs/feature-api-metadata-review.md`
+- `docs/feature-snapshot-spec.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`
