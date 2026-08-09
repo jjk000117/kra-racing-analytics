@@ -8,6 +8,7 @@ from typing import Annotated
 import typer
 
 from kra_analytics import __version__
+from kra_analytics.bootstrap_stability import run_bootstrap_stability_diagnostic
 from kra_analytics.canonical import audit_canonical, build_canonical
 from kra_analytics.collectors.api4_3 import (
     ALLOWED_MEETS,
@@ -324,4 +325,14 @@ def model_diagnose_time_drift() -> None:
     typer.echo(f"analysis_version={outcome.analysis_version}")
     typer.echo(f"stable_rows={outcome.stable_rows}")
     typer.echo(f"degraded_rows={outcome.degraded_rows}")
+    typer.echo(f"result_path={outcome.result_path}")
+
+
+@model_app.command("bootstrap-stability")
+def model_bootstrap_stability() -> None:
+    """Compare degraded monthly macro losses with stable-period race sampling variation."""
+    outcome = run_bootstrap_stability_diagnostic()
+    typer.echo(f"analysis_version={outcome.analysis_version}")
+    typer.echo(f"stable_races={outcome.stable_races}")
+    typer.echo(f"repetitions={outcome.repetitions}")
     typer.echo(f"result_path={outcome.result_path}")
