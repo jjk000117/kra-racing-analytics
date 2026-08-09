@@ -18,6 +18,7 @@ from kra_analytics.collectors.api4_3 import (
 from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
+from kra_analytics.modeling import run_validation_and_refit
 from kra_analytics.paths import ProjectPaths
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
@@ -29,12 +30,14 @@ staging_app = typer.Typer(help="Load immutable Raw items into DuckDB Staging.")
 canonical_app = typer.Typer(help="Build and audit standardized Canonical tables.")
 star_app = typer.Typer(help="Build and audit the analytics Star Schema and marts.")
 feature_app = typer.Typer(help="Build and audit Point-in-Time model Feature Snapshots.")
+model_app = typer.Typer(help="Run sealed chronological baseline-model workflows.")
 app.add_typer(database_app, name="database")
 app.add_typer(collect_app, name="collect")
 app.add_typer(staging_app, name="staging")
 app.add_typer(canonical_app, name="canonical")
 app.add_typer(star_app, name="star")
 app.add_typer(feature_app, name="feature")
+app.add_typer(model_app, name="model")
 
 
 @app.command()
@@ -273,3 +276,17 @@ def feature_check() -> None:
         typer.echo(issue, err=True)
     if issues:
         raise typer.Exit(code=1)
+
+
+@model_app.command("baseline-validation")
+def model_baseline_validation() -> None:
+    """Select on Validation and refit without reading or evaluating Final Test."""
+    outcome = run_validation_and_refit()
+    typer.echo(f"model_version={outcome.model_version}")
+    typer.echo(f"snapshot_version={outcome.snapshot_version}")
+    typer.echo(f"selected_procedure={outcome.selected_procedure}")
+    typer.echo(f"train_rows={outcome.train_rows}")
+    typer.echo(f"validation_rows={outcome.validation_rows}")
+    typer.echo(f"refit_rows={outcome.refit_rows}")
+    typer.echo(f"final_test_predictions_created={outcome.final_test_predictions_created}")
+    typer.echo(f"output_directory={outcome.output_directory}")

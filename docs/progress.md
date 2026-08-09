@@ -207,18 +207,29 @@
 - sigmoid 선택 시 Train+Validation에서 과거 학습→이후 3개월 OOF 원칙으로 calibrator 재적합
 - 모델·전처리기·Calibration 적합과 Final Test 평가는 수행하지 않음
 
+### 6D: 기준모델 Validation 선택·봉인 및 재적합
+
+- 29개 Snapshot Feature 중 감사 전용 1개를 제외한 28개 입력 Pipeline 구현
+- Train 전용 전처리, 무정보 기준선, Logistic 원본과 Train OOF sigmoid 후보 실행
+- Validation 4,823행·439경주에서 Logistic 원본 선택
+- macro Log Loss: 기준선 0.589293, 원본 0.512157, sigmoid 0.513856
+- macro Brier: 기준선 0.199888, 원본 0.169727, sigmoid 0.170210
+- 선택 상태를 `SEALED_BEFORE_FINAL_TEST`로 기록하고 Train+Validation 23,711행으로 재적합
+- sigmoid 미선택에 따라 최종 calibrator 재적합은 실행 대상에서 제외
+- 모델링 단위 테스트 6개, 전체 Pytest 23개, Ruff `src tests`, mypy 통과
+- Final Test 예측·평가 미실행 및 산출물 부재 확인
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 6D 후속: 기준모델 구현과 Validation 선택
+### 다음 추천 작업: 봉인된 Final Test 평가 승인
 
-1. 확정된 28개 입력·전처리·기준선·Logistic·Calibration 계약을 구현한다.
-2. Train과 Validation까지만 실행해 최종 절차를 선택하고 설정을 봉인한다.
-3. 동일 설정을 Train+Validation으로 재적합한다.
-4. 별도 승인 단계에서 봉인된 Final Test를 한 번 평가한다.
+1. 현재 봉인 계약과 Validation 결과를 검토한다.
+2. 사용자가 명시적으로 승인할 때만 Final Test 예측과 평가를 한 번 실행한다.
+3. Final Test 전에는 Feature·전처리·모델 설정을 변경하지 않는다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -242,6 +253,7 @@
 - `docs/feature-snapshot-build.md`
 - `docs/feature-snapshot-monthly-profile.md`
 - `docs/baseline-model-evaluation-design.md`
+- `docs/baseline-validation-result.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`

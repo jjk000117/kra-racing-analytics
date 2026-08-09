@@ -1,7 +1,7 @@
 # 6D 연승 기준모델 및 평가 설계
 
 결정일: 2026-08-09  
-상태: 설계 확정, 적합·평가 미실행
+상태: 설계 확정·구현, Validation 선택 및 Train+Validation 재적합 완료, Final Test 미실행
 
 ## 1. 목적과 범위
 
@@ -125,6 +125,10 @@ Logistic 확률을 최종 절차로 선택한다. Isotonic, 복수 fold 체계�
 - calibration intercept와 slope
 - 확률 계산 시 수치 안정성을 위해 평가 사본만 `[1e-6, 1-1e-6]`로 제한
 
+intercept와 slope는 `logit(P(place_hit=1)) = intercept + slope × logit(예측확률)`의 무정규화
+Logistic Regression 계수로 고정한다. 모든 예측확률이 같은 무정보 기준선은 두 계수를 동시에
+식별할 수 없으므로 intercept는 Validation 관측 양성률의 logit, slope는 NULL로 기록한다.
+
 Calibration 지표는 확률 왜곡을 확인하는 가드레일이며 임의 종합점수로 합치지 않는다.
 
 ### 보조 진단
@@ -162,12 +166,15 @@ Train+Validation 재적합은 Validation을 더 이상 독립 평가셋으로 �
 사용 가능한 과거 데이터를 모두 활용한다. 모델 선택의 근거는 재적합 전 Validation 결과로 보존하고,
 최종 일반화 성능은 봉인된 Final Test 결과로만 보고한다.
 
-## 10. 실행 금지 범위
+## 10. 설계 확정 당시 실행 금지 범위
 
-이번 단계에서는 다음을 수행하지 않는다.
+설계만 확정한 당시 단계에서는 다음을 수행하지 않았다.
 
 - 모델 학습 또는 하이퍼파라미터 탐색
 - 전처리기나 결측 대체 통계 적합
 - Calibration 적합
 - Validation·Final Test 예측 및 평가
 - Snapshot 재생성 또는 기존 PIT·분할 결과 재검증
+
+구현과 Validation 실행 결과는 `docs/baseline-validation-result.md`에 기록한다. Validation에서
+`logistic_raw`가 선택됐으며 sigmoid는 최종 절차에서 제외됐다.

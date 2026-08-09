@@ -365,3 +365,29 @@
 ### 다음 실험 아이디어
 
 - 후보 B가 공식 분할로 채택됐다. 다음 단계에서 첫 확률모델의 비교 기준과 평가 절차를 설계한다.
+
+## 2026-08-09 — 연승 기준모델 Validation 비교
+
+### 실험 내용
+
+- Train 18,888행에서 무정보 기준선과 28개 입력 Logistic Regression을 적합했다.
+- 과거 전체 학습→이후 3개월 예측의 세 OOF fold로 sigmoid Calibration 후보를 만들었다.
+- Validation 4,823행·439경주에서 기준선·Logistic 원본·Logistic+sigmoid를 비교했다.
+- 선택 후 Final Test를 읽지 않고 동일 Logistic 절차를 Train+Validation 23,711행에 재적합했다.
+
+### 결과
+
+- macro Log Loss: 기준선 0.589293, Logistic 원본 0.512157, sigmoid 0.513856
+- macro Brier: 기준선 0.199888, Logistic 원본 0.169727, sigmoid 0.170210
+- Logistic 원본이 두 지표 모두 가장 낮아 `SEALED_BEFORE_FINAL_TEST` 상태로 선택됐다.
+- Final Test 예측과 평가는 생성하지 않았다.
+
+### 해석
+
+- 승인된 28개 Feature의 Logistic 절차는 무정보 확률보다 Validation 확률 품질이 좋았다.
+- sigmoid는 원본보다 소폭 나빠 첫 최종 절차에서 제외하는 것이 적절하다.
+- 이는 Validation 선택 결과이며 최종 일반화 성능 주장은 봉인된 Final Test 평가 전에는 하지 않는다.
+
+### 다음 실험 아이디어
+
+- 사용자 승인 후 설정을 변경하지 않고 Final Test를 한 번 평가한다.

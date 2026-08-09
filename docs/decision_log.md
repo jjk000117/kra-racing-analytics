@@ -412,3 +412,21 @@
   분할 기간이 확장되더라도 같은 누수 방지 절차를 재현할 수 있다.
 - calibrator도 최종 모델의 적합 범위와 대응하는 OOF 확률에서 다시 학습해야 Train 범위에서 만든
   보정 함수를 기계적으로 재사용하는 불일치를 피할 수 있다.
+
+## 2026-08-09 — Validation에서 Logistic 원본 확률을 최종 절차로 선택
+
+결정:
+
+- `place_logistic_baseline_v1`의 최종 절차로 Calibration 없는 Logistic 원본 확률을 선택한다.
+- 선택된 28개 입력, Train 기반 전처리 규칙과 Logistic 하이퍼파라미터를 봉인한다.
+- 동일 설정으로 Train+Validation 23,711행에 최종 Pipeline을 재적합한다.
+- sigmoid가 선택되지 않았으므로 Train+Validation calibration OOF와 calibrator는 생성하지 않는다.
+- Final Test 예측과 평가는 별도 승인 전까지 수행하지 않는다.
+
+이유:
+
+- Validation macro Log Loss는 Logistic 원본 0.512157로 무정보 기준선 0.589293과 sigmoid
+  0.513856보다 낮았다.
+- macro Brier도 Logistic 원본 0.169727로 기준선 0.199888과 sigmoid 0.170210보다 낮았다.
+- sigmoid가 두 주 지표를 개선하지 못했으므로 더 단순한 원본 확률을 유지하는 것이 확정 계약의
+  선택 규칙에 맞는다.
