@@ -371,3 +371,24 @@
   warm-up 종료점을 결정하는 제약이다.
 - 12개월·18,888행의 Train과 7개월·11,179행의 Final Test를 유지해 이력 깊이와 학습·평가
   표본 규모의 균형을 확보한다.
+
+## 2026-08-09 — 첫 기준모델은 28개 입력의 Logistic Regression으로 설계
+
+결정:
+
+- Snapshot Feature 29개는 유지하되 `horse_prior_plc_hit_count`는 관리·감사용으로만 사용한다.
+- `horse_prior_start_count`와 `horse_prior_plc_hit_rate`를 포함한 나머지 28개를 첫 모델에 입력한다.
+- Train 양성률을 모든 행에 부여하는 무정보 기준선과 고정 설정 L2 Logistic Regression을 비교한다.
+- 결측 중앙값, 범주 사전과 표준화 통계는 Train에서만 학습하고 Pipeline으로 모델과 결합한다.
+- sigmoid Calibration은 Train 내부 날짜순 expanding-window OOF 확률에만 적합한다.
+- Validation macro Log Loss를 주 선택 기준, macro Brier와 Calibration 진단을 보조 기준으로 한다.
+- Final Test는 전처리·모델·Calibration 선택을 마친 뒤 한 번만 평가한다.
+
+이유:
+
+- PLC 적중 횟수는 출전 횟수에 종속되고 출전수와 적중률이 이미 입력에 있어 기준모델에서 중복성이
+  크지만, 산식 감사에는 유용하므로 Snapshot에서 보존할 가치가 있다.
+- Logistic Regression과 단일 sigmoid Calibration은 첫 확률 파이프라인을 검증하는 데 충분하며
+  불필요한 모델·튜닝 범위 확장을 피한다.
+- Train 전용 전처리와 시간순 OOF Calibration은 Validation·Final Test 정보가 학습 과정으로
+  유입되는 것을 막는다.

@@ -90,7 +90,7 @@ Feature로 만들지 않는다. DNS는 실제 출전이 아니므로 분모와 �
 | `horse_prior_start_count` | 관측 과거 실제 출전수 | `horse_id`, `is_valid_start` | `count(H where is_valid_start=true)` | 없으면 0 | 모델 |
 | `horse_prior_finish_count` | 공식 수치 착순이 있는 완주수 | `is_valid_finish` | `count(H where is_valid_finish=true)` | 없으면 0 | 모델 |
 | `horse_prior_finish_rate` | 출전 대비 완주 비율 | 위 두 count | `finish_count / start_count` | start=0이면 NULL | 모델 |
-| `horse_prior_plc_hit_count` | 과거 공식 PLC 적중수 | `winning_payout`, `gate_no` | `sum(place_hit)` over valid starts | 이력 없으면 0 | 관리/감사 |
+| `horse_prior_plc_hit_count` | 과거 공식 PLC 적중수 | `winning_payout`, `gate_no` | `sum(place_hit)` over valid starts | 이력 없으면 0 | 관리/감사, 모델 입력 제외 |
 | `horse_prior_plc_hit_rate` | 출전 대비 과거 PLC 적중 비율 | 위 count | `plc_hit_count / start_count` | start=0이면 NULL | 모델 |
 | `horse_prior_avg_finish_rank` | 완주한 경주의 평균 공식 착순 | `official_finish_rank` | `avg(rank)` over valid finishes | finish=0이면 NULL | 모델 |
 | `horse_days_since_last_start` | 마지막 실제 출전 후 경과일 | `race_date`, `is_valid_start` | `current_race_date - max(prior valid-start race_date)` | start=0이면 NULL | 모델 |
@@ -204,9 +204,10 @@ API4 staging의 마체중 `wgHr`는 원천 부재가 아니라 `377(-10)`, `388(
 
 ## 9. 구현 전 승인 요약
 
-첫 모델 입력은 현재 기본정보 9개, 말 이력 14개, 기수 이력 3개, 조교사 이력 3개로 총 29개다.
-이 중 count·rate·가용 플래그는 서로 다른 의미를 가지므로 함께 유지한다. 관리·감사 컬럼과
-`place_hit`은 29개에 포함하지 않는다.
+Snapshot Feature는 현재 기본정보 9개, 말 이력 14개, 기수 이력 3개, 조교사 이력 3개로 총
+29개다. 이 중 `horse_prior_plc_hit_count`는 Snapshot에 관리·감사용으로 유지하되 첫 기준모델
+입력에서는 제외한다. `horse_prior_start_count`와 `horse_prior_plc_hit_rate`는 모델 입력에 유지한다.
+따라서 첫 기준모델 입력은 28개다. `place_hit`과 그 밖의 관리·감사 컬럼은 29개에 포함하지 않는다.
 
 이 명세는 `place_feature_snapshot_v1`로 구현됐다. 구현 과정에서 Feature를 추가하지 않았으며
 생성·검증 결과는 `docs/feature-snapshot-build.md`에 기록한다. 향후 명세 변경이 필요하면 구현 전에

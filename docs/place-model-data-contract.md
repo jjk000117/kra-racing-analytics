@@ -128,6 +128,10 @@ place_hit = 0  otherwise, within the approved betting-eligible population
 
 첫 모델의 목적은 확률 품질 검증이다.
 
+세부 전처리, 무정보 기준선, Logistic Regression, Calibration과 선택 절차는
+`docs/baseline-model-evaluation-design.md`를 따른다. Snapshot Feature 29개 중
+`horse_prior_plc_hit_count`는 관리·감사용으로만 유지하고 첫 기준모델에는 나머지 28개를 입력한다.
+
 ### 주 평가
 
 - Log Loss

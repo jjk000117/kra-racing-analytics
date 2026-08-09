@@ -194,18 +194,29 @@
 - Warm-up은 Feature 이력 계산에 사용하되 모델 학습 표본에서는 제외
 - 모델 학습·전처리·Calibration은 수행하지 않음
 
+### 6D: 기준모델 및 평가 설계
+
+- Snapshot Feature 29개를 유지하고 `horse_prior_plc_hit_count`를 관리·감사용으로만 확정
+- 첫 Logistic Regression 기준모델 입력을 28개로 확정
+- Train에서만 범주 사전·결측 중앙값·표준화 통계를 적합하도록 전처리 계약 정의
+- Train 양성률 무정보 기준선과 고정 설정 L2 Logistic Regression 비교 구조 확정
+- Train 내부 분기별 expanding-window OOF 예측으로 sigmoid Calibration을 적합하도록 설계
+- Validation에서 원본·보정 확률을 선택하고 Final Test는 모든 선택 후 한 번만 평가하도록 봉인
+- macro Log Loss를 주 선택 지표, macro Brier와 Calibration 진단을 보조 지표로 정의
+- 모델·전처리기·Calibration 적합과 Final Test 평가는 수행하지 않음
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 6D: 날짜순 검증·기준모델 실행 설계
+### 6D 후속: 기준모델 실행 전 최종 결정
 
-1. 확정된 후보 B 날짜 분할을 사용한다.
-2. 첫 확률모델과 비교 기준을 정한다.
-3. Log Loss, Brier Score, Calibration 평가 절차를 확정한다.
-4. 나머지 설계 승인 뒤에만 모델 학습을 수행한다.
+1. Final Test 직전 모델을 Train 그대로 사용할지 Train+Validation으로 재적합할지 확정한다.
+2. 확정된 28개 입력·전처리·기준선·Logistic·Calibration 계약을 구현한다.
+3. Train과 Validation까지만 실행해 최종 절차를 선택한다.
+4. 선택과 설정을 봉인한 뒤 별도 승인 단계에서 Final Test를 한 번 평가한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -228,6 +239,7 @@
 - `docs/api26-ilsu-speed-source-validation.md`
 - `docs/feature-snapshot-build.md`
 - `docs/feature-snapshot-monthly-profile.md`
+- `docs/baseline-model-evaluation-design.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`
