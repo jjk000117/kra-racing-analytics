@@ -313,11 +313,13 @@ def evaluate_probabilities(frame: pd.DataFrame, probabilities: np.ndarray) -> Me
     )
 
 
-def _calibration_table(frame: pd.DataFrame, probabilities: np.ndarray) -> list[dict[str, Any]]:
+def calibration_table(
+    frame: pd.DataFrame, probabilities: np.ndarray, *, bins: int = 10
+) -> list[dict[str, Any]]:
     table = frame.loc[:, ["race_id", "horse_id", TARGET_COLUMN]].copy()
     table["probability"] = probabilities
     table = table.sort_values(["probability", "race_id", "horse_id"]).reset_index(drop=True)
-    table["bin"] = pd.qcut(table.index, q=min(10, len(table)), labels=False) + 1
+    table["bin"] = pd.qcut(table.index, q=min(bins, len(table)), labels=False) + 1
     result = table.groupby("bin", observed=True).agg(
         rows=(TARGET_COLUMN, "size"),
         predicted_mean=("probability", "mean"),
@@ -455,7 +457,7 @@ def run_validation_and_refit(*, paths: ProjectPaths | None = None) -> BaselineRu
         "selection_status": "SEALED_BEFORE_FINAL_TEST",
         "validation_metrics": {name: asdict(metric) for name, metric in metrics.items()},
         "validation_calibration_tables": {
-            name: _calibration_table(validation, probabilities)
+            name: calibration_table(validation, probabilities)
             for name, probabilities in candidate_probabilities.items()
         },
         "selected_segment_metrics": _segment_metrics(
@@ -561,8 +563,8 @@ def run_final_test_once(*, paths: ProjectPaths | None = None) -> FinalTestOutcom
             },
         },
         "calibration_tables": {
-            "uninformed_baseline": _calibration_table(final_test, baseline_probabilities),
-            "logistic_raw": _calibration_table(final_test, model_probabilities),
+            "uninformed_baseline": calibration_table(final_test, baseline_probabilities),
+            "logistic_raw": calibration_table(final_test, model_probabilities),
         },
         "segment_metrics": {
             "uninformed_baseline": _segment_metrics(final_test, baseline_probabilities),

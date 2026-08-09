@@ -230,17 +230,29 @@
 - Validation 대비 Logistic macro Log Loss +0.020110, macro Brier +0.008181
 - 평가 중 재적합·설정 변경 없음, 결과 존재 시 재실행 거부
 
+### 6E: 월별 expanding Walk-forward 시간 안정성 진단
+
+- baseline_v1과 동일한 최초 학습기간 2024-10~2025-09로 첫 Fold 시작
+- Warm-up 이력이 반영된 기존 Snapshot과 고정 28개 raw Logistic 절차 사용
+- 2025-10~2026-07의 월별 10개 expanding Fold 실행
+- 2025-10~2026-04 macro Log Loss 평균 0.515343
+- 2026-05~07 평균 0.551345, 월별 0.533→0.551→0.570으로 연속 상승
+- 모든 월에서 무정보 기준선보다 Log Loss·Brier 개선 유지
+- 7월 calibration intercept -0.252, slope 0.768과 과대예측 방향 drift 관찰
+- 3개월 이동평균은 보조 진단으로만 기록
+- 기존 baseline contract·Pipeline·Final Test 결과 해시 불변 확인
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 다음 추천 작업: 기준모델 해석과 후속 고도화 범위 결정
+### 다음 추천 작업: 후반부 시간 저하의 원인 진단 설계
 
-1. Final Test의 월별 성능 저하와 구간별 차이를 기준모델 한계로 정리한다.
-2. 속도·구간·마체중 등 보류 Feature의 고도화 우선순위를 정한다.
-3. 모든 후속 모델은 새 버전·새 실험으로 관리하고 이번 Final Test 결과를 선택에 재사용하지 않는다.
+1. 2026-05~07 모집단·경주조건·Feature 분포 변화를 기술적으로 비교한다.
+2. 모델을 변경하지 않고 데이터 drift와 calibration drift의 가능한 원인을 분리한다.
+3. 원인 근거가 생긴 뒤에만 별도 버전의 후속 고도화 실험을 설계한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -266,6 +278,7 @@
 - `docs/baseline-model-evaluation-design.md`
 - `docs/baseline-validation-result.md`
 - `docs/final-test-result.md`
+- `docs/walk-forward-stability-result.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`

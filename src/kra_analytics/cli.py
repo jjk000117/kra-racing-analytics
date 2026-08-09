@@ -22,6 +22,7 @@ from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
 from kra_analytics.paths import ProjectPaths
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
+from kra_analytics.walk_forward import run_walk_forward_stability
 
 app = typer.Typer(help="KRA racing analytics local pipeline.", no_args_is_help=True)
 database_app = typer.Typer(help="Initialize and inspect the local DuckDB warehouse.")
@@ -301,4 +302,15 @@ def model_final_test_once() -> None:
     typer.echo(f"races={outcome.race_count}")
     typer.echo(f"macro_log_loss={outcome.model_macro_log_loss:.9f}")
     typer.echo(f"macro_brier={outcome.model_macro_brier:.9f}")
+    typer.echo(f"result_path={outcome.result_path}")
+
+
+@model_app.command("walk-forward-stability")
+def model_walk_forward_stability() -> None:
+    """Run the fixed monthly expanding-window time-stability diagnostic."""
+    outcome = run_walk_forward_stability()
+    typer.echo(f"analysis_version={outcome.analysis_version}")
+    typer.echo(f"folds={outcome.fold_count}")
+    typer.echo(f"first_evaluation_month={outcome.first_evaluation_month}")
+    typer.echo(f"last_evaluation_month={outcome.last_evaluation_month}")
     typer.echo(f"result_path={outcome.result_path}")
