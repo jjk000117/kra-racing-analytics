@@ -182,6 +182,15 @@
 - 모집단·업무키·타깃·rating 원천·상태·비율·NULL·PIT 감사 `issues=0`
 - 속도·G1F·G3F Feature와 모델 학습은 수행하지 않음
 
+### 6D 사전 분석: Snapshot 월별 분포
+
+- 월별 경주 108~180개, 출전마 1,230~1,952행과 PLC 양성률 25.88~30.51% 확인
+- 말·기수·조교사 이력 가용률과 prior count P25/P50/P75 프로파일링
+- 기수·조교사 left-censoring은 2024년 2~3월부터 거의 해소됨을 확인
+- 말 이력은 2024년 10월부터 가용률 약 91~97%, 중앙 prior count 5회 이상
+- warm-up 및 날짜순 분할 후보 A/B/C 제안, 2024-09-30 종료 후보 B를 우선 제안
+- 분할 계약 확정과 모델 학습·전처리·Calibration은 수행하지 않음
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
@@ -190,7 +199,7 @@
 
 ### 6D: 날짜순 검증·기준모델 실행 설계
 
-1. 학습·검증·테스트의 날짜 경계와 좌측 절단 처리 원칙을 확정한다.
+1. 월별 프로파일을 바탕으로 후보 A/B/C 중 날짜 경계를 확정한다.
 2. 첫 확률모델과 비교 기준을 정한다.
 3. Log Loss, Brier Score, Calibration 평가 절차를 확정한다.
 4. 설계 승인 뒤에만 모델 학습을 수행한다.
@@ -215,6 +224,7 @@
 - `docs/api26-pit-validation.md`
 - `docs/api26-ilsu-speed-source-validation.md`
 - `docs/feature-snapshot-build.md`
+- `docs/feature-snapshot-monthly-profile.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`
