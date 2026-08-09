@@ -22,6 +22,7 @@ from kra_analytics.drift_diagnostics import run_feature_drift_diagnostic
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
 from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
 from kra_analytics.paths import ProjectPaths
+from kra_analytics.runner_count_diagnostics import run_runner_count_loss_diagnostic
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
 from kra_analytics.walk_forward import run_walk_forward_stability
@@ -335,4 +336,14 @@ def model_bootstrap_stability() -> None:
     typer.echo(f"analysis_version={outcome.analysis_version}")
     typer.echo(f"stable_races={outcome.stable_races}")
     typer.echo(f"repetitions={outcome.repetitions}")
+    typer.echo(f"result_path={outcome.result_path}")
+
+
+@model_app.command("diagnose-runner-count-loss")
+def model_diagnose_runner_count_loss() -> None:
+    """Separate runner-count composition from within-segment loss movement."""
+    outcome = run_runner_count_loss_diagnostic()
+    typer.echo(f"analysis_version={outcome.analysis_version}")
+    typer.echo(f"stable_races={outcome.stable_races}")
+    typer.echo(f"degraded_races={outcome.degraded_races}")
     typer.echo(f"result_path={outcome.result_path}")

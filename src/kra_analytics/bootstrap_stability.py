@@ -85,7 +85,9 @@ def summarize_bootstrap(distribution: np.ndarray, actual: float) -> dict[str, fl
     }
 
 
-def _load_snapshot(paths: ProjectPaths) -> pd.DataFrame:
+def load_analysis_snapshot(
+    paths: ProjectPaths, *, end_exclusive: str = "2026-05-01"
+) -> pd.DataFrame:
     columns = ("race_id", "horse_id", "race_date", *MODEL_FEATURES, TARGET_COLUMN)
     query = f"""
         SELECT {", ".join(columns)}
@@ -97,7 +99,7 @@ def _load_snapshot(paths: ProjectPaths) -> pd.DataFrame:
     """
     with connect_database(paths=paths, read_only=True) as connection:
         frame = connection.execute(
-            query, [SNAPSHOT_VERSION, TRAIN_START, "2026-05-01"]
+            query, [SNAPSHOT_VERSION, TRAIN_START, end_exclusive]
         ).fetchdf()
     if frame.empty or frame.duplicated(["race_id", "horse_id"]).any():
         raise ValueError("Bootstrap Snapshot is empty or has duplicate business keys")
@@ -105,12 +107,14 @@ def _load_snapshot(paths: ProjectPaths) -> pd.DataFrame:
     return frame
 
 
-def _reproduce_stable_race_losses(
-    frame: pd.DataFrame, existing_folds: dict[str, dict[str, Any]]
+def reproduce_race_losses(
+    frame: pd.DataFrame,
+    existing_folds: dict[str, dict[str, Any]],
+    months: tuple[str, ...],
 ) -> tuple[pd.DataFrame, list[dict[str, Any]]]:
     race_rows: list[pd.DataFrame] = []
     checks: list[dict[str, Any]] = []
-    for month_key in STABLE_MONTHS:
+    for month_key in months:
         month = pd.Period(month_key, freq="M")
         start = month.start_time
         end = (month + 1).start_time
@@ -125,6 +129,10 @@ def _reproduce_stable_race_losses(
             pipeline.predict_proba(evaluation.loc[:, MODEL_INPUTS])[:, 1], dtype=float
         )
         losses = race_level_losses(evaluation, probabilities)
+        race_attributes = evaluation.drop_duplicates("race_id").loc[
+            :, ["race_id", "registered_runner_count"]
+        ]
+        losses = losses.merge(race_attributes, on="race_id", validate="one_to_one")
         losses["evaluation_month"] = month_key
         expected = existing_folds[month_key]
         observed_log_loss = float(losses["log_loss"].mean())
@@ -132,9 +140,9 @@ def _reproduce_stable_race_losses(
         log_difference = observed_log_loss - float(expected["model_macro_log_loss"])
         brier_difference = observed_brier - float(expected["model_macro_brier"])
         if int(expected["evaluation_races"]) != len(losses):
-            raise ValueError(f"Stable fold race count mismatch for {month_key}")
+            raise ValueError(f"Fold race count mismatch for {month_key}")
         if abs(log_difference) > 1e-12 or abs(brier_difference) > 1e-12:
-            raise ValueError(f"Stable fold metric reproduction mismatch for {month_key}")
+            raise ValueError(f"Fold metric reproduction mismatch for {month_key}")
         checks.append(
             {
                 "evaluation_month": month_key,
@@ -145,6 +153,12 @@ def _reproduce_stable_race_losses(
         )
         race_rows.append(losses)
     return pd.concat(race_rows, ignore_index=True), checks
+
+
+def _reproduce_stable_race_losses(
+    frame: pd.DataFrame, existing_folds: dict[str, dict[str, Any]]
+) -> tuple[pd.DataFrame, list[dict[str, Any]]]:
+    return reproduce_race_losses(frame, existing_folds, STABLE_MONTHS)
 
 
 def run_bootstrap_stability_diagnostic(
@@ -174,7 +188,7 @@ def run_bootstrap_stability_diagnostic(
 
     walk_result = json.loads((walk / "walk_forward_result.json").read_text(encoding="utf-8"))
     folds = {row["evaluation_month"]: row for row in walk_result["folds"]}
-    frame = _load_snapshot(project_paths)
+    frame = load_analysis_snapshot(project_paths)
     stable_losses, reproduction_checks = _reproduce_stable_race_losses(frame, folds)
 
     rng = np.random.default_rng(RANDOM_SEED)
