@@ -18,7 +18,7 @@ from kra_analytics.collectors.api4_3 import (
 from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
-from kra_analytics.modeling import run_validation_and_refit
+from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
 from kra_analytics.paths import ProjectPaths
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
@@ -290,3 +290,15 @@ def model_baseline_validation() -> None:
     typer.echo(f"refit_rows={outcome.refit_rows}")
     typer.echo(f"final_test_predictions_created={outcome.final_test_predictions_created}")
     typer.echo(f"output_directory={outcome.output_directory}")
+
+
+@model_app.command("final-test-once")
+def model_final_test_once() -> None:
+    """Evaluate the exact sealed Pipeline on Final Test once without refitting."""
+    outcome = run_final_test_once()
+    typer.echo(f"model_version={outcome.model_version}")
+    typer.echo(f"rows={outcome.row_count}")
+    typer.echo(f"races={outcome.race_count}")
+    typer.echo(f"macro_log_loss={outcome.model_macro_log_loss:.9f}")
+    typer.echo(f"macro_brier={outcome.model_macro_brier:.9f}")
+    typer.echo(f"result_path={outcome.result_path}")

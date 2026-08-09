@@ -69,6 +69,9 @@ Train+Validation 재적합에서 calibration OOF와 새 calibrator는 생성 대
 
 Final Test 실행은 이번 단계 범위 밖이며 별도의 명시적 승인 전에는 수행하지 않는다.
 
+이후 사용자 승인으로 봉인된 Final Test를 한 번 평가했다. 해당 결과는
+`docs/final-test-result.md`에 별도로 기록하며 이 Validation 선택 기록은 변경하지 않는다.
+
 ## 검증
 
 - 모델링 단위 테스트 6개 통과

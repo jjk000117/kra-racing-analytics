@@ -1,7 +1,7 @@
 # 6D 연승 기준모델 및 평가 설계
 
 결정일: 2026-08-09  
-상태: 설계 확정·구현, Validation 선택 및 Train+Validation 재적합 완료, Final Test 미실행
+상태: 설계 확정·구현, Validation 선택·재적합 및 봉인된 Final Test 1회 평가 완료
 
 ## 1. 목적과 범위
 
@@ -178,3 +178,6 @@ Train+Validation 재적합은 Validation을 더 이상 독립 평가셋으로 �
 
 구현과 Validation 실행 결과는 `docs/baseline-validation-result.md`에 기록한다. Validation에서
 `logistic_raw`가 선택됐으며 sigmoid는 최종 절차에서 제외됐다.
+
+사용자 승인 후 봉인된 절차의 Final Test를 한 번 평가했으며 결과는
+`docs/final-test-result.md`에 기록한다. 평가 후 재적합이나 설정 변경은 수행하지 않았다.

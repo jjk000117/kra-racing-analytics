@@ -391,3 +391,30 @@
 ### 다음 실험 아이디어
 
 - 사용자 승인 후 설정을 변경하지 않고 Final Test를 한 번 평가한다.
+
+## 2026-08-09 — 봉인된 연승 기준모델 Final Test
+
+### 실험 내용
+
+- 봉인된 run contract와 Train+Validation Pipeline의 SHA256을 확인했다.
+- 설정 변경이나 재적합 없이 2026-01~07의 1,050경주·11,179행을 한 번 평가했다.
+- Train+Validation 양성률 무정보 기준선과 Logistic 원본을 비교했다.
+
+### 결과
+
+- Logistic macro Log Loss 0.532267, macro Brier 0.177908
+- 무정보 기준선 macro Log Loss 0.598040, macro Brier 0.203972
+- Logistic micro Log Loss 0.529311, micro Brier 0.176639
+- Calibration intercept 0.057017, slope 0.986839
+- Validation 대비 macro Log Loss +0.020110, macro Brier +0.008181
+
+### 해석
+
+- Logistic은 Final Test에서도 무정보 기준선보다 우수했다.
+- 전체 Calibration은 0/1 기준에 가까웠지만 5~7월로 갈수록 손실이 증가하고 7월 slope가
+  0.766으로 낮아졌다.
+- 이 결과는 최종 평가이며 사후 재적합이나 설정 변경 근거로 사용하지 않는다.
+
+### 다음 실험 아이디어
+
+- 기준모델 한계를 정리한 뒤 후속 Feature 고도화는 새 모델 버전과 독립된 평가 계획으로 설계한다.

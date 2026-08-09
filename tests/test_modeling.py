@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -14,8 +15,10 @@ from kra_analytics.modeling import (
     calibration_intercept_slope,
     evaluate_probabilities,
     expanding_window_oof,
+    run_final_test_once,
     validate_development_frame,
 )
+from kra_analytics.paths import ProjectPaths
 
 
 def _model_frame(months: int = 12) -> pd.DataFrame:
@@ -111,3 +114,13 @@ def test_macro_metrics_give_each_race_equal_weight() -> None:
     race2_brier = ((0.4 - 1) ** 2 + 3 * (0.4 - 0) ** 2) / 4
     assert result.macro_brier == pytest.approx((race1_brier + race2_brier) / 2)
     assert result.micro_brier != pytest.approx(result.macro_brier)
+
+
+def test_final_test_once_refuses_existing_result(tmp_path: Path) -> None:
+    paths = ProjectPaths.from_root(tmp_path)
+    output = paths.exports / "modeling" / "place_logistic_baseline_v1"
+    output.mkdir(parents=True)
+    (output / "final_test_result.json").write_text("{}", encoding="utf-8")
+
+    with pytest.raises(FileExistsError, match="already been evaluated"):
+        run_final_test_once(paths=paths)

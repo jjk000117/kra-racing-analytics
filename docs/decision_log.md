@@ -430,3 +430,19 @@
 - macro Brier도 Logistic 원본 0.169727로 기준선 0.199888과 sigmoid 0.170210보다 낮았다.
 - sigmoid가 두 주 지표를 개선하지 못했으므로 더 단순한 원본 확률을 유지하는 것이 확정 계약의
   선택 규칙에 맞는다.
+
+## 2026-08-09 — 봉인된 Final Test를 1회 평가하고 결과를 동결
+
+결정:
+
+- 봉인된 `place_logistic_baseline_v1` contract와 Pipeline을 변경 없이 Final Test에 한 번 적용한다.
+- 평가 결과를 확인한 뒤 모델·전처리·Feature·Calibration을 재적합하거나 변경하지 않는다.
+- 같은 모델 버전의 Final Test 결과 파일이 존재하면 평가 명령의 재실행을 거부한다.
+- 후속 고도화는 별도 모델 버전과 새 실험으로 관리한다.
+
+이유:
+
+- Logistic macro Log Loss 0.532267과 macro Brier 0.177908은 무정보 기준선 0.598040,
+  0.203972보다 낮아 기준모델의 일반화 개선을 확인했다.
+- Validation 대비 손실은 증가했으므로 Final Test를 추가 선택이나 튜닝에 사용하지 않고 결과를
+  그대로 동결해야 평가 독립성을 보존할 수 있다.

@@ -219,17 +219,28 @@
 - 모델링 단위 테스트 6개, 전체 Pytest 23개, Ruff `src tests`, mypy 통과
 - Final Test 예측·평가 미실행 및 산출물 부재 확인
 
+### 6D: 봉인된 Final Test 1회 평가
+
+- 봉인 contract와 Pipeline SHA256 일치 확인 후 1회 전용 명령으로 평가
+- Final Test 2026-01~07의 1,050경주·11,179행 사용
+- Logistic macro Log Loss 0.532267, macro Brier 0.177908
+- 무정보 기준선 macro Log Loss 0.598040, macro Brier 0.203972
+- Logistic micro Log Loss 0.529311, micro Brier 0.176639
+- Calibration intercept 0.057017, slope 0.986839
+- Validation 대비 Logistic macro Log Loss +0.020110, macro Brier +0.008181
+- 평가 중 재적합·설정 변경 없음, 결과 존재 시 재실행 거부
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 다음 추천 작업: 봉인된 Final Test 평가 승인
+### 다음 추천 작업: 기준모델 해석과 후속 고도화 범위 결정
 
-1. 현재 봉인 계약과 Validation 결과를 검토한다.
-2. 사용자가 명시적으로 승인할 때만 Final Test 예측과 평가를 한 번 실행한다.
-3. Final Test 전에는 Feature·전처리·모델 설정을 변경하지 않는다.
+1. Final Test의 월별 성능 저하와 구간별 차이를 기준모델 한계로 정리한다.
+2. 속도·구간·마체중 등 보류 Feature의 고도화 우선순위를 정한다.
+3. 모든 후속 모델은 새 버전·새 실험으로 관리하고 이번 Final Test 결과를 선택에 재사용하지 않는다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -254,6 +265,7 @@
 - `docs/feature-snapshot-monthly-profile.md`
 - `docs/baseline-model-evaluation-design.md`
 - `docs/baseline-validation-result.md`
+- `docs/final-test-result.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`

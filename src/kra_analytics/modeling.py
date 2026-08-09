@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from dataclasses import asdict, dataclass
@@ -22,6 +23,8 @@ from kra_analytics.feature_snapshot import MODEL_FEATURES, SNAPSHOT_VERSION
 from kra_analytics.paths import ProjectPaths
 
 MODEL_VERSION = "place_logistic_baseline_v1"
+SEALED_CONTRACT_SHA256 = "cfb438c7cea49ca219059d8de9feff736410f7e71e4e29cfb54ad93c32271761"
+SEALED_PIPELINE_SHA256 = "8067eb1051674e40ebf16cf21efc5cd940798ad033298ca789649419069fbe12"
 TARGET_COLUMN = "place_hit"
 AUDIT_ONLY_FEATURE = "horse_prior_plc_hit_count"
 MODEL_INPUTS = tuple(name for name in MODEL_FEATURES if name != AUDIT_ONLY_FEATURE)
@@ -79,6 +82,16 @@ class BaselineRunOutcome:
     refit_rows: int
     final_test_predictions_created: bool
     output_directory: Path
+
+
+@dataclass(frozen=True)
+class FinalTestOutcome:
+    model_version: str
+    row_count: int
+    race_count: int
+    model_macro_log_loss: float
+    model_macro_brier: float
+    result_path: Path
 
 
 @dataclass(frozen=True)
@@ -184,6 +197,30 @@ def load_development_snapshot(*, paths: ProjectPaths | None = None) -> pd.DataFr
         ).fetchdf()
     frame["split"] = assign_splits(frame)
     validate_development_frame(frame)
+    return frame
+
+
+def load_final_test_snapshot(*, paths: ProjectPaths | None = None) -> pd.DataFrame:
+    """Load the sealed Final Test only for the explicit one-time evaluation path."""
+    project_paths = paths or ProjectPaths.from_root()
+    columns = ("race_id", "horse_id", "race_date", *MODEL_FEATURES, TARGET_COLUMN)
+    query = f"""
+        SELECT {", ".join(columns)}
+        FROM mart.feature_snapshot_place
+        WHERE snapshot_version = ?
+          AND race_date >= ?
+          AND race_date <= ?
+        ORDER BY race_date, race_id, horse_id
+    """
+    with connect_database(paths=project_paths, read_only=True) as connection:
+        frame = connection.execute(
+            query, [SNAPSHOT_VERSION, FINAL_TEST_START, FINAL_TEST_END]
+        ).fetchdf()
+    frame["split"] = assign_splits(frame)
+    if frame.empty or (frame["split"] != "FINAL_TEST").any():
+        raise ValueError("Final Test loader returned an invalid date range")
+    if frame.duplicated(["race_id", "horse_id"]).any():
+        raise ValueError("Duplicate race_id + horse_id Final Test key")
     return frame
 
 
@@ -325,6 +362,14 @@ def _json_ready(value: Any) -> Any:
     return value
 
 
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def run_validation_and_refit(*, paths: ProjectPaths | None = None) -> BaselineRunOutcome:
     project_paths = paths or ProjectPaths.from_root()
     frame = load_development_snapshot(paths=project_paths)
@@ -439,4 +484,101 @@ def run_validation_and_refit(*, paths: ProjectPaths | None = None) -> BaselineRu
         refit_rows=len(combined),
         final_test_predictions_created=False,
         output_directory=output_directory,
+    )
+
+
+def run_final_test_once(*, paths: ProjectPaths | None = None) -> FinalTestOutcome:
+    """Evaluate the sealed artifact once without fitting or changing any setting."""
+    project_paths = paths or ProjectPaths.from_root()
+    output_directory = project_paths.exports / "modeling" / MODEL_VERSION
+    contract_path = output_directory / "run_contract.json"
+    pipeline_path = output_directory / "pipeline.joblib"
+    result_path = output_directory / "final_test_result.json"
+    if result_path.exists():
+        raise FileExistsError("Final Test has already been evaluated for this sealed model")
+    if not contract_path.is_file() or not pipeline_path.is_file():
+        raise FileNotFoundError("Sealed run contract and Pipeline are required")
+
+    contract_sha256 = _file_sha256(contract_path)
+    pipeline_sha256 = _file_sha256(pipeline_path)
+    if contract_sha256 != SEALED_CONTRACT_SHA256:
+        raise ValueError("Sealed run contract hash mismatch")
+    if pipeline_sha256 != SEALED_PIPELINE_SHA256:
+        raise ValueError("Sealed Pipeline hash mismatch")
+
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    if contract["selected_procedure"] != "logistic_raw":
+        raise ValueError("Sealed procedure is not logistic_raw")
+    if contract["selection_status"] != "SEALED_BEFORE_FINAL_TEST":
+        raise ValueError("Run contract is not sealed for Final Test")
+    if tuple(contract["model_inputs"]) != MODEL_INPUTS:
+        raise ValueError("Sealed model input order mismatch")
+    if contract["final_test_predictions_created"] or contract["final_test_evaluated"]:
+        raise ValueError("Run contract indicates a prior Final Test execution")
+
+    final_test = load_final_test_snapshot(paths=project_paths)
+    development = load_development_snapshot(paths=project_paths)
+    refit = development.loc[development["split"].isin(["TRAIN", "VALIDATION"])]
+    baseline_prevalence = float(refit[TARGET_COLUMN].mean())
+
+    pipeline = joblib.load(pipeline_path)
+    model_probabilities = np.asarray(
+        pipeline.predict_proba(final_test.loc[:, MODEL_INPUTS])[:, 1], dtype=float
+    )
+    baseline_probabilities = np.full(len(final_test), baseline_prevalence)
+    model_metrics = evaluate_probabilities(final_test, model_probabilities)
+    baseline_metrics = evaluate_probabilities(final_test, baseline_probabilities)
+    validation_model = contract["validation_metrics"]["logistic_raw"]
+    validation_baseline = contract["validation_metrics"]["uninformed_baseline"]
+
+    result = {
+        "model_version": MODEL_VERSION,
+        "snapshot_version": SNAPSHOT_VERSION,
+        "evaluation_status": "FINAL_TEST_EVALUATED_ONCE",
+        "selected_procedure": "logistic_raw",
+        "sealed_contract_sha256": contract_sha256,
+        "sealed_pipeline_sha256": pipeline_sha256,
+        "model_inputs": MODEL_INPUTS,
+        "baseline_prevalence_source": "TRAIN_PLUS_VALIDATION",
+        "baseline_prevalence": baseline_prevalence,
+        "final_test_date_range": [str(FINAL_TEST_START), str(FINAL_TEST_END)],
+        "final_test_metrics": {
+            "uninformed_baseline": asdict(baseline_metrics),
+            "logistic_raw": asdict(model_metrics),
+        },
+        "validation_metrics": {
+            "uninformed_baseline": validation_baseline,
+            "logistic_raw": validation_model,
+        },
+        "final_minus_validation": {
+            "uninformed_baseline": {
+                name: getattr(baseline_metrics, name) - float(validation_baseline[name])
+                for name in ("macro_log_loss", "macro_brier", "micro_log_loss", "micro_brier")
+            },
+            "logistic_raw": {
+                name: getattr(model_metrics, name) - float(validation_model[name])
+                for name in ("macro_log_loss", "macro_brier", "micro_log_loss", "micro_brier")
+            },
+        },
+        "calibration_tables": {
+            "uninformed_baseline": _calibration_table(final_test, baseline_probabilities),
+            "logistic_raw": _calibration_table(final_test, model_probabilities),
+        },
+        "segment_metrics": {
+            "uninformed_baseline": _segment_metrics(final_test, baseline_probabilities),
+            "logistic_raw": _segment_metrics(final_test, model_probabilities),
+        },
+        "refit_performed_during_final_test": False,
+        "settings_changed_after_validation": False,
+    }
+    result_path.write_text(
+        json.dumps(_json_ready(result), ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    return FinalTestOutcome(
+        model_version=MODEL_VERSION,
+        row_count=len(final_test),
+        race_count=int(final_test["race_id"].nunique()),
+        model_macro_log_loss=model_metrics.macro_log_loss,
+        model_macro_brier=model_metrics.macro_brier,
+        result_path=result_path,
     )
