@@ -242,17 +242,29 @@
 - 3개월 이동평균은 보조 진단으로만 기록
 - 기존 baseline contract·Pipeline·Final Test 결과 해시 불변 확인
 
+### 6F: 2026-05~07 Feature·타깃·경주 구성 drift 진단
+
+- 안정기간 1,034경주·11,357행과 저하기간 455경주·4,645행 비교
+- 모든 28개 입력의 평균·P10/P25/P50/P75/P90·NULL률 비교
+- 경주 Grain 경마장·등급·거리·등록두수와 행 Grain 범주 비중 비교
+- 12두 경주 비중 31.62%→0.22%, 8~10두 경주 16.45%→40.22% 확인
+- PLC 양성률 27.32%→29.36%, +2.04%p
+- 안정기간 등록두수별 비율을 저하기간 mix에 적용한 기대 양성률 29.30%
+- 최근5 PLC 적중률 P75 0.50→0.40, 최근 평균착순 중앙 5.60→5.75
+- history availability와 관계자 적중률은 대체로 안정적
+- 모델 학습·Feature 선택·Calibration·baseline 산출물 변경 없음
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 다음 추천 작업: 후반부 시간 저하의 원인 진단 설계
+### 다음 추천 작업: 진단 결과 해석과 후속 실험 경계 결정
 
-1. 2026-05~07 모집단·경주조건·Feature 분포 변화를 기술적으로 비교한다.
-2. 모델을 변경하지 않고 데이터 drift와 calibration drift의 가능한 원인을 분리한다.
-3. 원인 근거가 생긴 뒤에만 별도 버전의 후속 고도화 실험을 설계한다.
+1. 등록두수 mix 변화와 최근 폼 변화 중 후속 검증 가치가 있는 항목을 정한다.
+2. 기존 Final Test를 재선택에 사용하지 않는 새 평가 계약을 먼저 설계한다.
+3. 그 계약 승인 뒤에만 별도 버전의 Feature·모델 고도화를 시작한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -279,6 +291,7 @@
 - `docs/baseline-validation-result.md`
 - `docs/final-test-result.md`
 - `docs/walk-forward-stability-result.md`
+- `docs/feature-drift-diagnostic-result.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`

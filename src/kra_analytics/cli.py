@@ -17,6 +17,7 @@ from kra_analytics.collectors.api4_3 import (
 )
 from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
+from kra_analytics.drift_diagnostics import run_feature_drift_diagnostic
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
 from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
 from kra_analytics.paths import ProjectPaths
@@ -313,4 +314,14 @@ def model_walk_forward_stability() -> None:
     typer.echo(f"folds={outcome.fold_count}")
     typer.echo(f"first_evaluation_month={outcome.first_evaluation_month}")
     typer.echo(f"last_evaluation_month={outcome.last_evaluation_month}")
+    typer.echo(f"result_path={outcome.result_path}")
+
+
+@model_app.command("diagnose-time-drift")
+def model_diagnose_time_drift() -> None:
+    """Compare stable and degraded periods without training or changing a model."""
+    outcome = run_feature_drift_diagnostic()
+    typer.echo(f"analysis_version={outcome.analysis_version}")
+    typer.echo(f"stable_rows={outcome.stable_rows}")
+    typer.echo(f"degraded_rows={outcome.degraded_rows}")
     typer.echo(f"result_path={outcome.result_path}")
