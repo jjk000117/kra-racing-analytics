@@ -115,7 +115,10 @@ place_hit = 0  otherwise, within the approved betting-eligible population
 - Train, Validation, Final Test는 경주일 기준의 연속되고 겹치지 않는 과거→미래 구간으로 둔다.
 - 동일 경주의 모든 말은 같은 구간에 배치한다.
 - 무작위 행 분할과 미래 경주가 과거 경주보다 앞 구간에 들어가는 분할은 금지한다.
-- 정확한 날짜 경계는 6B에서 월별 경주 수와 양성 수를 확인한 뒤 정하되 규칙은 먼저 고정한다.
+- 날짜 경계는 Warm-up 2024-01-05~2024-09-30, Train 2024-10-01~2025-09-30,
+  Validation 2025-10-01~2025-12-31, Final Test 2026-01-01~2026-07-26으로 고정한다.
+- Warm-up 경주는 후속 경주의 Point-in-Time Feature 이력을 계산하는 데 사용하지만 모델 적합,
+  모델 선택, Calibration과 성능 평가의 표본으로는 사용하지 않는다.
 - Train은 모델 적합, Validation은 Feature·모델·Calibration 선택에 사용한다.
 - Final Test는 모든 선택이 끝난 뒤 한 번의 최종 평가에만 사용한다.
 - Calibration은 Train 또는 시간순 Out-of-Fold 예측으로 적합하고 Validation에서 선택한다.
