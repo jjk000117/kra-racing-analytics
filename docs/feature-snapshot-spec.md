@@ -1,7 +1,7 @@
 # 6C 첫 역사적 Feature Snapshot 명세
 
 결정일: 2026-08-08  
-상태: A안 승인, 29개 Feature 명세 확정, Snapshot 미구현
+상태: A안 승인, 29개 Feature 명세 확정·구현 완료
 
 ## 1. 목적과 범위
 
@@ -208,5 +208,6 @@ API4 staging의 마체중 `wgHr`는 원천 부재가 아니라 `377(-10)`, `388(
 이 중 count·rate·가용 플래그는 서로 다른 의미를 가지므로 함께 유지한다. 관리·감사 컬럼과
 `place_hit`은 29개에 포함하지 않는다.
 
-다음 단계에서는 이 명세를 그대로 SQL/Python Snapshot으로 구현하고, 구현 과정에서 Feature를
-추가하지 않는다. 명세 변경이 필요하면 구현 전에 문서 버전을 먼저 갱신한다.
+이 명세는 `place_feature_snapshot_v1`로 구현됐다. 구현 과정에서 Feature를 추가하지 않았으며
+생성·검증 결과는 `docs/feature-snapshot-build.md`에 기록한다. 향후 명세 변경이 필요하면 구현 전에
+문서 버전을 먼저 갱신한다.

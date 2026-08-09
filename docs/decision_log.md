@@ -336,3 +336,18 @@
 - `rating`은 과거 API26 표본과 API4가 8/8 일치한 경주별 사전정보이며 추가 수집 없이 사용할 수 있다.
 - `ilsu`는 말의 휴식일수와 무관하고, API37은 요청 경주일을 포함하는 누적값이다.
 - API4에는 향후 PIT-safe 속도·페이스 Feature를 직접 계산할 개별 과거 기록이 이미 존재한다.
+
+## 2026-08-09 — 첫 Feature Snapshot을 버전된 `mart` 테이블로 물리화
+
+결정:
+
+- 첫 Snapshot을 `mart.feature_snapshot_place`에 `place_feature_snapshot_v1`로 저장한다.
+- 실행 결과와 버전은 `mart.feature_snapshot_run`에서 관리한다.
+- 생성은 트랜잭션으로 수행하고 전용 감사가 실패하면 rollback한다.
+- Snapshot에는 승인된 29개 Feature만 포함하고 속도·구간 계열은 추가하지 않는다.
+- 모델 학습은 별도 6D 설계 승인 전까지 수행하지 않는다.
+
+이유:
+
+- 버전·PIT 경계·원천 배치·정책·타깃을 한 행에서 추적할 수 있어 재현성과 누수 감사를 유지한다.
+- 기존 Canonical과 Star를 재사용하면서 모델 입력 Grain을 독립적으로 고정할 수 있다.

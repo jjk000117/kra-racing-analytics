@@ -17,6 +17,7 @@ from kra_analytics.collectors.api4_3 import (
 )
 from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
+from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
 from kra_analytics.paths import ProjectPaths
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
@@ -27,11 +28,13 @@ collect_app = typer.Typer(help="Collect immutable KRA OpenAPI Raw responses.")
 staging_app = typer.Typer(help="Load immutable Raw items into DuckDB Staging.")
 canonical_app = typer.Typer(help="Build and audit standardized Canonical tables.")
 star_app = typer.Typer(help="Build and audit the analytics Star Schema and marts.")
+feature_app = typer.Typer(help="Build and audit Point-in-Time model Feature Snapshots.")
 app.add_typer(database_app, name="database")
 app.add_typer(collect_app, name="collect")
 app.add_typer(staging_app, name="staging")
 app.add_typer(canonical_app, name="canonical")
 app.add_typer(star_app, name="star")
+app.add_typer(feature_app, name="feature")
 
 
 @app.command()
@@ -243,6 +246,28 @@ def star_build() -> None:
 def star_check() -> None:
     """Audit Star counts, mappings, relationships, and sales reconciliation."""
     issues = audit_star()
+    typer.echo(f"issues={len(issues)}")
+    for issue in issues:
+        typer.echo(issue, err=True)
+    if issues:
+        raise typer.Exit(code=1)
+
+
+@feature_app.command("build")
+def feature_build() -> None:
+    """Rebuild the approved 29-column place Feature Snapshot."""
+    outcome = build_feature_snapshot()
+    typer.echo(f"snapshot_version={outcome.snapshot_version}")
+    typer.echo(f"rows={outcome.row_count}")
+    typer.echo(f"races={outcome.race_count}")
+    typer.echo(f"positives={outcome.positive_count}")
+    typer.echo(f"no_horse_history={outcome.no_horse_history_count}")
+
+
+@feature_app.command("check")
+def feature_check() -> None:
+    """Audit Snapshot grain, source agreement, state rules, and PIT boundaries."""
+    issues = audit_feature_snapshot()
     typer.echo(f"issues={len(issues)}")
     for issue in issues:
         typer.echo(issue, err=True)

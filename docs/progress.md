@@ -3,7 +3,7 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
-마지막 갱신: 2026-08-08
+마지막 갱신: 2026-08-09
 
 ## 현재 완료한 작업
 
@@ -172,18 +172,28 @@
 - 검증 결과를 승인해 `rating`을 첫 모델 입력에 추가하고 29개 Feature 명세로 갱신
 - `ilsu`는 제외하고 속도·구간·주로·마체중은 기준모델 이후 API4 개별 과거 기록으로 직접 계산
 
+### 6C: 연승 Feature Snapshot 생성·검증
+
+- `rating`을 포함한 승인된 29개 Feature를 `place_feature_snapshot_v1`로 구현
+- `mart.feature_snapshot_place`에 4,582경주·48,524행 생성
+- 공식 연승 양성 13,740행과 말 과거 이력 없음 4,973행 확인
+- DNS는 제외하고 주행중지 133행·실격 3행은 실제 출전으로 보존
+- 같은 날짜를 제외하고 `source_max_event_date < feature_as_of`를 강제
+- 모집단·업무키·타깃·rating 원천·상태·비율·NULL·PIT 감사 `issues=0`
+- 속도·G1F·G3F Feature와 모델 학습은 수행하지 않음
+
 ## 진행 중인 작업
 
 현재 진행 중인 구현은 없다.
 
 ## 다음 추천 작업
 
-### 6C: Feature Snapshot 구현
+### 6D: 날짜순 검증·기준모델 실행 설계
 
-1. 승인된 29개 Feature와 관리·감사 컬럼을 SQL/Python으로 구현한다.
-2. 상태별 분모·분자와 최근 5회 경계 단위 검사를 작성한다.
-3. `source_max_event_date < race_date`와 같은 날짜 결과 제외를 검사한다.
-4. 구현 결과의 행 수·업무키·타깃 결합·NULL 분포를 위험 범위에 맞게 검증한다.
+1. 학습·검증·테스트의 날짜 경계와 좌측 절단 처리 원칙을 확정한다.
+2. 첫 확률모델과 비교 기준을 정한다.
+3. Log Loss, Brier Score, Calibration 평가 절차를 확정한다.
+4. 설계 승인 뒤에만 모델 학습을 수행한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.
@@ -204,6 +214,7 @@
 - `docs/feature-snapshot-spec.md`
 - `docs/api26-pit-validation.md`
 - `docs/api26-ilsu-speed-source-validation.md`
+- `docs/feature-snapshot-build.md`
 - `notebooks/05d_market_structure_analysis.ipynb`
 - `notebooks/05e_confirmed_odds_profiling.ipynb`
 - `notebooks/06b_feature_availability_analysis.ipynb`
