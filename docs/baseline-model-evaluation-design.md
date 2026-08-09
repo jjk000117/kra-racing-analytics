@@ -90,13 +90,16 @@ Train의 PLC 양성률 하나를 계산해 모든 행에 동일한 확률로 부
 
 복잡도를 제한하기 위해 sigmoid/Platt Calibration 하나만 후보로 둔다.
 
-1. Train을 날짜순 expanding window로 나눈다.
-2. 2024-10~12로 학습해 2025-01~03을 예측한다.
-3. 2024-10~2025-03으로 학습해 2025-04~06을 예측한다.
-4. 2024-10~2025-06으로 학습해 2025-07~09를 예측한다.
-5. 세 holdout 예측을 합친 Train OOF 확률에 sigmoid calibrator를 적합한다.
-6. 기준모델은 전체 Train으로 다시 적합하고, Validation에서 원본 확률과 보정 확률을 비교한다.
-7. Validation 선택 결과를 고정한 뒤 Final Test에 한 번 적용한다.
+1. 적합 범위를 날짜순으로 정렬하고 최초 3개월을 초기 학습창으로 둔다.
+2. 모든 후속 fold는 현재까지의 과거 전체로 학습하고 바로 다음 3개월을 OOF 예측한다.
+3. 예측한 3개월을 학습창에 편입한 뒤 다음 3개월을 같은 방식으로 예측한다.
+4. 각 fold의 전처리기와 Logistic Regression은 해당 fold의 과거 학습창만으로 새로 적합한다.
+5. 모든 3개월 holdout 예측을 합친 OOF 확률에 sigmoid calibrator를 적합한다.
+6. 기준모델은 전체 적합 범위로 다시 적합하고, 그 확률에 OOF calibrator를 적용한다.
+
+Train 단계에서는 이 원칙이 2024-10~12 학습→2025-01~03 예측에서 시작해 2025-07~09 예측까지
+이어진다. 특정 날짜 목록은 현재 분할에서 이 원칙을 구현한 결과일 뿐이며 고정 계약은
+**과거 전체로 학습하고 이후 3개월을 예측하는 expanding-window 규칙**이다.
 
 Validation에서 보정 확률이 주 평가 지표를 개선하지 않으면 Calibration을 적용하지 않은 원본
 Logistic 확률을 최종 절차로 선택한다. Isotonic, 복수 fold 체계와 다른 Calibration 방법은 첫
@@ -138,19 +141,26 @@ Accuracy, 고정 임계값 Precision/Recall, ROI와 확정배당은 첫 모델 �
 2. Validation에서 `무정보`, `Logistic 원본`, `Logistic+sigmoid`를 비교한다.
 3. macro Log Loss 우선, macro Brier와 Calibration 진단을 보조로 최종 절차를 하나 선택한다.
 4. 선택 내용과 전처리·모델 설정을 고정한다.
-5. 고정된 절차를 Train+Validation으로 다시 학습할지는 Final Test 실행 전에 별도 결정한다.
-6. 그 결정까지 고정한 뒤에만 Final Test를 단 한 번 평가한다.
+5. Final Test를 보지 않은 상태에서 고정된 절차를 Train+Validation으로 재적합한다.
+6. Logistic Regression은 동일한 28개 입력, 전처리 규칙과 하이퍼파라미터를 사용한다.
+7. sigmoid가 선택됐다면 기존 calibrator를 재사용하지 않고 Train+Validation에서 동일한
+   expanding-window 3개월 OOF 예측을 다시 만들어 calibrator를 재적합한다.
+8. 모든 재적합이 끝난 뒤 Final Test를 단 한 번 평가한다.
 
-## 9. 아직 남은 결정
+## 9. Final Test 직전 최종 적합 정책
 
-Final Test 직전 최종 적합 범위는 아직 결정하지 않는다.
+선택안 2를 확정한다. Validation에서 최종 절차를 선택하고 모든 설정을 봉인한 뒤 Final Test를
+보기 전에 Train+Validation 전체로 동일한 절차를 재적합한다.
 
-- 선택안 1: Train 적합 모델을 그대로 Final Test에 적용
-- 선택안 2: Validation에서 절차를 선택한 뒤 같은 설정으로 Train+Validation을 재적합해 Final Test에 적용
+- 전처리 통계와 범주 사전은 Train+Validation에서 새로 적합한다.
+- Logistic Regression의 28개 입력과 하이퍼파라미터는 Validation 선택 후 변경하지 않는다.
+- sigmoid가 선택된 경우 Train에서 만든 calibrator는 폐기하고, Train+Validation 범위 안에서
+  `과거 전체 학습 → 이후 3개월 OOF 예측`을 반복해 새 calibrator를 적합한다.
+- Final Test의 행·타깃·분포·지표는 이 과정의 어떠한 선택이나 적합에도 사용하지 않는다.
 
-두 방식 모두 유효하지만 결과의 의미가 다르다. 첫 기준모델 구현 전에 하나를 명시적으로 선택해야
-하며, Final Test 결과를 본 뒤 변경할 수 없다. 이번 설계에서는 그 외 모델·튜닝·Calibration 방법을
-추가하지 않는다.
+Train+Validation 재적합은 Validation을 더 이상 독립 평가셋으로 주장하지 않는 대신 Final Test 전
+사용 가능한 과거 데이터를 모두 활용한다. 모델 선택의 근거는 재적합 전 Validation 결과로 보존하고,
+최종 일반화 성능은 봉인된 Final Test 결과로만 보고한다.
 
 ## 10. 실행 금지 범위
 

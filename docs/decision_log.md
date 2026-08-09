@@ -392,3 +392,23 @@
   불필요한 모델·튜닝 범위 확장을 피한다.
 - Train 전용 전처리와 시간순 OOF Calibration은 Validation·Final Test 정보가 학습 과정으로
   유입되는 것을 막는다.
+
+## 2026-08-09 — Final Test 전 Train+Validation 재적합을 확정
+
+결정:
+
+- Validation에서 최종 절차를 선택하고 모든 설정을 봉인한 뒤 Train+Validation 전체로 재적합한다.
+- Logistic Regression은 동일한 28개 입력, 전처리 규칙과 하이퍼파라미터를 그대로 사용한다.
+- sigmoid Calibration이 선택되면 Train calibrator를 재사용하지 않는다.
+- Train+Validation에서 `과거 전체로 학습하고 이후 3개월을 OOF 예측`하는 expanding-window
+  원칙으로 calibration 학습용 확률을 다시 생성하고 calibrator를 재적합한다.
+- 모든 재적합을 끝낸 뒤 Final Test를 단 한 번 평가한다.
+
+이유:
+
+- Validation까지의 과거 데이터를 최종 적합에 활용하면서도 모델·전처리·Calibration 선택과
+  Final Test 평가를 분리할 수 있다.
+- 특정 날짜를 규칙으로 고정하는 것보다 3개월 예측창의 시간순 expanding-window 원칙을 고정해야
+  분할 기간이 확장되더라도 같은 누수 방지 절차를 재현할 수 있다.
+- calibrator도 최종 모델의 적합 범위와 대응하는 OOF 확률에서 다시 학습해야 Train 범위에서 만든
+  보정 함수를 기계적으로 재사용하는 불일치를 피할 수 있다.

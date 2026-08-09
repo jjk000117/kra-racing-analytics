@@ -203,6 +203,8 @@
 - Train 내부 분기별 expanding-window OOF 예측으로 sigmoid Calibration을 적합하도록 설계
 - Validation에서 원본·보정 확률을 선택하고 Final Test는 모든 선택 후 한 번만 평가하도록 봉인
 - macro Log Loss를 주 선택 지표, macro Brier와 Calibration 진단을 보조 지표로 정의
+- Validation 선택·봉인 후 Train+Validation으로 동일 절차를 재적합하는 선택안 2 확정
+- sigmoid 선택 시 Train+Validation에서 과거 학습→이후 3개월 OOF 원칙으로 calibrator 재적합
 - 모델·전처리기·Calibration 적합과 Final Test 평가는 수행하지 않음
 
 ## 진행 중인 작업
@@ -211,12 +213,12 @@
 
 ## 다음 추천 작업
 
-### 6D 후속: 기준모델 실행 전 최종 결정
+### 6D 후속: 기준모델 구현과 Validation 선택
 
-1. Final Test 직전 모델을 Train 그대로 사용할지 Train+Validation으로 재적합할지 확정한다.
-2. 확정된 28개 입력·전처리·기준선·Logistic·Calibration 계약을 구현한다.
-3. Train과 Validation까지만 실행해 최종 절차를 선택한다.
-4. 선택과 설정을 봉인한 뒤 별도 승인 단계에서 Final Test를 한 번 평가한다.
+1. 확정된 28개 입력·전처리·기준선·Logistic·Calibration 계약을 구현한다.
+2. Train과 Validation까지만 실행해 최종 절차를 선택하고 설정을 봉인한다.
+3. 동일 설정을 Train+Validation으로 재적합한다.
+4. 별도 승인 단계에서 봉인된 Final Test를 한 번 평가한다.
 
 적중배당은 경주 후 정보이므로 모델 Feature에는 사용하지 않고 시장 구조 분석과 백테스트
 정산에만 사용한다.

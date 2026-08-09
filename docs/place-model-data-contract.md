@@ -123,6 +123,9 @@ place_hit = 0  otherwise, within the approved betting-eligible population
 - Final Test는 모든 선택이 끝난 뒤 한 번의 최종 평가에만 사용한다.
 - Calibration은 Train 또는 시간순 Out-of-Fold 예측으로 적합하고 Validation에서 선택한다.
   Final Test 타깃으로 Calibration을 재적합하지 않는다.
+- Validation에서 절차를 선택·봉인한 뒤 Final Test를 보기 전에 동일 설정으로 Train+Validation을
+  재적합한다. sigmoid가 선택된 경우에도 기존 calibrator를 재사용하지 않고 Train+Validation에서
+  `과거 전체 학습 → 이후 3개월 OOF 예측` expanding-window 원칙으로 다시 적합한다.
 
 ## 평가 계약
 
