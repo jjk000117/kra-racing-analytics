@@ -1,5 +1,39 @@
 # 실험 기록
 
+## 2026-08-12 — KRA 세 API 최소 장애 진단
+
+### 실험 내용
+
+- retry 0인 클라이언트로 API4, API156, API155를 최대 1회씩 호출하도록 진단기를 작성했다.
+- API4 2022 서울 1행, API156 최신 1행, API155 서울 20220108 1행을 대상으로 했다.
+
+### 결과
+
+- API4는 1회 응답 후 초기 parser가 문자열 `body`를 처리하지 못해 요약 전 중단됐다. 재호출하지 않았다.
+- API156: HTTP 403, JSON, 0.071초, application result/total/data 없음.
+- API155: HTTP 403, JSON, 0.026초, application result/total/data 없음.
+- filesystem 및 Manifest의 실제 키 노출 0건.
+
+### 해석과 다음 아이디어
+
+- 비교 API 403은 활용 권한 부재 가능성을 먼저 확인해야 하므로 공통 KRA 장애 증거로 쓰지 않는다.
+- 보완된 parser로 다음 API4 상태 확인을 1회 수행하고 정상화된 경우에만 전체 수집을 검토한다.
+
+### 활용신청 후 API4 재확인
+
+- 공식 데이터셋 `15058305`의 `API4_3/raceResult_3` 및 요청변수를 코드와 대조했다.
+- 2022 서울 1행을 retry 없이 한 번 호출했다.
+- HTTP 200, JSON, 5.203초, `resultCode=99`, `100/100`, totalCount 없음, item 0이었다.
+- 키 원문·prepared URL 검사를 통해 double encoding이 없음을 확인했다.
+- 호출방식 오류보다 API4 application 계층 가용성 문제라는 기존 진단을 유지한다.
+
+### 비교 API 활용신청 후 재호출
+
+- API156: HTTP 200, 5.369초, `resultCode=99`, `100/100`, 데이터 없음.
+- API155: HTTP 200, 5.195초, `resultCode=99`, `100/100`, 데이터 없음.
+- 활용신청 전의 HTTP 403이 해소되어 인증·권한 반영은 확인했다.
+- API4와 같은 application 오류이므로 세 API 공통 계층 문제 가능성을 지지하는 Case B로 갱신했다.
+
 ## 2026-08-12 — Prediction cutoff 및 미확정 Feature 검증
 
 ### 실험 내용

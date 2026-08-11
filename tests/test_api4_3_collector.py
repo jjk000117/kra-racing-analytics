@@ -139,3 +139,32 @@ def test_failed_json_is_saved_and_recorded(tmp_path: Path, monkeypatch: MonkeyPa
     with connect_database(paths=paths, read_only=True) as connection:
         status = connection.execute("SELECT api_status FROM raw.api_request").fetchone()
     assert status == ("INVALID_JSON",)
+
+
+def test_request_error_persists_only_redacted_key(
+    tmp_path: Path, monkeypatch: MonkeyPatch
+) -> None:
+    secret = "dummy+collector-key=="
+    monkeypatch.setenv("KRA_API_KEY", secret)
+    paths = make_project(tmp_path)
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError(f"failed request: {request.url}", request=request)
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    try:
+        outcome = Api43Collector(paths=paths, client=client).collect(
+            years=[2024], meets=[1], all_pages=False
+        )
+    finally:
+        client.close()
+
+    assert outcome.failure_count == 1
+    with connect_database(paths=paths, read_only=True) as connection:
+        url, message = connection.execute(
+            "SELECT request_url_redacted, error_message FROM raw.api_request"
+        ).fetchone()
+    assert secret not in url
+    assert secret not in message
+    assert "dummy%2Bcollector-key%3D%3D" not in message
+    assert "***REDACTED***" in message

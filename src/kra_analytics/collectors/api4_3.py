@@ -19,7 +19,7 @@ from kra_analytics.collectors.models import (
     RequestOutcome,
 )
 from kra_analytics.database import connect_database, initialize_database
-from kra_analytics.logging import configure_logging
+from kra_analytics.logging import configure_logging, safe_exception_message
 from kra_analytics.paths import ProjectPaths
 
 API_NAME = "API4_3"
@@ -452,7 +452,13 @@ class Api43Collector:
                 requested_meet=meet,
             )
         except httpx.HTTPError as error:
-            validation = ApiValidation("REQUEST_ERROR", None, None, 0, str(error))
+            validation = ApiValidation(
+                "REQUEST_ERROR",
+                None,
+                None,
+                0,
+                safe_exception_message(error, secrets=(api_key,)),
+            )
 
         completed_at = utc_now()
         _record_request(

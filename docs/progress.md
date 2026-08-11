@@ -3,6 +3,31 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-12 — KRA API 장애 범위 및 ServiceKey 노출 방지
+
+- 공통 redaction 함수와 안전한 예외 문자열 경로를 구현하고 API4/API179 collector에 적용했다.
+- 저장소 파일과 Manifest 100행에서 실제 키 노출 0건을 확인했다.
+- API4는 호출 1회 후 진단 파서가 오류 envelope를 처리하지 못해 이번 상태 요약을 남기지 못했고
+  호출 제한에 따라 재시도하지 않았다.
+- 비교 API156/API155는 각각 1회 호출해 모두 HTTP 403을 확인했다.
+- 비교 API 권한 여부가 미확정이므로 KRA 공통 장애나 키 전체 인증 실패로 단정하지 않았다.
+- 2022·2023 전체 Raw 수집은 재개하지 않았다.
+- 상세 문서: `docs/kra-api-failure-diagnostic.md`
+
+### 활용신청 후 API4 공식 링크·호출방식 재확인
+
+- 데이터셋 `15058305`의 Base URL과 operation이 코드의 `API4_3/raceResult_3`과 일치함을 확인했다.
+- 필수·선택 파라미터와 ServiceKey 인코딩 방식에서 문제를 발견하지 못했다.
+- 2022 서울 1행을 다시 한 번 호출해 HTTP 200, `resultCode=99`, 세션 `100/100`을 확인했다.
+- application 계층 장애가 계속되어 2022·2023 전체 수집은 재개하지 않았다.
+
+### 비교 API 활용신청 반영 확인
+
+- API156과 API155가 활용신청 전 HTTP 403에서 활용신청 후 HTTP 200으로 바뀌었다.
+- 두 API 모두 API4와 동일한 `resultCode=99`, 세션 `100/100`을 반환했다.
+- 세 API 공통 application/연동 계층 장애 가능성이 가장 높은 Case B로 진단을 갱신했다.
+- 정상 데이터는 반환되지 않았고 전체 수집은 계속 보류했다.
+
 ## 2026-08-12 — Official place baseline cutoff 및 v2 Feature 사전 이용 가능성 검증
 
 - prediction cutoff를 결과 발생 전 실제 베팅 의사결정 시점으로 확정하되 `T-N분`은 보류했다.

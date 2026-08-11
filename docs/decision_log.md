@@ -1,5 +1,16 @@
 # 의사결정 기록
 
+## 2026-08-12 — API 예외는 공통 redaction 경로만 사용
+
+- API 예외 객체를 `str(error)`로 직접 로그·Manifest에 저장하지 않는다.
+- query parameter 이름의 대소문자와 URL encoding 여부에 관계없이 ServiceKey 값을
+  `***REDACTED***`로 치환한다.
+- 현재 키는 변경하지 않으며 공공데이터포털 활용신청 상태와 별개로 관리한다.
+- API4가 정상 application response를 반환하기 전에는 2022·2023 전체 수집을 재개하지 않는다.
+
+이유: HTTP client 예외는 전체 URL을 포함할 수 있으며, 비교 API의 HTTP 403은 API별 권한 문제와
+공통 backend 문제를 구분하지 못하므로 최소 관측 이상의 결론을 내릴 수 없다.
+
 ## 2026-08-12 — Official place baseline prediction cutoff와 Feature 판정
 
 - prediction cutoff는 경주 결과 전의 실제 베팅 의사결정 시점으로 정의하고 정확한 `T-N분`은

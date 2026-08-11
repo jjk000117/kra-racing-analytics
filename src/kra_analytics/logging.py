@@ -2,17 +2,39 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import sys
+from collections.abc import Iterable
+from urllib.parse import quote, quote_plus
+
+REDACTED_SECRET = "***REDACTED***"
+_SERVICE_KEY_PATTERN = re.compile(r"(?i)(servicekey\s*=\s*)([^&\s\"'<>]+)")
+
+
+def redact_secrets(text: object, *, secrets: Iterable[str] = ()) -> str:
+    """Redact ServiceKey query values and known raw/URL-encoded secret values."""
+    redacted = _SERVICE_KEY_PATTERN.sub(rf"\1{REDACTED_SECRET}", str(text))
+    configured = [os.getenv("KRA_API_KEY", ""), *secrets]
+    variants: set[str] = set()
+    for secret in configured:
+        if secret:
+            variants.update({secret, quote(secret, safe=""), quote_plus(secret, safe="")})
+    for value in sorted(variants, key=len, reverse=True):
+        redacted = redacted.replace(value, REDACTED_SECRET)
+    return redacted
+
+
+def safe_exception_message(error: BaseException, *, secrets: Iterable[str] = ()) -> str:
+    """Return an exception summary safe for logs, manifests, and user messages."""
+    return redact_secrets(f"{type(error).__name__}: {error}", secrets=secrets)
 
 
 class SecretRedactionFilter(logging.Filter):
     """Prevent a configured KRA API key from appearing in formatted log messages."""
 
     def filter(self, record: logging.LogRecord) -> bool:
-        secret = os.getenv("KRA_API_KEY", "")
-        if secret:
-            record.msg = record.getMessage().replace(secret, "REDACTED")
-            record.args = ()
+        record.msg = redact_secrets(record.getMessage())
+        record.args = ()
         return True
 
 
