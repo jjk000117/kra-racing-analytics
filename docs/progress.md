@@ -3,7 +3,29 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
-마지막 갱신: 2026-08-09
+마지막 갱신: 2026-08-11
+
+## 2026-08-11 API4 2022·2023 Raw 전체 수집 시도
+
+- 2022년 서울·부산경남 수집 batch를 시작했으나 API가 두 요청 모두 `가용한 세션이 존재하지 않습니다. (100/100)`을 반환했다.
+- 두 차례의 최소 표본 재확인에서도 같은 응답이 반복되어 외부 서비스 포화로 판정했다.
+- 실패 Raw 2개와 Manifest는 보존했으며 batch audit 문제는 0건이다.
+- 성공 수집 행은 0건이고 2023년 수집은 시작하지 않았다.
+- 2022·2023 Staging 행은 모두 0건이며 기존 모델·진단 산출물은 변경되지 않았다.
+- 다음 작업: API 회복 후 새 batch로 2022 전체 수집·audit, 이어서 2023 전체 수집·audit.
+
+관련 문서: `docs/api4-history-raw-collection.md`
+
+## 2026-08-11 API4 상태 재확인과 Raw·Feature 대조
+
+- 2022년 서울 1페이지·1행을 한 번만 요청했으나 `resultCode=99`, 세션 100/100 오류가 반복됐다.
+- 추가 재시도와 2022·2023 전체 수집은 수행하지 않았다.
+- API4 89개 Raw 필드는 Staging에 모두 보존되지만 속도·구간·마체중·환경 필드는 현재 Snapshot과 모델에 없다.
+- 구간기록은 Canonical에 미보존이고 `wgHr` 파싱 결과는 전 행 NULL이다.
+- Canonical `race_time INTEGER`는 소수 정밀도를 잃으므로 후속 속도 Feature는 Staging `rcTime` 원문을 사용해야 한다.
+- Snapshot·baseline_v1·Final Test 산출물은 변경하지 않았다.
+
+관련 문서: `docs/api4-raw-feature-gap-audit.md`
 
 ## 현재 완료한 작업
 
