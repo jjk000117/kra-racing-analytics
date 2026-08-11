@@ -1,5 +1,20 @@
 # 의사결정 기록
 
+## 2026-08-11 — `place_logistic_baseline_v1`을 historical experiment로 전환
+
+- 기존 코드·계약·Validation·Final Test·walk-forward·진단 산출물은 수정·삭제하지 않는다.
+- 향후 공식 기준모델로는 사용하지 않고 초기 최소 Feature 파이프라인과 평가 절차를 검증한 historical experiment로 보존한다.
+- 이유는 성능 실패가 아니라 API4 Raw 재점검에서 속도·구간·마체중·경주조건 정보가 기존 Feature 설계에 충분히 반영되지 않았기 때문이다.
+- 새 공식 baseline은 별도 semantic·Snapshot·모델 버전과 독립된 평가 계약으로 만든다.
+
+## 2026-08-11 — API4 정규화는 `semantic.api4_runner_event_v2`로 분리
+
+- Raw·Staging과 기존 Canonical 의미는 변경하지 않는다.
+- `rcTime`은 소수 초를 보존하고, `wgHr`는 중량·증감, `track`은 상태·함수율로 새 semantic column에 분리한다.
+- S1F는 경마장별 원천을 공통 의미로 매핑한다.
+- G3F/G1F는 서울 누적기록과 부산경남 구간기록의 의미 동등성이 확정되지 않아 공통 컬럼으로 합치지 않는다.
+- 모든 결과·구간값은 현재 경주 Feature로 금지하고 과거 경주일 미만 집계에만 사용한다.
+
 중요한 설계 변경과 범위 결정을 날짜순으로 기록한다. 새로운 결정을 추가할 때 기존 기록을
 삭제하거나 현재 결론에 맞춰 소급 수정하지 않는다. 결정이 바뀌면 새 항목으로 남긴다.
 

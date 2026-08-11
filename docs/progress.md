@@ -5,6 +5,23 @@
 
 마지막 갱신: 2026-08-11
 
+## 2026-08-11 새 공식 baseline Feature universe 재설계
+
+- `place_logistic_baseline_v1`을 공식 기준모델이 아닌 historical experiment로 전환했다.
+- API4 공식 89개 필드와 실제 Staging 49,386행을 전수 대조했다.
+- 기존 계층을 변경하지 않는 `semantic.api4_runner_event_v2` View를 추가했다.
+- `rcTime` 정밀도, `wgHr` 중량·증감, `track` 상태·함수율을 명확한 새 컬럼으로 정규화했다.
+- S1F만 공통 의미로 매핑하고 G3F/G1F는 검증 전 경마장별로 분리했다.
+- Feature 후보 141개 registry 작성: 승인 27, 플래그부 승인 87, 검증 필요 12, 후속 5, 금지 10.
+- 새 공식 baseline Snapshot 후보 114개를 제안했지만 Snapshot과 모델은 아직 생성하지 않았다.
+
+관련 문서:
+
+- `docs/official-baseline-feature-universe-v2.md`
+- `docs/official-baseline-snapshot-candidate-v2.md`
+- `docs/api4-field-audit-v2.csv`
+- `docs/place-feature-registry-v2.csv`
+
 ## 2026-08-11 API4 2022·2023 Raw 전체 수집 시도
 
 - 2022년 서울·부산경남 수집 batch를 시작했으나 API가 두 요청 모두 `가용한 세션이 존재하지 않습니다. (100/100)`을 반환했다.
