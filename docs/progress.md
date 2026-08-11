@@ -3,6 +3,16 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-12 — Official place baseline cutoff 및 v2 Feature 사전 이용 가능성 검증
+
+- prediction cutoff를 결과 발생 전 실제 베팅 의사결정 시점으로 확정하되 `T-N분`은 보류했다.
+- 실시간 배당을 baseline 입력에서 제외하고 betting-stage로 분리했다.
+- 마체중·증감·날씨·주로상태·함수율·부가상금과 과거 G3F/G1F의 공식 의미를 검증했다.
+- registry 141개를 `APPROVED` 35, `APPROVED_WITH_FLAG` 91, `NEEDS_VALIDATION` 0,
+  `DEFERRED` 5, `PROHIBITED` 10으로 갱신했다.
+- Snapshot v2 즉시 구현 후보는 126개이며 Snapshot 생성과 모델 학습은 수행하지 않았다.
+- 상세 문서: `docs/official-place-baseline-cutoff-validation-v2.md`
+
 마지막 갱신: 2026-08-11
 
 ## 2026-08-11 새 공식 baseline Feature universe 재설계

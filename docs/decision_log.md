@@ -1,5 +1,22 @@
 # 의사결정 기록
 
+## 2026-08-12 — Official place baseline prediction cutoff와 Feature 판정
+
+- prediction cutoff는 경주 결과 전의 실제 베팅 의사결정 시점으로 정의하고 정확한 `T-N분`은
+  운영 설계 전까지 고정하지 않는다.
+- 실시간 배당은 baseline Feature가 아니라 betting-stage 정보로 분리한다. API4 확정 배당은
+  사후정보이므로 계속 금지한다.
+- 현재 마체중·증감·날씨·주로상태·함수율 및 부가상금 1~3은 경주 전 이용 가능한 Feature로 승인한다.
+- 현재 경주의 sectional은 금지하되, 과거 G3F/G1F는 경마장별 원천 정의를 최종 600m/200m
+  기록으로 정규화하는 조건으로 승인한다.
+- 서울 G3F/G1F는 `rcTime - seG3fAccTime`, `rcTime - seG1fAccTime`; 부경은
+  `bu_3fGTime`, `bu_1fGTime`을 사용한다.
+- 기존 baseline_v1은 historical experiment로 보존하며 재평가하지 않는다.
+
+이유: KRA 사전 공개 화면과 공식 API 명세가 현재 경주 정보의 사전 이용 가능성을 보여주고,
+부경 누적/구간 원천 20,473행의 정확한 항등관계와 서울 변환값의 거리별 분포가 sectional의
+동일한 물리 의미를 뒷받침한다.
+
 ## 2026-08-11 — `place_logistic_baseline_v1`을 historical experiment로 전환
 
 - 기존 코드·계약·Validation·Final Test·walk-forward·진단 산출물은 수정·삭제하지 않는다.

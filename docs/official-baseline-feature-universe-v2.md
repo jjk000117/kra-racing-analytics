@@ -4,7 +4,13 @@
 
 `place_logistic_baseline_v1`은 최소 Feature 파이프라인과 시간순 평가 절차를 검증한 historical experiment로 보존한다. 성능 실패로 폐기하는 것이 아니라 API4 원천 89개 중 속도·구간·마체중·경주조건이 충분히 활용되지 않았기 때문에 향후 공식 기준모델 자격만 해제한다.
 
-새 Feature universe는 141개 후보로 구성했다. 상태는 `APPROVED` 27개, `APPROVED_WITH_FLAG` 87개, `NEEDS_VALIDATION` 12개, `DEFERRED` 5개, `PROHIBITED` 10개다. 즉시 Snapshot 후보군은 114개지만 이는 모델 입력을 확정하거나 모두 유용하다고 주장하는 숫자가 아니다. 사전 상관관계 추측으로 제거하지 않고 후속 시간순 ablation이 평가할 수 있도록 후보를 보존한 결과다.
+새 Feature universe는 141개 후보로 구성했다. 2026-08-12 cutoff 검증 후 상태는 `APPROVED` 35개, `APPROVED_WITH_FLAG` 91개, `NEEDS_VALIDATION` 0개, `DEFERRED` 5개, `PROHIBITED` 10개다. 즉시 Snapshot 후보군은 126개지만 이는 모델 입력을 확정하거나 모두 유용하다고 주장하는 숫자가 아니다. 사전 상관관계 추측으로 제거하지 않고 후속 시간순 ablation이 평가할 수 있도록 후보를 보존한 결과다.
+
+Prediction cutoff는 경주 결과 전의 실제 베팅 의사결정 시점이며 정확한 `T-N분`은 아직 고정하지
+않는다. 실시간 배당은 baseline에서 제외해 betting-stage로 분리한다. 현재 경주의 sectional은
+사후정보로 금지하지만 과거 sectional은 서울 누적기록을 `rcTime`에서 차감하고 부경의 3F-G/1F-G
+직접기록과 동일한 물리 단위로 정규화해 사용할 수 있다. 상세 근거는
+`docs/official-place-baseline-cutoff-validation-v2.md`를 따른다.
 
 이번 단계에서는 `semantic.api4_runner_event_v2` View만 추가했다. Raw·Staging과 기존 Canonical 의미는 변경하지 않았고 새 Snapshot과 모델은 생성하지 않았다.
 
@@ -36,7 +42,7 @@
 - 중량 범위: 377~584kg, 중앙값 476kg
 - 증감 범위: -35~45kg, 중앙값 +1kg
 
-완전한 `중량(±증감)` 패턴의 파싱 실패는 0건이다. `중량()`은 중량을 보존하고 증감만 NULL로 둔다. `()`는 임의 보완하지 않는다. 현재 경주 마체중의 예측시점 공개 여부는 아직 검증되지 않았으므로 현재값 Feature는 `NEEDS_VALIDATION`, 과거 마체중 이력은 `APPROVED_WITH_FLAG`다.
+완전한 `중량(±증감)` 패턴의 파싱 실패는 0건이다. `중량()`은 중량을 보존하고 증감만 NULL로 둔다. `()`는 임의 보완하지 않는다. KRA 출전마체중 화면과 API25_1 명세로 현재값의 경주 전 공개를 확인했으므로 현재값은 `APPROVED`, 과거 마체중 이력은 `APPROVED_WITH_FLAG`다.
 
 ### 주로는 상태와 함수율로 분리되며 12행은 상태가 없다
 
@@ -45,7 +51,7 @@
 - 정상 상태: 건조·양호·다습·포화·불량
 - `(0%)` 12행: 함수율은 0이지만 상태는 NULL
 
-과거 조건 적응 이력은 PIT-safe하게 계산할 수 있다. 다만 현재 경주 날씨·주로가 발매 마감 전에 실제 제공되는지는 검증 전이므로 현재값은 승인하지 않는다.
+과거 조건 적응 이력은 PIT-safe하게 계산할 수 있다. KRA 경주로 현황의 게시·갱신시각과 함수율·상태 표시를 확인했으므로 현재 날씨·주로는 prediction cutoff 전에 관측된 값에 한해 승인한다.
 
 ## 2. 구간기록은 S1F만 통합하고 G3F/G1F는 경마장별로 분리했다
 
@@ -58,13 +64,14 @@ API4는 반대 경마장 필드와 미통과 구간을 NULL이 아닌 `0`으로 
 - 두 값은 출발 후 첫 1F라는 동일한 물리 구간이므로 `s1f_seconds`로 경마장별 매핑
 - 서울 비0 27,917/28,644행, 부산경남 비0 20,508/20,742행
 
-### 통합 보류
+### 검증 후 통합 승인
 
 - 서울 `seG3fAccTime`, `seG1fAccTime`: 공식 명칭이 G3F/G1F 통과누적기록
 - 부산경남 `bu_3fGTime`, `bu_1fGTime`: 공식 명칭이 해당 지점부터 결승까지 통과기록
-- 명칭과 계산 방향이 같다고 확정할 근거가 부족하므로 경마장 공통 G3F/G1F로 합치지 않음
-- `se_g3f_acc_time_seconds`, `se_g1f_acc_time_seconds`, `bu_g3f_to_finish_seconds`, `bu_g1f_to_finish_seconds`로 분리
-- 공통 Feature는 `NEEDS_VALIDATION`
+- 서울 누적기록은 `rcTime - seG3fAccTime`, `rcTime - seG1fAccTime`으로 최종 600m/200m를 계산
+- 부산경남은 `bu_3fGTime`, `bu_1fGTime` 직접기록 사용
+- 부경 누적값과 직접기록 20,473행의 항등관계 및 거리별 분포를 검증했으므로 공통 물리 단위로 통합
+- 관측 count와 경마장·거리 조건을 함께 보존하는 `APPROVED_WITH_FLAG`
 
 1C/2C와 부산 G6F/G8F는 거리별 구조적 결측이 크다. 거리×경마장별 가용률은 `sectional_availability.csv`에 보존했다. 이 필드들은 공통 baseline이 아니라 후속 거리 조건부 페이스 Feature로 둔다.
 
@@ -74,13 +81,13 @@ API4는 반대 경마장 필드와 미통과 구간을 NULL이 아닌 `0`으로 
 
 | 상태 | 후보 수 | 의미 |
 |---|---:|---|
-| `APPROVED` | 27 | 명확한 현재 사전정보 또는 독립 count |
-| `APPROVED_WITH_FLAG` | 87 | 과거 이력·조건부 표본이며 count/가용성 플래그와 함께 사용 |
-| `NEEDS_VALIDATION` | 12 | 구간 의미 또는 현재 예측시점 공개 여부 미확정 |
+| `APPROVED` | 35 | 명확한 현재 사전정보 또는 독립 count |
+| `APPROVED_WITH_FLAG` | 91 | 과거 이력·조건부 표본이며 count/가용성 플래그와 함께 사용 |
+| `NEEDS_VALIDATION` | 0 | 이번 cutoff 검증에서 모두 판정 완료 |
 | `DEFERRED` | 5 | 희소 환경 적응 또는 명백한 수학적 중복 |
 | `PROHIBITED` | 10 | 현재 결과·사후시장·PIT 실패 누적값 |
 
-### 새 공식 baseline Snapshot에 즉시 포함 가능한 후보군 114개
+### 새 공식 baseline Snapshot에 즉시 포함 가능한 후보군 126개
 
 - 현재 사전정보 9개: 경마장, 등급, 거리, 등록두수, 마번, 성별, 연령, 부담중량, 레이팅
 - 현재 경주조건 11개: 연령·부담·상금·성별 조건, 경주 유형, 요일, 1~5착 상금
@@ -94,11 +101,9 @@ API4는 반대 경마장 필드와 미통과 구간을 NULL이 아닌 `0`으로 
 
 `APPROVED_WITH_FLAG`는 값만 단독 사용하지 않고 관측 count, history availability, left-censoring 표시와 함께 Snapshot에 저장하는 조건이다.
 
-### 추가 검증 후 포함 가능한 12개
+### 추가 검증 후 포함 가능한 항목 0개
 
-- `buga1~3`: 공식 의미와 모델링 단위를 추가 확인
-- 현재 날씨, 주로상태, 함수율, 마체중, 마체중 증감: 발매 마감 시점 공개 여부 확인
-- 서울·부산경남 공통 G3F/G1F 요약 4개: 의미적 동등성 검증
+기존 12개 보류 후보는 `docs/official-place-baseline-cutoff-validation-v2.md`의 근거로 모두 판정했다.
 
 ### 후속 고도화 5개
 
@@ -154,15 +159,14 @@ historical.race_date < feature_as_of
 
 아직 판단할 수 없는 사항:
 
-- G3F/G1F 서울·부산 필드의 완전한 의미 동등성
-- 현재 마체중·날씨·주로의 발매 마감 직전 공개 여부
+- 현재값 운영 수집에서의 정확한 `observed_at`과 향후 고정할 `T-N분`
 - 2022·2023 추가 이력이 반영됐을 때 left-censoring 완화 정도
 - 각 후보의 예측 성능과 중복 영향
 - 거리·경마장·주로 보정 속도지수의 적절한 산식
 
 ## 7. 다음 단계
 
-1. 사용자 검토로 114개 즉시 후보와 12개 보류 후보의 registry 정의를 확정한다.
+1. 확정된 126개 즉시 후보의 registry 정의로 Snapshot v2를 설계한다.
 2. API가 정상화되면 2022·2023 Raw 수집·audit을 완료한다.
 3. 별도 버전의 공식 baseline Snapshot 설계를 확정하고 구현한다.
 4. Snapshot 데이터 품질과 PIT를 먼저 audit한다.

@@ -1,5 +1,25 @@
 # 실험 기록
 
+## 2026-08-12 — Prediction cutoff 및 미확정 Feature 검증
+
+### 실험 내용
+
+- KRA 출전표·출전마체중·경주로 현황·경주성적 용어해설과 공공데이터 API 명세를 교차 확인했다.
+- 저장된 API4 49,386행에서 부가상금 값 구조와 서울/부경 G3F·G1F 변환 관계를 점검했다.
+- API25_1 소수 실호출을 시도했으나 HTTP 403으로 응답값 대조는 완료하지 못했다.
+
+### 결과와 해석
+
+- 12개 `NEEDS_VALIDATION` 후보를 8개 `APPROVED`, 4개 `APPROVED_WITH_FLAG`로 승격했다.
+- 부경 20,473개 유효행에서 `rcTime - 누적기록 = 3F-G/1F-G`가 부동소수 오차 범위에서
+  전부 일치했고, 서울의 동일 차분은 거리별로 부경 직접기록과 같은 범위였다.
+- Feature 의미와 historical PIT 사용에는 blocker가 없다. 운영 시점의 API25/API4/홈페이지
+  행 단위 일치 검사는 첫 성공 live batch의 후속 검증으로 남긴다.
+
+### 다음 실험 아이디어
+
+- Snapshot v2 생성 전 현재값에 `observed_at < prediction_cutoff` 감사 규칙을 설계한다.
+
 ## 2026-08-11 — API4 89개 필드와 Feature universe 전수 재설계
 
 ### 실험 내용
