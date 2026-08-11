@@ -52,3 +52,20 @@ def parse_track(value: str | None) -> TrackCondition | None:
         return None
     moisture = int(match.group(2)) if match.group(2) is not None else None
     return TrackCondition(match.group(1).strip(), moisture)
+
+
+def normalize_finish_sectional(
+    *,
+    meet_code: int,
+    race_time: Decimal | None,
+    accumulated_time: Decimal | None,
+    direct_finish_time: Decimal | None,
+) -> Decimal | None:
+    """Map venue-specific API4 fields to elapsed seconds over a finish interval."""
+    if meet_code == 1:
+        if race_time is None or accumulated_time is None or race_time <= accumulated_time:
+            return None
+        return race_time - accumulated_time
+    if meet_code == 3:
+        return direct_finish_time if direct_finish_time and direct_finish_time > 0 else None
+    return None

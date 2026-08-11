@@ -262,9 +262,9 @@ def build_feature_registry() -> list[dict[str, str]]:
         ("race_third_prize", "chaksun3", "APPROVED"),
         ("race_fourth_prize", "chaksun4", "APPROVED"),
         ("race_fifth_prize", "chaksun5", "APPROVED"),
-        ("race_bonus_1", "buga1", "NEEDS_VALIDATION"),
-        ("race_bonus_2", "buga2", "NEEDS_VALIDATION"),
-        ("race_bonus_3", "buga3", "NEEDS_VALIDATION"),
+        ("race_bonus_1", "buga1", "APPROVED"),
+        ("race_bonus_2", "buga2", "APPROVED"),
+        ("race_bonus_3", "buga3", "APPROVED"),
     ]:
         group = "IMMEDIATE_BASELINE" if status == "APPROVED" else "VALIDATE_BEFORE_INCLUDE"
         add_feature(
@@ -283,8 +283,19 @@ def build_feature_registry() -> list[dict[str, str]]:
             group,
         )
 
+    # These v1 features are regenerated below by the generic recent/condition loops.
+    # Keeping them here as well produced five duplicate registry rows.
+    generated_below = {
+        "horse_recent5_start_count",
+        "horse_recent5_finish_rate",
+        "horse_recent5_avg_finish_rank",
+        "horse_same_distance_start_count",
+        "horse_same_distance_plc_hit_rate",
+    }
     existing_history = [
-        name for name in MODEL_FEATURES if name not in {item[0] for item in current}
+        name
+        for name in MODEL_FEATURES
+        if name not in {item[0] for item in current} and name not in generated_below
     ]
     for name in existing_history:
         status = "DEFERRED" if name == "horse_prior_plc_hit_count" else "APPROVED_WITH_FLAG"
@@ -442,15 +453,30 @@ def build_feature_registry() -> list[dict[str, str]]:
                 f"horse_recent{horizon}_{metric}_median",
                 "SPEED_SECTIONAL",
                 source,
-                "venue-specific meaning pending; do not merge yet",
+                "median venue-normalized final 600m/200m historical seconds",
                 f"last {horizon} valid records",
                 "historical only",
                 "structural missing by venue/distance",
                 f"horse_recent{horizon}_{metric}_count",
                 "MEDIUM",
-                "potentially different source semantics",
-                "NEEDS_VALIDATION",
-                "VALIDATE_BEFORE_INCLUDE",
+                "venue-specific raw fields mapped to a common physical interval",
+                "APPROVED_WITH_FLAG",
+                "IMMEDIATE_BASELINE",
+            )
+            add_feature(
+                rows,
+                f"horse_recent{horizon}_{metric}_count",
+                "SPEED_SECTIONAL",
+                source,
+                "valid venue-normalized observations",
+                f"last {horizon} valid records",
+                "historical only",
+                "0 means unavailable; structural source absence reported separately",
+                "self",
+                "LOW",
+                "companion count for the sectional median",
+                "APPROVED",
+                "IMMEDIATE_BASELINE",
             )
 
     for name, definition in [
@@ -531,17 +557,17 @@ def build_feature_registry() -> list[dict[str, str]]:
         add_feature(
             rows,
             name,
-            "CURRENT_UNVERIFIED",
+            "CURRENT_PRERACE",
             source,
             "Current-race value",
             "CURRENT",
-            "not yet proven available at prediction cutoff",
+            "observable before the race at the betting-decision cutoff",
             "NULL if not published",
             "none",
-            "HIGH",
+            "LOW",
             "may overlap historical condition",
-            "NEEDS_VALIDATION",
-            "VALIDATE_BEFORE_INCLUDE",
+            "APPROVED",
+            "IMMEDIATE_BASELINE",
         )
 
     for name in (

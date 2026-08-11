@@ -3,6 +3,7 @@ from decimal import Decimal
 from kra_analytics.api4_semantics import (
     HorseWeight,
     TrackCondition,
+    normalize_finish_sectional,
     parse_horse_weight,
     parse_race_time,
     parse_track,
@@ -25,3 +26,24 @@ def test_parse_track_condition_and_moisture() -> None:
     assert parse_track("건조 (2%)") == TrackCondition("건조", 2)
     assert parse_track("다습(12%)") == TrackCondition("다습", 12)
     assert parse_track("  ") is None
+
+
+def test_normalize_finish_sectional_uses_venue_specific_source() -> None:
+    assert normalize_finish_sectional(
+        meet_code=1,
+        race_time=Decimal("72.4"),
+        accumulated_time=Decimal("33.1"),
+        direct_finish_time=None,
+    ) == Decimal("39.3")
+    assert normalize_finish_sectional(
+        meet_code=3,
+        race_time=Decimal("72.4"),
+        accumulated_time=Decimal("33.1"),
+        direct_finish_time=Decimal("39.3"),
+    ) == Decimal("39.3")
+    assert normalize_finish_sectional(
+        meet_code=1,
+        race_time=Decimal("30.0"),
+        accumulated_time=Decimal("33.1"),
+        direct_finish_time=None,
+    ) is None

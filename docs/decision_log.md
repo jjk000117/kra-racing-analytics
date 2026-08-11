@@ -1,5 +1,18 @@
 # 의사결정 기록
 
+## 2026-08-12 — Official place Snapshot v2 candidate 계약
+
+- Registry 행 수가 아니라 고유 Feature 이름을 구현 계약으로 사용한다.
+- 중복 5개를 제거하고 G3F/G1F 관측 count 4개를 추가해 registry 140개,
+  즉시 구현 대상 125개로 확정했다.
+- 서울은 `rcTime - 누적기록`, 부산경남은 직접 `F-G` 기록으로 최종 G3F/G1F를
+  공통화한다. S1F도 양 경마장의 첫 구간 초로 공통화한다.
+- 경마장 전용 중간구간·코너 기록은 의미와 거리 구조가 달라 공통화하지 않는다.
+- 현재 사전정보의 historical timestamp 부재는 limitation으로 기록하되 기존 cutoff
+  검증에 따라 날씨·주로·함수율·마체중을 candidate에 포함한다.
+- 표본에서 동일한 companion count는 미래 결측 시 달라질 수 있으므로 성능 검토 없이
+  제거하지 않는다.
+
 ## 2026-08-12 — API 예외는 공통 redaction 경로만 사용
 
 - API 예외 객체를 `str(error)`로 직접 로그·Manifest에 저장하지 않는다.

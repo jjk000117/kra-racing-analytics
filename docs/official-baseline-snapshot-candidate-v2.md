@@ -1,13 +1,13 @@
 # 공식 연승 Baseline Snapshot 후보 명세 v2
 
-상태: cutoff 및 Feature 사전 이용 가능성 검증 완료. Snapshot 미구현, 모델 미학습.
+상태: cutoff 검증 및 `place_feature_snapshot_v2_candidate` 구현·감사 완료. 모델 미학습.
 
 ## Prediction cutoff와 구현 가능 범위 (2026-08-12)
 
 - cutoff: 경주 결과 발생 전의 실제 베팅 의사결정 시점. 정확한 `T-N분`은 아직 고정하지 않는다.
 - 실시간 배당: baseline 입력 제외, 후속 betting-stage only.
 - API4 확정 배당과 현재 경주 sectional: 사후정보이므로 계속 금지.
-- registry 141개 중 즉시 Snapshot v2 구현 후보는 126개다.
+- 정정된 registry 140개 중 즉시 Snapshot v2 구현 후보는 고유 Feature 125개다.
 - `NEEDS_VALIDATION` 12개는 공식 화면·명세·저장값 대조를 거쳐 모두 해소했다.
 - 현재 마체중·증감·날씨·주로상태·함수율과 부가상금 1~3은 `APPROVED`다.
 - 과거 G3F/G1F 최근 3/5회 중앙값은 경마장별 원천을 동일한 최종 600m/200m 초로
@@ -37,7 +37,7 @@
 | 후속 고도화 | 5 | v2 첫 구현 범위에서 제외 |
 | 사용 금지 | 10 | 계산 금지와 audit rule로 관리 |
 
-126개 즉시 후보의 정확한 이름과 계산 정의는 `docs/place-feature-registry-v2.csv`에서 `recommendation_group=IMMEDIATE_BASELINE`으로 조회한다. Snapshot 구현 시 이 목록을 임의 축소하지 않으며, 계산 불가능한 항목은 구현 중 조용히 제외하지 않고 registry status를 갱신한다.
+125개 즉시 후보의 정확한 이름과 계산 정의는 `docs/place-feature-registry-v2.csv`에서 `recommendation_group=IMMEDIATE_BASELINE`으로 조회한다. 구현 결과는 `mart.place_feature_snapshot_v2_candidate`이며 상세 감사는 `docs/place-feature-snapshot-v2-build.md`에 기록한다.
 
 ## 필수 관리·감사 컬럼
 

@@ -1,5 +1,25 @@
 # 실험 기록
 
+## 2026-08-12 — Place Feature Snapshot v2 candidate 생성·감사
+
+### 내용
+
+- 49,386개 API4 semantic 원천에서 경마장·거리별 race time/S1F/G3F/G1F를 프로파일했다.
+- Registry 오류를 수정하고 125개 고유 Feature Snapshot을 생성했다.
+- Feature별 결측·0, 값 범위, PIT, count/rate/flag 관계와 정확히 동일한 컬럼을 감사했다.
+
+### 결과
+
+- Snapshot 48,524행, 4,582경주, PLC 양성 13,740행, 빌드 약 192초.
+- 서울 정상 완주 sectional 27,915/27,995, 부산경남 20,473/20,473 가용.
+- PIT·업무키·모집단·금지 사후정보·구조 관계 오류 0건.
+- 표본상 일부 companion count가 동일했지만 정의상 중복이 아니므로 유지했다.
+
+### 해석
+
+- Snapshot 생성 계약 관점의 blocker는 없다.
+- 모델 성능 선택 없이 official baseline 설계 단계로 넘길 수 있다.
+
 ## 2026-08-12 — KRA 세 API 최소 장애 진단
 
 ### 실험 내용

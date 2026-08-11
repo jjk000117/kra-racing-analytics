@@ -33,7 +33,11 @@ WITH parsed AS (
         nullif(try_cast(bu_3fGTime AS DECIMAL(8, 1)), 0)
             AS bu_g3f_to_finish_seconds,
         nullif(try_cast(bu_1fGTime AS DECIMAL(8, 1)), 0)
-            AS bu_g1f_to_finish_seconds
+            AS bu_g1f_to_finish_seconds,
+        nullif(try_cast(buG3fAccTime AS DECIMAL(8, 1)), 0)
+            AS bu_g3f_acc_time_seconds,
+        nullif(try_cast(buG1fAccTime AS DECIMAL(8, 1)), 0)
+            AS bu_g1f_acc_time_seconds
     FROM parsed p
 )
 SELECT
@@ -65,6 +69,18 @@ SELECT
     se_g1f_acc_time_seconds,
     bu_g3f_to_finish_seconds,
     bu_g1f_to_finish_seconds,
+    bu_g3f_acc_time_seconds,
+    bu_g1f_acc_time_seconds,
+    CASE
+        WHEN meet_code = 1 AND nullif(race_time_seconds, 0) IS NOT NULL
+            THEN nullif(race_time_seconds - se_g3f_acc_time_seconds, 0)
+        WHEN meet_code = 3 THEN bu_g3f_to_finish_seconds
+    END AS historical_g3f_seconds,
+    CASE
+        WHEN meet_code = 1 AND nullif(race_time_seconds, 0) IS NOT NULL
+            THEN nullif(race_time_seconds - se_g1f_acc_time_seconds, 0)
+        WHEN meet_code = 3 THEN bu_g1f_to_finish_seconds
+    END AS historical_g1f_seconds,
     CASE
         WHEN meet_code = 1 THEN 'SEOUL_SE_ACC_FIELDS'
         WHEN meet_code = 3 THEN 'BUSAN_BU_SPLIT_FIELDS'

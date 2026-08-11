@@ -38,6 +38,16 @@
 - Snapshot v2 즉시 구현 후보는 126개이며 Snapshot 생성과 모델 학습은 수행하지 않았다.
 - 상세 문서: `docs/official-place-baseline-cutoff-validation-v2.md`
 
+## 2026-08-12 — Place Feature Snapshot v2 candidate 구현·감사
+
+- Registry 중복 5개를 제거하고 누락된 G3F/G1F companion count 4개를 추가했다.
+- Registry 140개, 즉시 구현 대상 고유 Feature 125개로 확정했다.
+- 서울/부산경남 S1F 및 최종 G3F/G1F 공통화를 검증했다.
+- `mart.place_feature_snapshot_v2_candidate` 48,524행·4,582경주·125 Feature를 생성했다.
+- Grain·모집단·PIT·금지 사후정보·count/rate/availability 감사를 통과했다.
+- 기존 baseline_v1과 Final Test 산출물은 변경하지 않았다.
+- 상세 문서: `docs/place-feature-snapshot-v2-build.md`
+
 마지막 갱신: 2026-08-11
 
 ## 2026-08-11 새 공식 baseline Feature universe 재설계
