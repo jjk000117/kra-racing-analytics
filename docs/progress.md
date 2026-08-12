@@ -431,3 +431,12 @@
 - `notebooks/06b_feature_availability_analysis.ipynb`
 - `notebooks/06c_dns_policy_validation.ipynb`
 - `sql/analysis/`
+## 2026-08-12 — API4 2022·2023 Raw→Staging→Semantic v2 확장 완료
+
+- 2022 대표 batch 18,355행·1,679경주와 2023 대표 batch 19,284행·1,786경주를 수집했다.
+- 두 연도 모두 월 공백, 페이지 누락·중복, Raw SHA256·크기 불일치, 업무키 중복이 0건이다.
+- Raw audit 통과 후 Staging에 37,639행을 적재했고 `semantic.api4_runner_event_v2`도 같은 수만큼 확장됐다.
+- 89개 원천 필드 계약과 기존 경마장별 sectional 변환이 유지됐고 실제 API 키 노출은 0건이다.
+- 기존 Snapshot v1/v2와 모델·평가 산출물은 재생성하지 않았다.
+- 상세 결과: `docs/api4-history-extension-2022-2023.md`
+- 다음 추천 작업: 기존 계약으로 Snapshot v2 전체기간 재생성 전 월별 left-censoring 및 분할 후보 프로파일링.

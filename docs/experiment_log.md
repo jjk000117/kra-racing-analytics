@@ -729,3 +729,21 @@
 ### 다음 실험 아이디어
 
 - 2022·2023 전체 Raw 수집과 audit 후 연도·경마장별 필드·상태코드·중복·월별 경주 수를 확정한다.
+## 2026-08-12 — API4 Historical extension 품질 audit
+
+### 실험 내용
+
+- 2022·2023 서울·부산경남 전체 API4 Raw의 페이지·행·해시·업무키·월별 연속성을 검사했다.
+- audit 통과 대표 batch를 Staging에 적재하고 Semantic v2의 파싱·범위·경마장별 sectional을 비교했다.
+- 2024~2026과 rating, 관계자 ID, rcTime, 마체중, S1F/G3F/G1F 가용성을 비교했다.
+
+### 결과와 해석
+
+- 37,639행, 3,465경주, 24개월 공백 0, Raw/Staging/Semantic 행 불일치 0이었다.
+- 경주시간·마체중·sectional 숫자 파싱의 비현실 범위는 0건이었다.
+- 2023 `ord=99` 98행의 `track='(%)'`는 구조적 결측으로 확인됐다.
+- 주요 가용성은 기존 기간과 유사하여 2022·2023을 PIT Historical 원천으로 승계할 수 있다.
+
+### 다음 실험 아이디어
+
+- Snapshot v2 전체기간 재생성 후 월별 history availability와 left-censoring 완화 정도를 프로파일링한다.
