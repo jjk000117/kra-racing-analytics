@@ -19,6 +19,8 @@ def test_parse_race_time_preserves_tenth_seconds() -> None:
 def test_parse_horse_weight_and_change() -> None:
     assert parse_horse_weight("502(-2)") == HorseWeight(502, -2)
     assert parse_horse_weight("388(+1)") == HorseWeight(388, 1)
+    assert parse_horse_weight("480()") == HorseWeight(480, 0)
+    assert parse_horse_weight("()") is None
     assert parse_horse_weight("502") is None
 
 

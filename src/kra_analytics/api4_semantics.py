@@ -6,7 +6,7 @@ from decimal import Decimal, InvalidOperation
 
 SEMANTIC_VERSION = "api4_runner_event_v2"
 
-HORSE_WEIGHT_PATTERN = re.compile(r"^\s*(\d{2,3})\s*\(\s*([+-]?\d+)\s*\)\s*$")
+HORSE_WEIGHT_PATTERN = re.compile(r"^\s*(\d{2,3})\s*\(\s*([+-]?\d*)\s*\)\s*$")
 TRACK_PATTERN = re.compile(r"^\s*(.*?)\s*(?:\(\s*(\d+)\s*%\s*\))?\s*$")
 
 
@@ -34,13 +34,14 @@ def parse_race_time(value: str | None) -> Decimal | None:
 
 
 def parse_horse_weight(value: str | None) -> HorseWeight | None:
-    """Parse API4 `weight(change)` values such as `502(-2)`."""
+    """Parse API4 weight and its change; weighted empty parentheses mean zero."""
     if value is None:
         return None
     match = HORSE_WEIGHT_PATTERN.fullmatch(value)
     if match is None:
         return None
-    return HorseWeight(weight_kg=int(match.group(1)), change_kg=int(match.group(2)))
+    change = int(match.group(2)) if match.group(2) else 0
+    return HorseWeight(weight_kg=int(match.group(1)), change_kg=change)
 
 
 def parse_track(value: str | None) -> TrackCondition | None:

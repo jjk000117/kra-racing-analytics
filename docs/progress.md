@@ -440,3 +440,12 @@
 - 기존 Snapshot v1/v2와 모델·평가 산출물은 재생성하지 않았다.
 - 상세 결과: `docs/api4-history-extension-2022-2023.md`
 - 다음 추천 작업: 기존 계약으로 Snapshot v2 전체기간 재생성 전 월별 left-censoring 및 분할 후보 프로파일링.
+## 2026-08-13 — `wgHr` 빈 증감 0kg parsing 반영, Snapshot 확장은 공식 PLC 원천 대기
+
+- Semantic v2에서 숫자 중량 뒤 `()`를 0kg 증감으로 파싱하도록 수정했다.
+- 전체 87,025행에서 5,843행이 0으로 변환됐고 중량 자체가 없는 `()` 663행은 NULL을 유지했다.
+- Staging/Semantic 행 수, 업무키, 숫자 범위와 sectional source audit은 모두 통과했다.
+- 2022·2023 공식 Sales/`winning_payout`이 없어 확정 PLC 타깃·Historical PLC Feature 계약을
+  유지한 Snapshot 전체기간 재생성은 수행하지 않았다.
+- 상세 결과: `docs/api4-wghr-parsing-and-snapshot-v2-readiness.md`
+- 다음 추천 작업: 2022·2023 공식 Sales Raw 수집 가능 범위 확인 후 Raw→Staging→Canonical 확장.

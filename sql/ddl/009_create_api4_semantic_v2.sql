@@ -11,8 +11,13 @@ WITH parsed AS (
         try_cast(s.rcTime AS DECIMAL(8, 1)) AS race_time_seconds,
         try_cast(regexp_extract(s.wgHr, '^\s*([0-9]{2,3})', 1) AS INTEGER)
             AS horse_weight_kg,
-        try_cast(regexp_extract(s.wgHr, '\(\s*([+-]?[0-9]+)\s*\)', 1) AS INTEGER)
-            AS horse_weight_change_kg,
+        CASE
+            WHEN regexp_matches(s.wgHr, '^\s*[0-9]{2,3}\(\s*\)\s*$') THEN 0
+            ELSE try_cast(
+                regexp_extract(s.wgHr, '\(\s*([+-]?[0-9]+)\s*\)', 1)
+                AS INTEGER
+            )
+        END AS horse_weight_change_kg,
         nullif(trim(regexp_replace(s.track, '\s*\([0-9]+%\)\s*$', '')), '')
             AS track_condition,
         try_cast(regexp_extract(s.track, '\(\s*([0-9]+)\s*%\s*\)', 1) AS INTEGER)
