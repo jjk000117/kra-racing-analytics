@@ -1,5 +1,15 @@
 # 의사결정 기록
 
+## 2026-08-12 — Official place baseline v2 입력 후보 117개
+
+- Snapshot 125개 중 현재 사전정보 28개와 Historical 정보 89개를 모델 입력 후보로 둔다.
+- `count × rate`로 복원되는 장기 finish/win/top3 count 3개와 `count > 0`으로 복원되는
+  history flag 3개는 구조 제외한다.
+- 표본에서 우연히 같은 sectional·마체중 count는 정의상 중복이 아니므로 유지한다.
+- 여러 거리·경마장을 섞은 recent3/5 절대 race-time median 2개는 모델 입력에서 보류한다.
+- count는 rate·average·sectional의 신뢰도와 경험량을 나타내므로 companion 입력으로 유지한다.
+- ID·날짜·lineage·타깃·모집단 상태는 관리·감사용으로만 사용한다.
+
 ## 2026-08-12 — Official place Snapshot v2 candidate 계약
 
 - Registry 행 수가 아니라 고유 Feature 이름을 구현 계약으로 사용한다.

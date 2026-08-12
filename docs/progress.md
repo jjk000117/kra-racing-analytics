@@ -48,6 +48,16 @@
 - 기존 baseline_v1과 Final Test 산출물은 변경하지 않았다.
 - 상세 문서: `docs/place-feature-snapshot-v2-build.md`
 
+## 2026-08-12 — Official place baseline v2 모델 입력 설계
+
+- Snapshot 125개 Feature의 타입·결측·family·companion·모델링 역할을 전수 분류했다.
+- 117개를 모델 입력 후보로 제안하고 정의상 복원 가능한 count/flag 6개를 구조 제외했다.
+- 거리·경마장을 혼합한 절대 race-time median 2개는 `REVIEW_REQUIRED`로 분리했다.
+- 125개 Feature 안의 `AUDIT_ONLY`는 0개이며 ID·lineage·타깃 등 22개 관리 컬럼을 모델에서 제외했다.
+- recent3/5/10, 조건 적성, sectional과 family-level ablation 계약을 문서화했다.
+- 모델 학습·성능 기반 선택·기존 baseline 재평가는 수행하지 않았다.
+- 상세 문서: `docs/official-place-baseline-v2-model-input-design.md`
+
 마지막 갱신: 2026-08-11
 
 ## 2026-08-11 새 공식 baseline Feature universe 재설계

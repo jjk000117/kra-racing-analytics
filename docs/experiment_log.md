@@ -1,5 +1,26 @@
 # 실험 기록
 
+## 2026-08-12 — Official place baseline v2 입력 구조 감사
+
+### 내용
+
+- 125개 Feature를 실제 DuckDB 타입·결측·registry 정의와 대조했다.
+- 완전 동일 컬럼, 정의상 복원 관계, recent window 구성과 sectional 조건 혼합을 확인했다.
+- target이나 모델 성능을 사용하지 않고 모델링 역할을 분류했다.
+
+### 결과
+
+- `MODEL_INPUT` 117, `EXCLUDE_STRUCTURAL` 6, `REVIEW_REQUIRED` 2, `AUDIT_ONLY` 0.
+- finish/win/top3 count 복원과 세 history flag 관계 위반은 0건이었다.
+- 현재 표본에서 동일한 sectional·마체중 count는 향후 결측 시 달라지는 비구조적 중복이었다.
+- recent3/5/10 form은 유지하고 절대 race-time median 두 개만 조건 혼합 위험으로 보류했다.
+
+### 해석
+
+- official baseline은 Feature family를 폭넓게 유지하되 정의상 중복만 제거하는 117개 입력으로
+  다음 모델 계약을 설계할 수 있다.
+- 모델 학습 전 race-time 조건 통제와 결측 indicator 정책을 확정해야 한다.
+
 ## 2026-08-12 — Place Feature Snapshot v2 candidate 생성·감사
 
 ### 내용
