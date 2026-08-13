@@ -580,3 +580,17 @@
 - 2023년 1월 horse long-term·속도/sectional·마체중 이력은 93.91%, same-meet 93.83%, 기수·조교사·마주는 약 99~100% 가용했다.
 - recent10과 interaction은 점진적으로 성숙해 명확한 단절점이 없으므로 임의 threshold 대신 한 해 전체 warm-up이라는 재현 가능하고 해석하기 쉬운 경계를 채택했다.
 - 2023년 7월까지 늦춰도 신규 말·조합의 left-censoring은 사라지지 않으며 모델링 기간만 6개월 줄어든다.
+## 2026-08-13 — Official place baseline v2 고정 분할과 walk-forward 계약
+
+결정:
+
+- Warm-up은 2022년, Train은 2023-01~2024-06, Validation은 2024-07~2025-06으로 사용한다.
+- 2025-07~2026-07은 `post-selection temporal evaluation`이며 새로운 독립 Final Test라고 부르지 않는다.
+- Walk-forward는 2023년 전체를 최초 학습기간으로 사용하고 2024-01부터 월별 expanding fold로 진단한다. 분기는 월별 결과의 보조 rollup으로만 사용한다.
+- Validation 선택 범위를 전처리·결측·범주 처리·Logistic 수렴·calibration·REVIEW_REQUIRED 2개 및 사전 정의한 소수 설정으로 제한한다.
+
+이유:
+
+- 권고안은 Train 2,675경주, Validation 1,759경주, 이후 평가 1,923경주를 확보하고 각 Train·Validation·평가가 12개 월-of-year를 포함한다.
+- 기준안의 6개월 Validation은 규모는 충분하지만 1~6월만 포함하며, 2025년 전체를 Validation으로 쓰는 안은 평가기간이 7개월로 줄어든다.
+- 월별 fold도 최소 108경주·1,230행을 확보해 변화 시점을 유지할 수 있으며 분기 fold보다 진단 해상도가 높다.

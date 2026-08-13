@@ -464,3 +464,11 @@
 - 2022년 전체를 Historical warm-up으로 사용하고 official place baseline v2 모델링 시작일을 2023-01-01로 권고했다.
 - 모델 학습·평가·Feature 선택은 수행하지 않았다.
 - 상세 결과: `docs/place-feature-maturity-and-modeling-start-v2.md`
+## 2026-08-13 — Official place baseline v2 시간순 평가 계약 확정
+
+- 모델 성능을 사용하지 않고 2023-01~2026-07 월별 모집단과 경마장·등록두수·등급·거리 구성을 프로파일링했다.
+- Train 2023-01~2024-06, Validation 2024-07~2025-06, post-selection temporal evaluation 2025-07~2026-07을 권고 계약으로 확정했다.
+- 장기 안정성 진단은 2023년을 최초 학습기간으로 두고 2024-01부터 31개 월별 expanding fold를 사용한다.
+- 2026년은 baseline_v1에서 이미 확인했으므로 새로운 독립 Final Test로 표현하지 않는다.
+- 모델 학습·예측·성능평가는 수행하지 않았다.
+- 상세 결과: `docs/place-baseline-v2-temporal-evaluation-design.md`

@@ -796,3 +796,20 @@
 ### 다음 실험 아이디어
 
 - 2023-01 이후 Train/Validation 및 장기 expanding walk-forward 경계를 Feature maturity 계약과 분리해 설계한다.
+## 2026-08-13 — Baseline v2 날짜 분할 및 시간순 평가 설계
+
+### 실험 내용
+
+- 2023-01~2026-07의 월별 경주·출전마·PLC 모집단 통계와 경마장·등록두수·등급·거리 구성을 집계했다.
+- 24개월 Train+6개월 Validation, 18개월 Train+12개월 Validation, 24개월 Train+12개월 Validation의 세 후보를 비교했다.
+- 월별·분기별 walk-forward 평가 표본 규모를 비교했다.
+
+### 결과와 해석
+
+- 권고안은 Train 28,392행, Validation 18,615행, post-selection 평가 20,428행이며 세 역할 모두 충분한 표본과 계절 커버리지를 제공한다.
+- 월별 walk-forward는 31개 fold, fold당 108~180경주로 장기 안정성 진단에 적절하고 분기 rollup으로 변동성을 보조 요약할 수 있다.
+- 날짜 선택에는 Log Loss·Brier·예측값을 사용하지 않았다.
+
+### 다음 실험 아이디어
+
+- 봉인된 날짜 역할을 사용해 baseline v2의 제한된 전처리·Logistic·calibration 후보 실행 계약을 구현한다.
