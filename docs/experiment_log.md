@@ -761,3 +761,21 @@
 - 빈 증감 괄호는 0kg을 의미한다고 확정할 수 있다.
 - Snapshot 확장 전 2022·2023 공식 PLC Sales 원천을 확보해 Historical PLC Feature를 같은 계약으로
   계산할 수 있는지 검증한다.
+## 2026-08-13 — Sales History Extension 및 Snapshot v2 Rebuild Audit
+
+### 실험 내용
+
+- 2022·2023 Sales를 연도별로 전체 수집하고 Raw SHA/page/row 및 Staging lineage를 감사했다.
+- 감사된 API4/Sales 대표 batch로 2022~2026 Canonical·Star·Snapshot v2를 재생성했다.
+- 연도별 모델 모집단과 Historical Feature 가용성, PIT/leakage 및 구조 관계를 검사했다.
+
+### 결과와 해석
+
+- Sales 24,178행, Canonical 8,065경주, Snapshot 85,566행/8,036경주가 구축됐다.
+- 공식 PLC payout-출전마 미결합과 핵심 구조/PIT 위반은 0건이다.
+- horse history 가용성은 2022 82.07%에서 2023 93.61%로 증가해 2022 warm-up의 left-censoring 완화 효과가 확인됐다.
+- 125/117 Feature 계약은 전체기간에서도 유지 가능하다.
+
+### 다음 실험 아이디어
+
+- 모델을 실행하기 전에 2022 warm-up과 장기 Train/Validation/walk-forward 경계를 설계하고 봉인한다.

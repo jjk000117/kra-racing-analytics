@@ -449,3 +449,11 @@
   유지한 Snapshot 전체기간 재생성은 수행하지 않았다.
 - 상세 결과: `docs/api4-wghr-parsing-and-snapshot-v2-readiness.md`
 - 다음 추천 작업: 2022·2023 공식 Sales Raw 수집 가능 범위 확인 후 Raw→Staging→Canonical 확장.
+## 2026-08-13 — 2022·2023 Sales 확장 및 Snapshot v2 전체기간 재생성 완료
+
+- 연도별 Sales Raw 24,178행/26페이지를 수집하고 Raw·Staging 감사를 통과했다.
+- 기존 정의 그대로 Canonical 8,065경주·87,025 출전행과 8,036개 모델 모집단 경주를 재생성했다.
+- `place_feature_snapshot_v2_candidate`는 2022-01-07~2026-07-26, 85,566행·8,036경주·125 Feature로 확장됐다.
+- PIT/leakage/구조 감사는 모두 통과했고 117개 MODEL_INPUT 계약을 유지한다.
+- 상세 결과: `docs/sales-history-extension-and-snapshot-v2-rebuild.md`
+- 다음 추천 작업: official baseline v2 날짜 분할 및 평가 프로토콜 설계.

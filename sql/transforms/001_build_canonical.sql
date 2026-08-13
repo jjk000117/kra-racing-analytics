@@ -29,10 +29,10 @@ SELECT
     try_cast(rcNo AS INTEGER), max(nullif(trim(rcName), '')),
     max(nullif(trim(rank), '')), max(try_cast(rcDist AS INTEGER)),
     max(nullif(trim(weather), '')), max(nullif(trim(track), '')),
-    count(*)::INTEGER, (SELECT race_batch_id FROM canonical_context),
+    count(*)::INTEGER, min(batch_id),
     (SELECT policy_version FROM canonical_context), now()
 FROM staging.race_result
-WHERE batch_id = (SELECT race_batch_id FROM canonical_context)
+WHERE batch_id IN (SELECT batch_id FROM canonical_race_batch_scope)
   AND try_strptime(rcDate, '%Y%m%d') IS NOT NULL
   AND meet IN ('1', '3', '서울', '부산경남')
   AND try_cast(rcNo AS INTEGER) IS NOT NULL
@@ -41,7 +41,8 @@ HAVING count(DISTINCT coalesce(rcName, '')) <= 1
    AND count(DISTINCT coalesce(rank, '')) <= 1
    AND count(DISTINCT coalesce(rcDist, '')) <= 1
    AND count(DISTINCT coalesce(weather, '')) <= 1
-   AND count(DISTINCT coalesce(track, '')) <= 1;
+   AND count(DISTINCT coalesce(track, '')) <= 1
+   AND count(DISTINCT batch_id) = 1;
 
 UPDATE canonical.race r
 SET race_status = e.race_status
@@ -87,7 +88,7 @@ JOIN canonical.race r
   ON r.race_date = try_strptime(s.rcDate, '%Y%m%d')::DATE
  AND r.meet_code = CASE WHEN s.meet IN ('1', '서울') THEN 1 ELSE 3 END
  AND r.race_no = try_cast(s.rcNo AS INTEGER)
-WHERE s.batch_id = (SELECT race_batch_id FROM canonical_context)
+WHERE s.batch_id IN (SELECT batch_id FROM canonical_race_batch_scope)
   AND nullif(trim(s.hrNo), '') IS NOT NULL
 QUALIFY count(*) OVER (
     PARTITION BY s.rcDate, s.meet, s.rcNo, s.hrNo
@@ -102,7 +103,7 @@ JOIN canonical.race r
   ON r.race_date = try_strptime(s.rcDate, '%Y%m%d')::DATE
  AND r.meet_code = CASE WHEN s.meet IN ('1', '서울') THEN 1 ELSE 3 END
  AND r.race_no = try_cast(s.rcNo AS INTEGER)
-WHERE s.batch_id = (SELECT sales_batch_id FROM canonical_context)
+WHERE s.batch_id IN (SELECT batch_id FROM canonical_sales_batch_scope)
   AND s.amt_parse_valid AND nullif(trim(s.pool), '') IS NOT NULL
   AND nullif(trim(s.odds), '') IS NOT NULL
 QUALIFY count(*) OVER (
@@ -117,7 +118,7 @@ SELECT md5('RACE_ATTRIBUTE_CONFLICT|' || rcDate || '|' || meet || '|' || rcNo),
        (SELECT transform_version FROM canonical_context),
        (SELECT policy_version FROM canonical_context)
 FROM staging.race_result
-WHERE batch_id = (SELECT race_batch_id FROM canonical_context)
+WHERE batch_id IN (SELECT batch_id FROM canonical_race_batch_scope)
 GROUP BY rcDate, meet, rcNo
 HAVING count(DISTINCT coalesce(rcName, '')) > 1
     OR count(DISTINCT coalesce(rank, '')) > 1
@@ -133,7 +134,7 @@ SELECT md5('INVALID_RACE_KEY|' || staging_row_id), 'INVALID_RACE_KEY', 'ERROR',
        (SELECT transform_version FROM canonical_context),
        (SELECT policy_version FROM canonical_context)
 FROM staging.race_result
-WHERE batch_id = (SELECT race_batch_id FROM canonical_context)
+WHERE batch_id IN (SELECT batch_id FROM canonical_race_batch_scope)
   AND (try_strptime(rcDate, '%Y%m%d') IS NULL
        OR meet NOT IN ('1', '3', '서울', '부산경남')
        OR try_cast(rcNo AS INTEGER) IS NULL OR nullif(trim(hrNo), '') IS NULL);
@@ -146,7 +147,7 @@ SELECT md5('DUPLICATE_RUNNER_KEY|' || staging_row_id), 'DUPLICATE_RUNNER_KEY',
        (SELECT transform_version FROM canonical_context),
        (SELECT policy_version FROM canonical_context)
 FROM staging.race_result
-WHERE batch_id = (SELECT race_batch_id FROM canonical_context)
+WHERE batch_id IN (SELECT batch_id FROM canonical_race_batch_scope)
 QUALIFY count(*) OVER (PARTITION BY rcDate, meet, rcNo, hrNo) > 1;
 
 INSERT INTO quality.data_issue
@@ -157,7 +158,7 @@ SELECT md5('INVALID_SALES_ROW|' || staging_row_id), 'INVALID_SALES_ROW', 'ERROR'
        (SELECT transform_version FROM canonical_context),
        (SELECT policy_version FROM canonical_context)
 FROM staging.sales_dividend
-WHERE batch_id = (SELECT sales_batch_id FROM canonical_context)
+WHERE batch_id IN (SELECT batch_id FROM canonical_sales_batch_scope)
   AND (try_strptime(rcDate, '%Y%m%d') IS NULL
        OR meet NOT IN ('1', '3', '서울', '부산경남')
        OR try_cast(rcNo AS INTEGER) IS NULL OR nullif(trim(pool), '') IS NULL
@@ -171,7 +172,7 @@ SELECT md5('DUPLICATE_SALES_KEY|' || staging_row_id), 'DUPLICATE_SALES_KEY',
        (SELECT transform_version FROM canonical_context),
        (SELECT policy_version FROM canonical_context)
 FROM staging.sales_dividend
-WHERE batch_id = (SELECT sales_batch_id FROM canonical_context)
+WHERE batch_id IN (SELECT batch_id FROM canonical_sales_batch_scope)
 QUALIFY count(*) OVER (PARTITION BY rcDate, meet, rcNo, pool) > 1;
 
 INSERT INTO quality.data_issue
@@ -182,7 +183,7 @@ SELECT md5('NON_STANDARD_ORD|' || staging_row_id), 'NON_STANDARD_ORD', 'WARNING'
        (SELECT transform_version FROM canonical_context),
        (SELECT policy_version FROM canonical_context)
 FROM staging.race_result
-WHERE batch_id = (SELECT race_batch_id FROM canonical_context)
+WHERE batch_id IN (SELECT batch_id FROM canonical_race_batch_scope)
   AND NOT coalesce(ord_numeric BETWEEN 1 AND 16, FALSE);
 
 INSERT INTO quality.data_issue
@@ -207,7 +208,7 @@ LEFT JOIN canonical.race r
   ON r.race_date = try_strptime(s.rcDate, '%Y%m%d')::DATE
  AND r.meet_code = CASE WHEN s.meet IN ('1', '서울') THEN 1 ELSE 3 END
  AND r.race_no = try_cast(s.rcNo AS INTEGER)
-WHERE s.batch_id = (SELECT sales_batch_id FROM canonical_context)
+WHERE s.batch_id IN (SELECT batch_id FROM canonical_sales_batch_scope)
   AND r.race_id IS NULL;
 
 UPDATE canonical.transform_run

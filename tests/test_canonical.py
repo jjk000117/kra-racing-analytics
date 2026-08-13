@@ -104,8 +104,8 @@ def test_build_canonical_creates_separate_idempotent_tables(
         paths=paths,
     )
     second = build_canonical(
-        race_batch_id=race_batch.batch_id,
-        sales_batch_id=sales_batch.batch_id,
+        race_batch_ids=[race_batch.batch_id],
+        sales_batch_ids=[sales_batch.batch_id],
         paths=paths,
     )
 

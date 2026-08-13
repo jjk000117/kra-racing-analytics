@@ -555,3 +555,15 @@
 
 - 2026년 7월 이전 직전 실제 출전 비교 5,313/5,313행이 0kg으로 일치했다.
 - 확정 데이터 계약은 공식 winning payout만 PLC 타깃 근거로 허용한다.
+## 2026-08-13 — 감사된 연도별 batch를 다중 batch Canonical 범위로 결합
+
+결정:
+
+- 2022·2023·2024~2026 대표 Raw/Staging batch의 lineage를 유지한 채 하나의 Canonical 실행 범위로 결합한다.
+- `winning_payout_v1`, 7승식 완전시장 모집단, 125 Feature와 117 MODEL_INPUT 정의는 변경하지 않는다.
+- 2023 공식 Sales가 없는 11경주는 기존 계약에 따라 모델 모집단에서 제외하고 임의 보정하지 않는다.
+
+이유:
+
+- 연도별 immutable batch를 합치거나 덮어쓰지 않아도 전체기간을 재구축할 수 있고, 각 행의 source batch lineage를 보존할 수 있다.
+- 공식 PLC 적중 원천과 PIT 정책을 바꾸지 않고 Historical 기간만 안전하게 확장할 수 있다.

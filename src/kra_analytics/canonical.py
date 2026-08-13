@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
@@ -115,12 +117,29 @@ def _validate_batch(paths: ProjectPaths, batch_id: str, expected_api: str) -> No
 
 
 def build_canonical(
-    *, race_batch_id: str, sales_batch_id: str, paths: ProjectPaths | None = None
+    *,
+    race_batch_id: str | None = None,
+    sales_batch_id: str | None = None,
+    race_batch_ids: Sequence[str] | None = None,
+    sales_batch_ids: Sequence[str] | None = None,
+    paths: ProjectPaths | None = None,
 ) -> CanonicalOutcome:
     project_paths = paths or ProjectPaths.from_root()
     initialize_database(paths=project_paths)
-    _validate_batch(project_paths, race_batch_id, "API4_3")
-    _validate_batch(project_paths, sales_batch_id, "API179_1")
+    if race_batch_id is not None and race_batch_ids is not None:
+        raise ValueError("Use race_batch_id or race_batch_ids, not both")
+    if sales_batch_id is not None and sales_batch_ids is not None:
+        raise ValueError("Use sales_batch_id or sales_batch_ids, not both")
+    race_scope = tuple(race_batch_ids or (() if race_batch_id is None else (race_batch_id,)))
+    sales_scope = tuple(sales_batch_ids or (() if sales_batch_id is None else (sales_batch_id,)))
+    if not race_scope or not sales_scope:
+        raise ValueError("At least one race and sales batch is required")
+    if len(set(race_scope)) != len(race_scope) or len(set(sales_scope)) != len(sales_scope):
+        raise ValueError("Duplicate batch id in canonical scope")
+    for batch_id in race_scope:
+        _validate_batch(project_paths, batch_id, "API4_3")
+    for batch_id in sales_scope:
+        _validate_batch(project_paths, batch_id, "API179_1")
     script = (project_paths.sql / "transforms" / "001_build_canonical.sql").read_text(
         encoding="utf-8"
     )
@@ -138,11 +157,27 @@ def build_canonical(
                 """,
                 [
                     TRANSFORM_VERSION,
-                    race_batch_id,
-                    sales_batch_id,
+                    json.dumps(race_scope),
+                    json.dumps(sales_scope),
                     POLICY_VERSION,
                     datetime.now(UTC),
                 ],
+            )
+            connection.execute(
+                "CREATE OR REPLACE TEMP TABLE canonical_race_batch_scope "
+                "(batch_id VARCHAR PRIMARY KEY)"
+            )
+            connection.executemany(
+                "INSERT INTO canonical_race_batch_scope VALUES (?)",
+                [(batch_id,) for batch_id in race_scope],
+            )
+            connection.execute(
+                "CREATE OR REPLACE TEMP TABLE canonical_sales_batch_scope "
+                "(batch_id VARCHAR PRIMARY KEY)"
+            )
+            connection.executemany(
+                "INSERT INTO canonical_sales_batch_scope VALUES (?)",
+                [(batch_id,) for batch_id in sales_scope],
             )
             connection.execute(script)
             payout_count = _build_winning_payouts(connection)
