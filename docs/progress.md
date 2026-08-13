@@ -472,3 +472,14 @@
 - 2026년은 baseline_v1에서 이미 확인했으므로 새로운 독립 Final Test로 표현하지 않는다.
 - 모델 학습·예측·성능평가는 수행하지 않았다.
 - 상세 결과: `docs/place-baseline-v2-temporal-evaluation-design.md`
+
+## 2026-08-13 — Official place baseline v2 속도·sectional 계약 감사 완료
+
+- race-time recent3/5 median 2개를 검토 대상이 아닌 `EXCLUDE_LOGICAL`로 확정했다.
+- Snapshot 속도·sectional 16개를 전수 추적했고, 모델 입력 14개 중 race-time count 2개와
+  S1F/G3F/G1F median·count 12개를 `KEEP_AS_IS`로 판정했다.
+- 부산경남 G3F/G1F 누적값↔직접 구간값 35,695건은 각각 불일치 0건·최대 오차 0초였고,
+  서울 계산식 불일치 및 Snapshot PIT 위반도 0건이었다.
+- 모델 입력 수는 117개로 유지하고 `REVIEW_REQUIRED`는 0개가 됐다.
+- 상세 결과: `docs/speed-sectional-feature-audit-v2.md`
+- 다음 추천 작업: 확정된 117개 입력으로 Train-only 전처리와 제한된 Logistic baseline 실행 계약을 구현한다.

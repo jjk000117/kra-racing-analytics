@@ -47,7 +47,7 @@ Validation은 미리 제한한 baseline 절차 중 하나를 선택하는 데만
 - 범주형 처리 방식과 unknown category 처리
 - Logistic Regression 수렴을 위한 solver·반복 횟수 등 제한된 설정
 - raw probability와 사전 정의된 calibration 절차 중 선택
-- REVIEW_REQUIRED 2개 race-time median Feature의 포함 여부
+- 확정된 117개 MODEL_INPUT 계약의 전처리 적용 방식
 - 사전에 문서화한 소수 baseline 후보 비교
 
 허용하지 않는 선택:
@@ -103,7 +103,7 @@ Walk-forward는 설정 선택이나 반복 최적화에 사용하지 않는다. 
 
 1. **Train 적합:** 전처리 통계, 결측 대체값, 범주 사전과 Logistic 절차를 Train에서만 적합한다.
 2. **Validation 비교:** 허용된 소수 설정만 2024-07~2025-06에서 비교한다. 평가 구간은 열지 않는다.
-3. **절차 선택:** 입력 Feature 역할, 전처리, Logistic 설정, calibration 여부와 REVIEW_REQUIRED 포함 여부를 하나로 선택한다.
+3. **절차 선택:** 확정된 117개 입력, 전처리, Logistic 설정과 calibration 여부를 하나로 선택한다. 제외 확정된 race-time median은 다시 선택 대상으로 열지 않는다.
 4. **계약 봉인:** 선택 이유, 코드 버전, Feature registry, 날짜 경계, 지표 정의와 random seed를 실행 계약으로 저장한다.
 5. **Train+Validation 재적합:** 평가 전에 동일 절차를 2023-01~2025-06에 재적합한다. Calibration이 선택되면 Train+Validation 안에서 과거→미래의 expanding-window OOF 예측으로 calibrator를 새로 적합한다.
 6. **Post-selection temporal evaluation:** 2025-07~2026-07을 한 번 평가하고 결과를 이유로 같은 버전의 설정을 변경하지 않는다.

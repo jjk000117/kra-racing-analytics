@@ -27,12 +27,12 @@ STRUCTURAL_EXCLUSIONS = {
     "trainer_history_available": "trainer_prior_start_count > 0과 정의상 동일",
 }
 
-REVIEW_REQUIRED = {
+LOGICAL_EXCLUSIONS = {
     "horse_recent3_race_time_median": (
-        "거리·경마장 조건을 혼합한 절대 경주시간 중앙값이므로 보정 없는 모델 입력 여부 검토 필요"
+        "서로 다른 거리·경마장의 절대 경주시간을 혼합한 중앙값이므로 모델 입력에서 제외"
     ),
     "horse_recent5_race_time_median": (
-        "거리·경마장 조건을 혼합한 절대 경주시간 중앙값이므로 보정 없는 모델 입력 여부 검토 필요"
+        "서로 다른 거리·경마장의 절대 경주시간을 혼합한 중앙값이므로 모델 입력에서 제외"
     ),
 }
 
@@ -150,8 +150,8 @@ def _missing_meaning(name: str, family: str, nullable: bool) -> str:
 def _model_role(name: str) -> tuple[str, str, str]:
     if name in STRUCTURAL_EXCLUSIONS:
         return "EXCLUDE_STRUCTURAL", "D_STRUCTURAL_EXCLUSION", STRUCTURAL_EXCLUSIONS[name]
-    if name in REVIEW_REQUIRED:
-        return "REVIEW_REQUIRED", "E_REVIEW_REQUIRED", REVIEW_REQUIRED[name]
+    if name in LOGICAL_EXCLUSIONS:
+        return "EXCLUDE_LOGICAL", "E_LOGICAL_EXCLUSION", LOGICAL_EXCLUSIONS[name]
     if name.startswith("current_") or name in {
         "meet_code", "race_grade", "distance_m", "registered_runner_count", "gate_no",
         "horse_sex", "horse_age", "carried_weight", "rating", "race_age_condition",
@@ -191,7 +191,7 @@ def main() -> None:
                     FROM {TABLE}"""
             ).fetchone()
             assert result is not None
-            profiles[name] = tuple(map(int, result))
+            profiles[name] = (int(result[0]), int(result[1]), int(result[2]))
 
     rows: list[dict[str, object]] = []
     for name in expected:
@@ -238,7 +238,7 @@ def main() -> None:
             row["modeling_role"] == "MODEL_INPUT" for row in rows
         ),
         "structural_exclusions": STRUCTURAL_EXCLUSIONS,
-        "review_required": REVIEW_REQUIRED,
+        "logical_exclusions": LOGICAL_EXCLUSIONS,
     }
     summary_path = paths.exports / "validation" / VERSION / "summary.json"
     summary_path.parent.mkdir(parents=True, exist_ok=True)

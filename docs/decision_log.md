@@ -594,3 +594,21 @@
 - 권고안은 Train 2,675경주, Validation 1,759경주, 이후 평가 1,923경주를 확보하고 각 Train·Validation·평가가 12개 월-of-year를 포함한다.
 - 기준안의 6개월 Validation은 규모는 충분하지만 1~6월만 포함하며, 2025년 전체를 Validation으로 쓰는 안은 평가기간이 7개월로 줄어든다.
 - 월별 fold도 최소 108경주·1,230행을 확보해 변화 시점을 유지할 수 있으며 분기 fold보다 진단 해상도가 높다.
+
+## 2026-08-13 — Race-time median 제외와 고정 길이 sectional 유지
+
+결정:
+
+- `horse_recent3_race_time_median`, `horse_recent5_race_time_median`은 Snapshot에 유지하되 official
+  baseline v2 모델 입력에서 `EXCLUDE_LOGICAL`로 확정 제외한다.
+- Validation에서 두 Feature의 포함 여부를 다시 선택하지 않는다.
+- race-time count와 S1F/G3F/G1F recent3/5 median·count는 현행 정의 그대로 유지한다.
+- official 입력 계약은 117개이며 `REVIEW_REQUIRED`는 0개다.
+
+이유:
+
+- 절대 경주시간은 거리·경마장을 섞으면 물리적으로 같은 성능량이 아니지만, count는 관측 깊이만 나타낸다.
+- S1F·G3F·G1F는 각각 첫 200m·마지막 600m·마지막 200m의 고정 구간으로 경마장별 원천을
+  초 단위로 정규화했다. 부산경남 누적값과 직접값의 전체기간 관계도 오차 없이 성립했다.
+- 조건별 분포 차이는 존재하지만 구간 정의를 훼손하지 않으므로 성능을 보지 않은 상태에서
+  불필요한 경마장 분리나 거리 조건 Feature를 추가하지 않는다.

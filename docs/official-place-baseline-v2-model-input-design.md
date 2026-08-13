@@ -1,7 +1,7 @@
 # Official place baseline v2 모델 입력 설계
 
 기준일: 2026-08-12  
-대상: `mart.place_feature_snapshot_v2_candidate` 48,524행 × 125 Feature  
+대상: `mart.place_feature_snapshot_v2_candidate` 85,566행 × 125 Feature
 상태: 입력 후보 계약 확정, 모델 미학습
 
 ## 기술 요약
@@ -10,7 +10,7 @@
 baseline에는 117개를 모델 입력으로 제안한다. 현재 사전정보 28개는 Core input이고,
 PIT-safe Historical 정보 89개는 count와 함께 해석하는 input이다. 정의상 복원 가능한
 count/flag 6개는 구조 제외한다. 거리·경마장을 혼합한 절대 경주시간 중앙값 2개는 현재
-형태로는 baseline에 넣지 않고 `REVIEW_REQUIRED`로 남긴다.
+형태로 일관된 경기력 지표가 아니므로 `EXCLUDE_LOGICAL`로 확정한다.
 
 모델 성능, target 관계, correlation, VIF, Feature importance와 ablation은 사용하지 않았다.
 기존 `place_logistic_baseline_v1`과 평가 산출물도 변경하지 않았다.
@@ -22,7 +22,7 @@ count/flag 6개는 구조 제외한다. 거리·경마장을 혼합한 절대 �
 | `MODEL_INPUT` | 117 | official baseline 입력 후보 |
 | `AUDIT_ONLY` | 0 | 125개 Feature 안에는 없음 |
 | `EXCLUDE_STRUCTURAL` | 6 | 다른 입력으로 정의상 정확히 복원 |
-| `REVIEW_REQUIRED` | 2 | 조건 혼합 때문에 추가 설계 필요 |
+| `EXCLUDE_LOGICAL` | 2 | 조건 혼합으로 의미가 일관되지 않아 모델 입력 제외 |
 
 125개 밖의 ID·날짜·lineage·타깃·모집단 상태 22개는 관리·감사용이며 모델 입력이 아니다.
 전체 125개 inventory, 타입, 역할, 결측률, companion과 판정은
@@ -148,19 +148,19 @@ recent10, 동일거리, 동일 경마장, 동일 경마장×거리 sectional 요
 | `jockey_history_available` | jockey prior start count | `count > 0` |
 | `trainer_history_available` | trainer prior start count | `count > 0` |
 
-전체 48,524행에서 세 count 복원 관계와 세 flag 관계 위반은 각각 0건이다. 이 제외는
+전체 85,566행에서 세 count 복원 관계와 세 flag 관계 위반은 각각 0건이다. 이 제외는
 상관관계가 아니라 정의상 중복을 근거로 한다. count와 rate 자체는 서로 다른 정보이므로 유지한다.
 
-## E. Review required — 2개
+## E. Logical exclusion — 2개
 
 - `horse_recent3_race_time_median`
 - `horse_recent5_race_time_median`
 
 두 값은 여러 거리·경마장의 절대 경주시간을 한 말의 최근 이력 안에서 섞는다. `distance_m`과
-`meet_code`를 함께 넣어도 단순 Logistic의 선형항만으로 조건 차이가 충분히 해소된다고 보장할
-수 없다. official baseline 117개 입력에서는 median 두 개를 제외하되, 관측 가능성을 나타내는
-race-time count는 유지한다. 후속에는 동일거리 또는 동일 경마장×거리 요약이나 별도 보정값을
-설계한 뒤 추가한다.
+`meet_code`를 함께 넣어도 절대시간 자체의 조건 차이가 없어지지 않는다. Validation 성능으로
+포함 여부를 다시 선택하지 않고 official baseline 입력에서 확정 제외한다. 관측 깊이를 나타내는
+race-time count는 속도 크기가 아니므로 유지한다. 후속에는 동일거리 또는 동일 경마장×거리
+요약이나 별도 정규화값을 새 Feature 버전으로 설계한다.
 
 ## 구조적 중복과 부분 중복
 
@@ -237,11 +237,9 @@ race-time count는 유지한다. 후속에는 동일거리 또는 동일 경마�
 
 ## 모델 학습 전 남은 결정
 
-1. `REVIEW_REQUIRED` race-time median 두 개는 현재 제안대로 제외할지, 조건 통제 Feature를 먼저
-   추가할지 확정한다.
-2. 현재 사전정보 NULL에 별도 missing indicator를 만들지 전처리 계약에서 결정한다.
-3. 범주형 변수의 저빈도 수준 처리와 미지 범주 정책을 Train-only 원칙으로 정한다.
-4. 117개 입력을 사용하는 첫 알고리즘·날짜 분할·평가 절차를 별도 모델 계약으로 봉인한다.
+1. 현재 사전정보 NULL에 별도 missing indicator를 만들지 전처리 계약에서 결정한다.
+2. 범주형 변수의 저빈도 수준 처리와 미지 범주 정책을 Train-only 원칙으로 정한다.
+3. 117개 입력을 사용하는 첫 알고리즘과 전처리 절차를 별도 모델 계약으로 봉인한다.
 
 Snapshot·PIT·모집단 관점의 blocker는 없다. 다만 2024~2026만 사용하는 모델은 left-censoring과
 짧은 관측기간 제한을 그대로 가진다. 2022·2023 확장은 별도 데이터 버전에서 수행한다.
@@ -253,4 +251,3 @@ Snapshot·PIT·모집단 관점의 blocker는 없다. 다만 2024~2026만 사용
 - Snapshot 구현·감사: `docs/place-feature-snapshot-v2-build.md`
 - 판정 생성기: `scripts/design_official_baseline_v2_inputs.py`
 - 검증 요약: `data/exports/validation/official_place_baseline_v2_input_contract/summary.json`
-
