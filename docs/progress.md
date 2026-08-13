@@ -457,3 +457,10 @@
 - PIT/leakage/구조 감사는 모두 통과했고 117개 MODEL_INPUT 계약을 유지한다.
 - 상세 결과: `docs/sales-history-extension-and-snapshot-v2-rebuild.md`
 - 다음 추천 작업: official baseline v2 날짜 분할 및 평가 프로토콜 설계.
+## 2026-08-13 — Snapshot v2 Feature maturity 및 모델링 시작일 결정
+
+- 2022-01~2023-07의 117개 MODEL_INPUT 결측과 companion count 기반 Historical family 가용성을 월별 프로파일링했다.
+- 2022년 초의 강한 left-censoring이 중·후반에 크게 완화되고, 2023년 초에는 주요 장기·조건·관계자 이력이 성숙한 것을 확인했다.
+- 2022년 전체를 Historical warm-up으로 사용하고 official place baseline v2 모델링 시작일을 2023-01-01로 권고했다.
+- 모델 학습·평가·Feature 선택은 수행하지 않았다.
+- 상세 결과: `docs/place-feature-maturity-and-modeling-start-v2.md`

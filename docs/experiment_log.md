@@ -779,3 +779,20 @@
 ### 다음 실험 아이디어
 
 - 모델을 실행하기 전에 2022 warm-up과 장기 Train/Validation/walk-forward 경계를 설계하고 봉인한다.
+## 2026-08-13 — 117개 Feature 월별 maturity 프로파일
+
+### 실험 내용
+
+- 2022-01~2023-07 월별 경주·출전마·PLC 모집단 통계와 117개 입력의 non-null 비율을 계산했다.
+- Historical family는 단순 NULL 대신 prior/recent/condition companion count로 실제 관측 존재와 full recent window를 구분했다.
+- 2022-07, 2023-01, 2023-07 시작 후보의 표본과 maturity를 비교했다.
+
+### 결과와 해석
+
+- 2022-01 horse history 7.22%, recent3 full 0%에서 2023-01 각각 93.91%, 75.11%로 개선됐다.
+- 2023-01 recent5 full은 58.69%, recent10 full은 22.66%로 깊은 창은 이후에도 점진적으로 성숙했다.
+- 급격한 단절점은 없지만 한 해 전체 warm-up과 장기 표본 보존을 함께 만족하는 2023-01-01이 가장 해석 가능한 시작점이다.
+
+### 다음 실험 아이디어
+
+- 2023-01 이후 Train/Validation 및 장기 expanding walk-forward 경계를 Feature maturity 계약과 분리해 설계한다.

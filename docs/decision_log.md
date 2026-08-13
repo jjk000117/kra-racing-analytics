@@ -567,3 +567,16 @@
 
 - 연도별 immutable batch를 합치거나 덮어쓰지 않아도 전체기간을 재구축할 수 있고, 각 행의 source batch lineage를 보존할 수 있다.
 - 공식 PLC 적중 원천과 PIT 정책을 바꾸지 않고 Historical 기간만 안전하게 확장할 수 있다.
+## 2026-08-13 — official place baseline v2 모델링 시작일 2023-01-01 권고
+
+결정:
+
+- 2022-01~12는 Historical Feature 계산을 위한 warm-up으로 사용한다.
+- official place baseline v2의 모델링 가능 기간은 2023-01-01부터 시작하는 것으로 권고한다.
+- 날짜 경계는 모델 성능이 아니라 117개 입력의 월별 가용성, companion count와 표본 구조로만 결정한다.
+
+이유:
+
+- 2023년 1월 horse long-term·속도/sectional·마체중 이력은 93.91%, same-meet 93.83%, 기수·조교사·마주는 약 99~100% 가용했다.
+- recent10과 interaction은 점진적으로 성숙해 명확한 단절점이 없으므로 임의 threshold 대신 한 해 전체 warm-up이라는 재현 가능하고 해석하기 쉬운 경계를 채택했다.
+- 2023년 7월까지 늦춰도 신규 말·조합의 left-censoring은 사라지지 않으며 모델링 기간만 6개월 줄어든다.
