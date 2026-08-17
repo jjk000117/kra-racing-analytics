@@ -20,6 +20,7 @@ from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.development_evaluation import prepare_development_infrastructure
 from kra_analytics.drift_diagnostics import run_feature_drift_diagnostic
+from kra_analytics.feature_bundle_experiment import run_feature_bundle_development_experiment
 from kra_analytics.feature_bundles import audit_feature_bundles, build_feature_bundles
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
 from kra_analytics.m1_experiment import run_m1_development_experiment
@@ -385,6 +386,18 @@ def model_run_m1_development() -> None:
     typer.echo(f"folds={len(result['fold_context'])}")
     typer.echo(f"validation_access_count={result['validation_access_count']}")
     typer.echo(f"sealed_artifacts_unchanged={result['sealed_artifacts_unchanged']}")
+
+
+@model_app.command("run-feature-bundle-development")
+def model_run_feature_bundle_development() -> None:
+    """Compare sealed B0/F1/F2/F3 candidates inside the development period."""
+    result = run_feature_bundle_development_experiment()
+    typer.echo(f"experiment_version={result['experiment_version']}")
+    typer.echo(f"development_rows={result['development_rows']}")
+    typer.echo(f"development_races={result['development_races']}")
+    typer.echo(f"validation_access_count={result['validation_access_count']}")
+    for judgement in result["judgements"]:
+        typer.echo(f"{judgement['experiment_id']}={judgement['judgement']}")
 
 
 @model_app.command("diagnose-time-drift")

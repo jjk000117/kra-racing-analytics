@@ -3,6 +3,14 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-18 — B0/F1/F2/F3 development 실험
+
+- 동일 Logistic과 네 expanding fold에서 B0 117, F1 123, F2 125, F3 127개 입력을 비교했다.
+- F1은 두 주요 손실을 4/4 fold에서 소폭 개선해 KEEP, F3는 더 큰 폭으로 4/4 개선해 KEEP했다.
+- F2는 두 주요 손실이 4/4 fold에서 악화해 DROP했다.
+- Validation 접근은 0회이고 봉인 baseline 및 M1 결과 hash는 유지됐다.
+- 상세 문서: `docs/post-baseline-v2-feature-bundle-development-results.md`
+
 ## 2026-08-18 — Post-baseline v2 F1/F2/F3 구현·감사
 
 - 기존 125개 Snapshot을 보존한 engineered candidate에 F1 6개, F2 8개, F3 10개를 구현했다.

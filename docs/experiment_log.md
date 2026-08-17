@@ -962,3 +962,21 @@
 ### 다음 실험 아이디어
 
 - Logistic과 네 development fold를 고정한 B0/F1/F2/F3 독립 비교를 실행한다.
+
+## 2026-08-18 — B0/F1/F2/F3 Logistic development CV
+
+### 실험 내용
+
+- 동일 raw Logistic과 fold-train 전처리로 기존 117개에 각 bundle만 독립 추가했다.
+- 네 expanding quarterly fold에서 손실·calibration·가용성별 보조 진단을 기록했다.
+
+### 결과와 해석
+
+- 평균 Macro Log Loss는 B0/F1/F2/F3가 0.535538/0.534350/0.535743/0.528864였다.
+- 평균 Macro Brier는 0.178477/0.177942/0.178527/0.176203이었다.
+- F1과 F3는 두 주요 지표를 4/4 fold 개선했고 F2는 0/4였다.
+- F1=KEEP, F2=DROP, F3=KEEP으로 확정했다. Validation 접근은 0회였다.
+
+### 다음 실험 아이디어
+
+- F1+F3 한 가지 조합만 동일 development 계약에서 비교한다.
