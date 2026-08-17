@@ -872,3 +872,22 @@
 ### 다음 실험 아이디어
 
 - 2024-07 이후 접근을 거부하는 개발 loader, 4-fold inner temporal CV와 실험 registry를 먼저 구현한다.
+
+## 2026-08-18 — Development evaluation infrastructure audit
+
+### 실험 내용
+
+- 2023-01~2024-06 loader로 117개 입력과 target을 읽고 네 expanding quarterly fold를 생성했다.
+- 각 fold에서 분류기 없이 전처리기만 학습행에 적합하고 평가행을 변환했다.
+- 날짜 guard, 전처리 격리, registry 접근 예산과 봉인 artifact hash를 검사했다.
+
+### 결과와 해석
+
+- 전체 2,675경주·28,392행이며 fold별 시간 순서 위반과 경주 교집합은 0건이었다.
+- 네 fold의 학습/평가 행은 9,224/4,458, 13,682/5,229, 18,911/4,707,
+  23,618/4,774였다.
+- 분류기 학습·prediction·Validation 접근은 0건이고 baseline v2 보호 hash는 일치했다.
+
+### 다음 실험 아이디어
+
+- 사전 정의한 제한적 HistGradientBoosting 설정으로 M1을 development CV에서만 실행한다.

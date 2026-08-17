@@ -1,0 +1,8 @@
+{
+  "model_version": "official_place_logistic_baseline_v2",
+  "purpose": "Detect mutation of the sealed run contract and Train+Validation refit artifact.",
+  "artifacts": {
+    "data/exports/modeling/official_place_logistic_baseline_v2/run_contract.json": "5e11405b47c0f827ee8103538e66dc702872996d5ef3c991ca487a29b8c30831",
+    "data/exports/modeling/official_place_logistic_baseline_v2/refit_artifact.joblib": "25abaa0ca2e4449bd625624b9a90728886ad8db1d2de2e88d4e2bd905de1c0f9"
+  }
+}

@@ -506,3 +506,13 @@
 - 새 모델·prediction·Feature·Snapshot은 생성하지 않았고 평가기간도 추가 조회하지 않았다.
 - 상세 결과: `docs/post-baseline-v2-improvement-experiment-design.md`
 - 다음 추천 작업: 2024-07 이후 접근을 차단한 inner temporal CV harness와 실험 registry만 구현한다.
+
+## 2026-08-18 — Post-baseline v2 개발 평가 인프라 구현 완료
+
+- 2023-01~2024-06 전용 loader와 4개 quarterly expanding fold를 구현했다.
+- 실제 2,675경주·28,392행에서 시간 순서 및 fold별 Train-only 전처리를 확인했다.
+- Feature hash·fold 지표·Validation 접근 횟수를 기록하는 registry와 2024-07 이후 접근 guard를 추가했다.
+- 봉인된 baseline v2 run contract와 refit artifact의 SHA256이 변경되지 않았음을 확인했다.
+- 모델 학습·prediction·Validation 접근은 수행하지 않았다.
+- 상세 결과: `docs/post-baseline-v2-development-evaluation-infrastructure.md`
+- 다음 추천 작업: M1 설정을 사전 봉인하고 development fold에서 HistGradientBoosting 첫 실험을 실행한다.

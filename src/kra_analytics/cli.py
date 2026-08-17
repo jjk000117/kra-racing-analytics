@@ -18,6 +18,7 @@ from kra_analytics.collectors.api4_3 import (
 )
 from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
+from kra_analytics.development_evaluation import prepare_development_infrastructure
 from kra_analytics.drift_diagnostics import run_feature_drift_diagnostic
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
 from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
@@ -337,6 +338,18 @@ def model_walk_forward_stability() -> None:
     typer.echo(f"first_evaluation_month={outcome.first_evaluation_month}")
     typer.echo(f"last_evaluation_month={outcome.last_evaluation_month}")
     typer.echo(f"result_path={outcome.result_path}")
+
+
+@model_app.command("prepare-development-evaluation")
+def model_prepare_development_evaluation() -> None:
+    """Audit the development loader and folds without fitting a classifier."""
+    result = prepare_development_infrastructure()
+    typer.echo(f"development_rows={result['rows']}")
+    typer.echo(f"development_races={result['races']}")
+    typer.echo(f"folds={len(result['folds'])}")
+    typer.echo(f"validation_access_count={result['validation_access_count']}")
+    typer.echo(f"classifier_fitted={result['classifier_fitted']}")
+    typer.echo(f"predictions_created={result['predictions_created']}")
 
 
 @model_app.command("diagnose-time-drift")
