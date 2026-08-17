@@ -495,3 +495,14 @@
   범위 이탈을 실행 계약 limitation으로 기록했다.
 - 상세 결과: `docs/official-place-logistic-baseline-v2-validation.md`
 - 다음 추천 작업: 봉인된 artifact와 contract를 변경하지 않고 post-selection temporal evaluation을 1회 실행한다.
+
+## 2026-08-18 — Baseline v2 후속 개선 실험·평가기간 보존 정책 확정
+
+- 2025-07~2026-07의 즉시 평가를 보류하고 최종 후보들의 공통 post-selection temporal evaluation으로 보존했다.
+- 같은 117개를 사용하는 Histogram Gradient Boosting으로 모델 복잡도 효과를 먼저 분리하도록 설계했다.
+- Feature 개선은 상대 경주시간과 pace-shape bundle 두 개를 우선 후보로 제한했다.
+- 모델·Feature 선택은 2023-01~2024-06의 4개 quarterly expanding fold에서 수행하고 기존 Validation은
+  봉인된 소수 후보의 최종 개발 비교에만 사용한다.
+- 새 모델·prediction·Feature·Snapshot은 생성하지 않았고 평가기간도 추가 조회하지 않았다.
+- 상세 결과: `docs/post-baseline-v2-improvement-experiment-design.md`
+- 다음 추천 작업: 2024-07 이후 접근을 차단한 inner temporal CV harness와 실험 registry만 구현한다.

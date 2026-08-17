@@ -853,3 +853,22 @@
 ### 다음 실험 아이디어
 
 - 봉인된 v2 artifact를 변경하지 않고 2025-07~2026-07 post-selection temporal evaluation을 한 번 실행한다.
+
+## 2026-08-18 — 후속 성능 개선 실험 설계
+
+### 실험 내용
+
+- 기존 Validation 결과와 117개 Feature family만 사용해 비선형 모델 및 Feature engineering 가설을 정리했다.
+- 2023-01~2024-06 내부 4개 quarterly expanding fold와 제한된 후보 예산을 설계했다.
+- 모델 복잡도, 상대 경주시간, pace-shape와 조건부 결합 효과를 분리하는 ablation 순서를 정의했다.
+
+### 결과와 해석
+
+- 첫 모델 후보는 같은 117개를 사용하는 Histogram Gradient Boosting으로 제한했다.
+- 첫 Feature 후보는 PIT-safe Historical 상대 경주시간과 pace-shape 두 bundle로 제한했다.
+- 2025-07~2026-07은 모든 후보 봉인 뒤 한 번 비교하는 공통 temporal evaluation으로 보존한다.
+- 새 데이터 조회·모델 학습·prediction·Feature 구현은 수행하지 않았다.
+
+### 다음 실험 아이디어
+
+- 2024-07 이후 접근을 거부하는 개발 loader, 4-fold inner temporal CV와 실험 registry를 먼저 구현한다.

@@ -111,6 +111,19 @@ Walk-forward는 설정 선택이나 반복 최적화에 사용하지 않는다. 
 
 평가 시점보다 미래 데이터를 전처리, 범주 사전, 결측 통계, 모델 또는 calibrator 적합에 사용하지 않는다.
 
+## 2026-08-18 후속 개발 정책 변경
+
+즉시 post-selection temporal evaluation을 실행한다는 이전 순서를 보류한다. 2025-07-01~2026-07-26은
+Logistic baseline v2, 같은 117개를 사용하는 비선형 후보와 필요한 Feature engineering 후보가
+모두 개발기간 안에서 확정·봉인될 때까지 공통 평가기간으로 보존한다.
+
+후속 모델·Feature 선택은 2023-01~2024-06의 inner temporal CV에서 수행하고, 2024-07~2025-06
+Validation은 사전 정의한 소수 후보의 최종 개발 비교에만 사용한다. 공통 평가기간은 모든 후보를
+동일 시점에 한 번 비교하며 결과를 보고 같은 버전을 수정하지 않는다. 기존 정보 노출 때문에
+완전히 unseen인 Final Test라고 표현하지 않는 기존 원칙은 유지한다.
+
+상세 실험 설계: `docs/post-baseline-v2-improvement-experiment-design.md`
+
 ## 산출물
 
 - `data/exports/validation/place_baseline_v2_temporal_design/monthly_population.csv`

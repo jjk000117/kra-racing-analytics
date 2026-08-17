@@ -628,3 +628,20 @@
   0.180464/0.180511로 sigmoid가 두 지표를 함께 개선하지 못했다.
 - 월별로도 sigmoid가 raw보다 낮은 달은 Log Loss 6/12, Brier 5/12로 일관되지 않았다.
 - 작은 차이를 이유로 calibration 단계를 추가하지 않는 것이 단순성과 재현성에 부합한다.
+
+## 2026-08-18 — 공통 평가기간 보존과 후속 실험 예산 제한
+
+결정:
+
+- 2025-07~2026-07 post-selection temporal evaluation을 즉시 실행하지 않고 최종 후보가 모두 봉인될 때까지 보존한다.
+- 첫 비선형 후보는 기존 117개를 그대로 사용하는 Histogram Gradient Boosting 한 family로 제한한다.
+- 첫 Feature 후보는 Historical 상대 경주시간과 pace-shape 두 bundle로 제한한다.
+- 모델·Feature 설정은 2023-01~2024-06의 4-fold expanding quarterly CV에서 선택하고,
+  2024-07~2025-06 Validation에는 사전 정의한 최대 4개 후보만 전달한다.
+- 결합 후보는 비선형 모델과 Feature bundle이 각각 독립적으로 개선될 때만 만든다.
+
+이유:
+
+- Logistic은 무정보 기준선을 개선했지만 비선형·threshold·조건부 interaction을 직접 표현하지 못한다.
+- 절대 race time은 제외된 반면 과거 경주 내부 상대시간과 sectional shape는 PIT-safe한 추가 정보를 제공할 수 있다.
+- 모델과 Feature를 동시에 바꾸면 개선 원인을 분리할 수 없고, 반복적인 Validation 사용은 개발 과적합을 키운다.
