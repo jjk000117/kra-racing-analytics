@@ -1,0 +1,118 @@
+feature_name,f3_class,preferred_relative_expression,selected_for_f3,reason
+meet_code,D,NONE,false,current race common categorical condition
+race_grade,D,NONE,false,current race common categorical condition
+distance_m,D,NONE,false,current race common distance condition
+registered_runner_count,C,NONE,false,field size is already the comparison denominator
+gate_no,B,field percentile,false,normalized draw position may matter but is not a universal quality order
+horse_sex,D,NONE,false,categorical identity has no valid numeric field order
+horse_age,B,field median difference,false,relative age is interpretable but lower priority than ability and form
+carried_weight,B,field median difference,true,relative burden is meaningful but higher is not inherently better
+rating,A,higher-is-better percentile,true,official ability level is directly comparable within the field
+race_age_condition,D,NONE,false,current race common categorical condition
+race_weight_condition,D,NONE,false,current race common categorical condition
+race_prize_condition,D,NONE,false,current race common categorical condition
+race_sex_condition,D,NONE,false,current race common categorical condition
+race_type,D,NONE,false,current race common categorical condition
+race_day_of_week,D,NONE,false,current race common calendar condition
+race_first_prize,D,NONE,false,current race common prize condition
+race_second_prize,D,NONE,false,current race common prize condition
+race_third_prize,D,NONE,false,current race common prize condition
+race_fourth_prize,D,NONE,false,current race common prize condition
+race_fifth_prize,D,NONE,false,current race common prize condition
+race_bonus_1,D,NONE,false,current race common prize condition
+race_bonus_2,D,NONE,false,current race common prize condition
+race_bonus_3,D,NONE,false,current race common prize condition
+horse_prior_start_count,C,NONE,false,observation depth should remain an absolute reliability companion
+horse_prior_finish_rate,A,higher-is-better percentile,false,relative completion record is useful but PLC rate is the selected long-term outcome
+horse_prior_plc_hit_rate,A,higher-is-better percentile,true,long-term PLC record is directly comparable with count retained
+horse_prior_avg_finish_rank,A,lower-is-better percentile,false,overlaps selected long-term PLC relative position
+horse_days_since_last_start,B,field median difference,false,relative freshness may matter but optimal direction is not monotonic
+horse_recent5_start_count,C,NONE,false,observation depth should remain an absolute reliability companion
+horse_recent5_finish_rate,A,higher-is-better percentile,false,relative recent completion overlaps selected recent PLC rate
+horse_recent5_plc_hit_rate,A,higher-is-better percentile,true,recent PLC form is directly comparable with count retained
+horse_recent5_avg_finish_rank,A,lower-is-better percentile,false,overlaps selected recent PLC relative position
+horse_same_distance_start_count,C,NONE,false,condition support is a reliability companion not performance
+horse_same_distance_plc_hit_rate,A,higher-is-better percentile,true,distance affinity is comparable within today's field
+jockey_prior_start_count,C,NONE,false,observation depth should remain absolute
+jockey_prior_plc_hit_rate,A,higher-is-better percentile,false,long-term jockey rate overlaps selected recent10 rate
+trainer_prior_start_count,C,NONE,false,observation depth should remain absolute
+trainer_prior_plc_hit_rate,A,higher-is-better percentile,false,long-term trainer rate overlaps selected recent10 rate
+horse_prior_win_rate,A,higher-is-better percentile,false,overlaps long-term PLC rate for the first bundle
+horse_prior_top3_rate,A,higher-is-better percentile,false,overlaps long-term PLC rate for the first bundle
+horse_prior_best_finish_rank,A,lower-is-better percentile,false,extreme best rank overlaps broader long-term outcome
+horse_prior_finish_rank_std,B,field percentile,false,variability may matter but higher is not quality and overlaps rank summaries
+horse_prior_rating_mean,C,NONE,false,current rating is a more direct declared level
+horse_last_rating,C,NONE,false,current rating is already present and more current
+horse_rating_change_last_start,B,field median difference,false,relative rating movement is interpretable but secondary
+horse_prior_carried_weight_mean,B,field median difference,false,relative historical burden may matter but overlaps current burden
+horse_recent3_finish_rate,A,higher-is-better percentile,false,relative form is useful but recent5 is chosen for stability
+horse_recent3_win_rate,A,higher-is-better percentile,false,overlaps selected recent5 PLC position
+horse_recent3_top3_rate,A,higher-is-better percentile,false,overlaps selected recent5 PLC position
+horse_recent3_avg_finish_rank,A,lower-is-better percentile,false,overlaps selected recent5 PLC position
+horse_recent3_best_finish_rank,A,lower-is-better percentile,false,short-window extreme is unstable and redundant
+horse_recent3_avg_rating,C,NONE,false,current rating is more direct and this repeats rating level
+horse_recent3_rating_change,B,field median difference,false,recent rating movement may matter but is secondary
+horse_recent3_start_count,C,NONE,false,observation depth should remain absolute
+horse_recent5_win_rate,A,higher-is-better percentile,false,overlaps selected recent5 PLC position
+horse_recent5_top3_rate,A,higher-is-better percentile,false,overlaps selected recent5 PLC position
+horse_recent5_best_finish_rank,A,lower-is-better percentile,false,extreme rank overlaps selected recent5 PLC position
+horse_recent5_avg_rating,C,NONE,false,current rating is more direct and this repeats rating level
+horse_recent5_rating_change,B,field median difference,false,recent rating movement may matter but is secondary
+horse_recent10_finish_rate,A,higher-is-better percentile,false,longer recent outcome is useful but omitted to limit window duplication
+horse_recent10_win_rate,A,higher-is-better percentile,false,longer recent outcome overlaps prior and recent5
+horse_recent10_top3_rate,A,higher-is-better percentile,false,longer recent outcome overlaps prior and recent5
+horse_recent10_avg_finish_rank,A,lower-is-better percentile,false,longer recent rank overlaps prior and recent5
+horse_recent10_best_finish_rank,A,lower-is-better percentile,false,longer recent extreme overlaps existing outcomes
+horse_recent10_avg_rating,C,NONE,false,current rating is more direct and this repeats rating level
+horse_recent10_rating_change,B,field median difference,false,rating movement is interpretable but secondary
+horse_recent10_start_count,C,NONE,false,observation depth should remain absolute
+horse_same_meet_start_count,C,NONE,false,condition support is a reliability companion
+horse_same_meet_finish_rate,A,higher-is-better percentile,false,same-meet outcome is useful but overlaps selected distance affinity
+horse_same_meet_plc_hit_rate,A,higher-is-better percentile,false,same-meet outcome is useful but omitted to limit affinity duplication
+horse_same_meet_avg_finish_rank,A,lower-is-better percentile,false,same-meet rank overlaps rate affinity
+horse_same_distance_finish_rate,A,higher-is-better percentile,false,distance outcome overlaps selected distance PLC rate
+horse_same_distance_avg_finish_rank,A,lower-is-better percentile,false,distance rank overlaps selected distance PLC rate
+horse_same_meet_distance_start_count,C,NONE,false,sparse condition support must remain an absolute reliability companion
+horse_same_meet_distance_finish_rate,B,higher-is-better percentile,false,sparse nested condition rate can overstate small samples
+horse_same_meet_distance_plc_hit_rate,B,higher-is-better percentile,false,sparse nested condition rate can overstate small samples
+horse_same_meet_distance_avg_finish_rank,B,lower-is-better percentile,false,sparse nested condition rank can overstate small samples
+horse_recent3_race_time_count,C,NONE,false,valid time depth is a reliability companion
+horse_recent3_s1f_median,A,lower-is-better percentile,false,sectional position is useful but recent5 is chosen for stability
+horse_recent3_s1f_count,C,NONE,false,sectional depth should remain absolute
+horse_recent3_g3f_median,A,lower-is-better percentile,false,sectional position is useful but recent5 is chosen for stability
+horse_recent3_g1f_median,A,lower-is-better percentile,false,sectional position is useful but recent5 is chosen for stability
+horse_recent5_race_time_count,C,NONE,false,valid time depth is a reliability companion
+horse_recent5_s1f_median,A,lower-is-better percentile,true,historical opening speed can be located within today's field
+horse_recent5_s1f_count,C,NONE,false,sectional depth should remain absolute
+horse_recent5_g3f_median,A,lower-is-better percentile,true,historical final-600m speed can be located within today's field
+horse_recent5_g1f_median,A,lower-is-better percentile,true,historical final-200m speed can be located within today's field
+horse_last_weight_kg,C,NONE,false,body size differs by horse and relative weight is not general performance
+horse_last_weight_change_kg,C,NONE,false,change is horse-specific and field ordering lacks stable meaning
+horse_recent5_weight_mean,C,NONE,false,body size level is horse-specific and overlaps current weight
+horse_recent5_weight_std,B,field percentile,false,relative variability may be informative but higher is not quality
+horse_recent5_weight_count,C,NONE,false,weight observation depth should remain absolute
+jockey_recent10_start_count,C,NONE,false,observation depth should remain absolute
+jockey_recent10_plc_hit_rate,A,higher-is-better percentile,true,recent jockey PLC record is comparable within the field
+jockey_same_meet_start_count,C,NONE,false,condition support should remain absolute
+jockey_same_meet_plc_hit_rate,A,higher-is-better percentile,false,overlaps selected recent jockey form
+trainer_recent10_start_count,C,NONE,false,observation depth should remain absolute
+trainer_recent10_plc_hit_rate,A,higher-is-better percentile,true,recent trainer PLC record is comparable within the field
+trainer_same_meet_start_count,C,NONE,false,condition support should remain absolute
+trainer_same_meet_plc_hit_rate,A,higher-is-better percentile,false,overlaps selected recent trainer form
+horse_jockey_recent10_start_count,C,NONE,false,sparse interaction support must remain absolute
+horse_jockey_recent10_plc_hit_rate,B,higher-is-better percentile,false,sparse pair rate ranking can hide support differences
+horse_jockey_same_meet_start_count,C,NONE,false,sparse interaction support must remain absolute
+horse_jockey_same_meet_plc_hit_rate,B,higher-is-better percentile,false,sparse nested pair rate ranking can hide support differences
+owner_prior_start_count,C,NONE,false,observation depth should remain absolute
+owner_prior_plc_hit_rate,B,higher-is-better percentile,false,owner association may be useful but can proxy stable composition and sample size
+horse_trainer_prior_start_count,C,NONE,false,sparse interaction support must remain absolute
+horse_trainer_prior_plc_hit_rate,B,higher-is-better percentile,false,sparse pair rate ranking can hide support differences
+current_weather,D,NONE,false,current race common categorical condition
+current_track_condition,D,NONE,false,current race common categorical condition
+current_track_moisture_percent,D,NONE,false,current race common numeric condition
+current_horse_weight_kg,C,NONE,false,body size differs by horse and relative weight is not general ability
+current_horse_weight_change_kg,C,NONE,false,change is horse-specific and field ordering lacks stable meaning
+horse_recent3_g3f_count,C,NONE,false,sectional depth should remain absolute
+horse_recent3_g1f_count,C,NONE,false,sectional depth should remain absolute
+horse_recent5_g3f_count,C,NONE,false,sectional depth should remain absolute
+horse_recent5_g1f_count,C,NONE,false,sectional depth should remain absolute

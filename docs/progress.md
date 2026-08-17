@@ -536,3 +536,13 @@
 - Validation 및 2024-07 이후 접근은 0회이고 sealed baseline v2 hash는 유지됐다.
 - 상세 결과: `docs/m1-histgradientboosting-development-results.md`
 - 다음 추천 작업: Logistic을 고정한 F1/F2/F3 Feature 실험 설계를 진행한다.
+
+## 2026-08-18 — F1/F2/F3 Feature bundle 논리 계약 설계 완료
+
+- F1은 과거 경주 상대시간 advantage·percentile의 recent3/5와 count, 총 6개로 제한했다.
+- F2는 event-level late-kick·finish-vs-start quantity의 recent3/5 median·count, 총 8개로 제한했다.
+- 117개 입력을 F3 A/B/C/D로 전수 분류하고 핵심 field-relative Feature 10개만 선택했다.
+- rank·best difference·선형 중복 pace 식과 sparse rate의 기계적 상대화를 제거했다.
+- Feature 구현·Snapshot 변경·모델 학습·성능 계산·Validation 접근은 수행하지 않았다.
+- 상세 결과: `docs/post-baseline-v2-feature-bundle-design.md`
+- 다음 추천 작업: F1/F2/F3를 각각 독립 candidate로 구현하고 구조·PIT audit부터 수행한다.

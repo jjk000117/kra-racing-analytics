@@ -927,3 +927,20 @@
 ### 다음 실험 아이디어
 
 - M1은 폐기하고 Logistic을 고정한 채 F1/F2/F3의 추가 정보 가설을 별도로 설계한다.
+
+## 2026-08-18 — F1/F2/F3 사전 논리·중복 감사
+
+### 실험 내용
+
+- 기존 117개 inventory와 Snapshot/Semantic lineage를 사용해 세 Feature bundle의 수식·window·PIT를 설계했다.
+- 117개 입력 전부를 F3 상대화 A/B/C/D로 분류하고 target·성능을 사용하지 않고 최소 후보를 선택했다.
+
+### 결과와 해석
+
+- F1 6개, F2 8개, F3 10개로 총 24개 독립 후보 계약을 만들었다.
+- F1 best gap·raw rank, F2 상수배 수식, F3 중복 window·sparse interaction 상대화를 제외했다.
+- F1/F2는 과거 event의 결과만 현재보다 앞선 경우 사용하고 F3는 cutoff-known 현재 field 값만 사용한다.
+
+### 다음 실험 아이디어
+
+- 각 bundle을 별도 candidate Snapshot으로 구현하고 PIT·NULL·count·중복 audit 후 development CV를 실행한다.

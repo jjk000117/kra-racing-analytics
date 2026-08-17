@@ -687,3 +687,19 @@
 - M1-A는 macro/micro Log Loss·Brier가 모든 fold에서 B0보다 악화했다.
 - M1-B는 calibration은 개선됐지만 평균 네 손실 지표가 모두 악화했고 macro Brier 개선 fold가 0/4였다.
 - 후반 fold에서 M1-B의 B0 대비 macro Log Loss 차이가 커져 시간 일관성도 확인되지 않았다.
+
+## 2026-08-18 — F1/F2/F3 최소 Feature bundle 계약
+
+결정:
+
+- F1은 time advantage와 field-size-adjusted percentile의 recent3/5 및 count 6개를 사용한다.
+- F2는 late-kick advantage와 finish-vs-start advantage의 recent3/5 median·count 8개를 사용한다.
+- F3는 117개 전수 분류 후 rating·부담중량·핵심 PLC rate·관계자 recent10·sectional을 상대화한 10개만 사용한다.
+- 세 bundle은 기존 117개를 유지한 Logistic에 각각 독립적으로 추가하고 결과 전 정의를 변경하지 않는다.
+
+이유:
+
+- F1 rank는 두수 차이에 취약하고 best difference는 median difference와 중복되며 극단값에 민감하다.
+- F2 후보 중 `G1F-G3F/3`은 선택한 late-kick 식의 정확한 상수배다.
+- F3 count·공통 경주조건·범주형·마체중 level은 상대화의 추가 의미가 작거나 잘못된 우열을 만든다.
+- sparse rate의 순위는 관측 count 차이를 숨기므로 첫 F3를 대표적이고 support가 높은 rate로 제한한다.
