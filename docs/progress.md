@@ -3,6 +3,14 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-18 — Post-baseline v2 F1/F2/F3 구현·감사
+
+- 기존 125개 Snapshot을 보존한 engineered candidate에 F1 6개, F2 8개, F3 10개를 구현했다.
+- 85,566행·8,036경주에서 grain, count/value, percentile, PIT와 registry 감사를 통과했다.
+- F1/F3 percentile 표본을 독립 재계산했고 기존 117개 및 봉인 baseline artifact hash를 보존했다.
+- 모델 학습·prediction·Validation 및 post-selection 평가는 수행하지 않았다.
+- 상세 문서: `docs/post-baseline-v2-feature-bundle-implementation-audit.md`
+
 ## 2026-08-12 — KRA API 장애 범위 및 ServiceKey 노출 방지
 
 - 공통 redaction 함수와 안전한 예외 문자열 경로를 구현하고 API4/API179 collector에 적용했다.

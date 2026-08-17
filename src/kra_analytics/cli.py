@@ -20,6 +20,7 @@ from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.development_evaluation import prepare_development_infrastructure
 from kra_analytics.drift_diagnostics import run_feature_drift_diagnostic
+from kra_analytics.feature_bundles import audit_feature_bundles, build_feature_bundles
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
 from kra_analytics.m1_experiment import run_m1_development_experiment
 from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
@@ -278,6 +279,28 @@ def feature_build() -> None:
 def feature_check() -> None:
     """Audit Snapshot grain, source agreement, state rules, and PIT boundaries."""
     issues = audit_feature_snapshot()
+    typer.echo(f"issues={len(issues)}")
+    for issue in issues:
+        typer.echo(issue, err=True)
+    if issues:
+        raise typer.Exit(code=1)
+
+
+@feature_app.command("build-post-baseline-bundles")
+def feature_build_post_baseline_bundles() -> None:
+    """Build and audit the sealed F1/F2/F3 candidate Feature bundles."""
+    outcome = build_feature_bundles()
+    typer.echo(f"rows={outcome.row_count}")
+    typer.echo(f"races={outcome.race_count}")
+    typer.echo(f"bundle_features={outcome.feature_count}")
+    typer.echo(f"audit_issues={outcome.audit_issue_count}")
+    typer.echo(f"output_directory={outcome.output_directory}")
+
+
+@feature_app.command("check-post-baseline-bundles")
+def feature_check_post_baseline_bundles() -> None:
+    """Audit the built F1/F2/F3 candidate Feature bundles."""
+    issues = audit_feature_bundles()
     typer.echo(f"issues={len(issues)}")
     for issue in issues:
         typer.echo(issue, err=True)

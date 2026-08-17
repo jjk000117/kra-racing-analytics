@@ -944,3 +944,21 @@
 ### 다음 실험 아이디어
 
 - 각 bundle을 별도 candidate Snapshot으로 구현하고 PIT·NULL·count·중복 audit 후 development CV를 실행한다.
+
+## 2026-08-18 — F1/F2/F3 데이터 수준 구현 감사
+
+### 실험 내용
+
+- 전체 85,566행에서 F1/F2 historical event 계산과 F3 field-relative 계산을 수행했다.
+- 가용성, 범위, recent count, PIT, 공동 sectional, 비교 가능 두수와 독립 percentile 표본을 감사했다.
+
+### 결과와 해석
+
+- 신규 24개가 registry와 일치했고 grain·PIT·범위·count/value 위반은 0건이었다.
+- F1/F2 요약값 가용률은 91.53%, F3는 71.39~100%였다.
+- F3 표본 독립 재계산 차이는 0이고 신규 count는 가까운 기존 count와 7,241행 이상 달라
+  deterministic duplicate가 아니었다.
+
+### 다음 실험 아이디어
+
+- Logistic과 네 development fold를 고정한 B0/F1/F2/F3 독립 비교를 실행한다.

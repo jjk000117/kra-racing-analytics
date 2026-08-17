@@ -703,3 +703,17 @@
 - F2 후보 중 `G1F-G3F/3`은 선택한 late-kick 식의 정확한 상수배다.
 - F3 count·공통 경주조건·범주형·마체중 level은 상대화의 추가 의미가 작거나 잘못된 우열을 만든다.
 - sparse rate의 순위는 관측 count 차이를 숨기므로 첫 F3를 대표적이고 support가 높은 rate로 제한한다.
+
+## 2026-08-18 — F1/F2/F3를 별도 engineered candidate로 구현
+
+결정:
+
+- 기존 125개 Snapshot은 변경하지 않고 새 `mart.place_feature_snapshot_v2_engineered_candidate`에
+  그대로 승계한 뒤 24개 bundle Feature를 추가한다.
+- F1/F2 source 최대일은 모델 입력이 아닌 quality audit 테이블에 남긴다.
+- F1/F2/F3는 상수 목록으로 분리해 후속 development 실험에서 독립 선택한다.
+
+이유:
+
+- 봉인된 117개 계약과 기존 재현 산출물을 보호하면서 Feature 정보 가설만 분리해 비교하기 위해서다.
+- 모델 입력에 lineage 날짜를 추가하지 않고도 엄격한 PIT를 직접 감사할 수 있다.
