@@ -516,3 +516,13 @@
 - 모델 학습·prediction·Validation 접근은 수행하지 않았다.
 - 상세 결과: `docs/post-baseline-v2-development-evaluation-infrastructure.md`
 - 다음 추천 작업: M1 설정을 사전 봉인하고 development fold에서 HistGradientBoosting 첫 실험을 실행한다.
+
+## 2026-08-18 — M1 HGB 입력·전처리 계약 제안 완료
+
+- 동일 117개 입력을 범주형 11개·수치형 106개로 재확인했다.
+- 개발기간과 네 fold에서 범주 cardinality 및 unseen category를 프로파일링했다.
+- fold-train OrdinalEncoder와 HGB native categorical mask, 일반 수치 median, count 8개 0 대체를 권고했다.
+- 기본 복잡도 M1-A와 leaf/L2 보수안 M1-B 두 후보만 제안했다.
+- 모델 학습·prediction·성능 계산·Validation 접근은 수행하지 않았다.
+- 상세 결과: `docs/m1-histgradientboosting-input-preprocessing-contract.md`
+- 다음 추천 작업: 두 설정을 registry에 사전 등록하고 네 development fold에서 M1을 실행한다.

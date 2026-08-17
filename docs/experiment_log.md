@@ -891,3 +891,20 @@
 ### 다음 실험 아이디어
 
 - 사전 정의한 제한적 HistGradientBoosting 설정으로 M1을 development CV에서만 실행한다.
+
+## 2026-08-18 — M1 범주 cardinality·unseen 사전 프로파일
+
+### 실험 내용
+
+- 개발기간 28,392행에서 11개 범주형 Feature의 cardinality와 네 fold 평가 구간 unseen을 확인했다.
+- 모델·prediction·target 성능은 계산하지 않았다.
+
+### 결과와 해석
+
+- 범주 cardinality는 2~87이며 모두 HGB `max_bins=255` 이내였다.
+- unseen은 `race_age_condition`, `race_prize_condition`, `race_type`, `race_day_of_week`에서 발생했다.
+- `race_type` unseen 평가행 비율은 fold별 1.763~6.617%로 전체 vocabulary 선학습 대신 train-only unknown 처리가 필요하다.
+
+### 다음 실험 아이디어
+
+- 사전 정의된 M1-A/M1-B를 네 development fold에서 실행하고 같은 Logistic 기준과 비교한다.

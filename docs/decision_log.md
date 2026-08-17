@@ -659,3 +659,17 @@
 
 - 개발 중 기존 Validation 반복 노출과 이후 평가기간의 우발적 조회를 구조적으로 줄이기 위해서다.
 - fold마다 전처리기를 새로 적합해 범주 사전·결측 통계·scaling의 미래정보 유입을 방지한다.
+
+## 2026-08-18 — M1은 native categorical HGB와 두 개의 사전 정의 설정만 사용
+
+결정:
+
+- M1은 기존 117개 정보를 유지하고 11개 범주형을 fold-train OrdinalEncoder와 HGB categorical mask로 처리한다.
+- 일반 수치 결측은 fold-train median, Historical count 8개는 0 대체하며 scaling은 하지 않는다.
+- 후보는 기본 복잡도 M1-A와 leaf/L2 보수안 M1-B 두 개로 제한한다.
+
+이유:
+
+- 최대 범주 수 87은 HGB 한도 안이며 일부 fold의 unseen은 train-only encoder에서 안전하게 결측으로 처리해야 한다.
+- HGB native 결측 처리를 새 변수로 만들지 않고 기존 결측 계약을 유지해야 모델 복잡도 효과를 더 명확히 비교할 수 있다.
+- scaling은 tree split에 필요하지 않고 두 후보 제한은 development CV 탐색 과잉을 방지한다.

@@ -1,0 +1,12 @@
+feature,development_cardinality,fold_1_unseen_categories,fold_1_unseen_rows,fold_1_unseen_row_rate,fold_2_unseen_categories,fold_2_unseen_rows,fold_2_unseen_row_rate,fold_3_unseen_categories,fold_3_unseen_rows,fold_3_unseen_row_rate,fold_4_unseen_categories,fold_4_unseen_rows,fold_4_unseen_row_rate
+meet_code,2,0,0,0.000000,0,0,0.000000,0,0,0.000000,0,0,0.000000
+race_grade,10,0,0,0.000000,0,0,0.000000,0,0,0.000000,0,0,0.000000
+horse_sex,3,0,0,0.000000,0,0,0.000000,0,0,0.000000,0,0,0.000000
+race_age_condition,8,0,0,0.000000,0,0,0.000000,1,65,0.013809,0,0,0.000000
+race_weight_condition,4,0,0,0.000000,0,0,0.000000,0,0,0.000000,0,0,0.000000
+race_prize_condition,20,1,14,0.003141,0,0,0.000000,5,181,0.038453,3,52,0.010893
+race_sex_condition,3,0,0,0.000000,0,0,0.000000,0,0,0.000000,0,0,0.000000
+race_type,87,16,202,0.045312,29,346,0.066169,6,83,0.017633,9,109,0.022832
+race_day_of_week,4,0,0,0.000000,1,228,0.043603,0,0,0.000000,0,0,0.000000
+current_weather,4,0,0,0.000000,0,0,0.000000,0,0,0.000000,0,0,0.000000
+current_track_condition,5,0,0,0.000000,0,0,0.000000,0,0,0.000000,0,0,0.000000
