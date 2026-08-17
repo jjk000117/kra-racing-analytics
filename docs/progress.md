@@ -483,3 +483,15 @@
 - 모델 입력 수는 117개로 유지하고 `REVIEW_REQUIRED`는 0개가 됐다.
 - 상세 결과: `docs/speed-sectional-feature-audit-v2.md`
 - 다음 추천 작업: 확정된 117개 입력으로 Train-only 전처리와 제한된 Logistic baseline 실행 계약을 구현한다.
+
+## 2026-08-17 — Official place Logistic baseline v2 Validation·봉인 완료
+
+- 확정된 117개 입력으로 Train 2,675경주·28,392행, Validation 1,759경주·18,615행을 사용했다.
+- 무정보 기준선, raw Logistic, Train temporal OOF sigmoid만 비교했다.
+- sigmoid가 macro Log Loss는 0.000351 개선했지만 macro Brier는 0.000047 악화해 raw Logistic을 선택했다.
+- 선택 절차를 봉인한 뒤 Train+Validation 47,007행에 동일 raw Logistic을 재적합했다.
+- 개발 로더는 2025-07-01 미만으로 제한했고 post-selection prediction·손실 평가는 생성하지 않았다.
+- 사전 건수 확인 SQL에서 post-selection 집계 양성률이 노출됐으나 선택 코드에는 사용되지 않은
+  범위 이탈을 실행 계약 limitation으로 기록했다.
+- 상세 결과: `docs/official-place-logistic-baseline-v2-validation.md`
+- 다음 추천 작업: 봉인된 artifact와 contract를 변경하지 않고 post-selection temporal evaluation을 1회 실행한다.

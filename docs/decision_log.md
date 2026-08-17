@@ -612,3 +612,19 @@
   초 단위로 정규화했다. 부산경남 누적값과 직접값의 전체기간 관계도 오차 없이 성립했다.
 - 조건별 분포 차이는 존재하지만 구간 정의를 훼손하지 않으므로 성능을 보지 않은 상태에서
   불필요한 경마장 분리나 거리 조건 Feature를 추가하지 않는다.
+
+## 2026-08-17 — Official place Logistic baseline v2로 raw probability 선택
+
+결정:
+
+- `official_place_logistic_baseline_v2`의 확률 출력은 calibration 없는 raw Logistic으로 봉인한다.
+- sigmoid는 Train 내부 5개 temporal OOF fold로만 적합하고 Validation target에는 적합하지 않는다.
+- sigmoid가 macro Log Loss와 macro Brier를 모두 개선할 때만 선택하는 보수적 규칙을 사용한다.
+- Train+Validation 2023-01~2025-06으로 raw Logistic artifact를 재적합하되 2025-07 이후는 열지 않는다.
+
+이유:
+
+- raw/sigmoid Validation macro Log Loss는 0.540603/0.540252였지만 macro Brier는
+  0.180464/0.180511로 sigmoid가 두 지표를 함께 개선하지 못했다.
+- 월별로도 sigmoid가 raw보다 낮은 달은 Log Loss 6/12, Brier 5/12로 일관되지 않았다.
+- 작은 차이를 이유로 calibration 단계를 추가하지 않는 것이 단순성과 재현성에 부합한다.

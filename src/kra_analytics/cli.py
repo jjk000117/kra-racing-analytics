@@ -21,6 +21,7 @@ from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.drift_diagnostics import run_feature_drift_diagnostic
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
 from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
+from kra_analytics.modeling_v2 import run_official_baseline_v2_validation
 from kra_analytics.paths import ProjectPaths
 from kra_analytics.runner_count_diagnostics import run_runner_count_loss_diagnostic
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
@@ -306,6 +307,25 @@ def model_final_test_once() -> None:
     typer.echo(f"macro_log_loss={outcome.model_macro_log_loss:.9f}")
     typer.echo(f"macro_brier={outcome.model_macro_brier:.9f}")
     typer.echo(f"result_path={outcome.result_path}")
+
+
+@model_app.command("official-v2-validation")
+def model_official_v2_validation() -> None:
+    """Select and seal official baseline v2 without reading the later evaluation period."""
+    outcome = run_official_baseline_v2_validation()
+    typer.echo(f"model_version={outcome.model_version}")
+    typer.echo(f"selected_procedure={outcome.selected_procedure}")
+    typer.echo(f"train_rows={outcome.train_rows}")
+    typer.echo(f"train_races={outcome.train_races}")
+    typer.echo(f"validation_rows={outcome.validation_rows}")
+    typer.echo(f"validation_races={outcome.validation_races}")
+    typer.echo(f"refit_rows={outcome.refit_rows}")
+    typer.echo(f"contract_path={outcome.contract_path}")
+    typer.echo(f"contract_payload_sha256={outcome.contract_payload_sha256}")
+    typer.echo(
+        "post_selection_predictions_created="
+        f"{outcome.post_selection_predictions_created}"
+    )
 
 
 @model_app.command("walk-forward-stability")

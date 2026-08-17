@@ -833,3 +833,23 @@
 
 - 확정된 117개 계약을 사용해 Train-only 전처리 및 제한된 Logistic baseline 절차를 구현한다.
 - 조건 정규화 speed figure는 official baseline 이후 별도 Feature 버전에서 설계한다.
+
+## 2026-08-17 — Official place Logistic baseline v2 Validation
+
+### 실험 내용
+
+- Train-only 전처리와 단일 L2 Logistic을 117개 입력에 적합했다.
+- Train 내부 5개 expanding 3개월 OOF 예측으로 sigmoid를 적합했다.
+- Validation에서 무정보 기준선, raw Logistic, sigmoid 세 후보만 평가했다.
+
+### 결과와 해석
+
+- 무정보/raw/sigmoid macro Log Loss는 0.599945/0.540603/0.540252였다.
+- macro Brier는 0.204862/0.180464/0.180511로 sigmoid가 raw보다 소폭 높았다.
+- sigmoid 개선이 일관되지 않아 raw Logistic을 봉인하고 Train+Validation 47,007행에 재적합했다.
+- OOF 시간 순서·전처리 fit 범위 위반과 수렴 경고는 0건이었다. 모델 실행 경로는 post-selection을
+  읽지 않았지만 사전 건수 확인 SQL이 해당 기간 집계 양성률을 출력한 제한사항이 있었다.
+
+### 다음 실험 아이디어
+
+- 봉인된 v2 artifact를 변경하지 않고 2025-07~2026-07 post-selection temporal evaluation을 한 번 실행한다.
