@@ -21,6 +21,7 @@ from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.development_evaluation import prepare_development_infrastructure
 from kra_analytics.drift_diagnostics import run_feature_drift_diagnostic
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
+from kra_analytics.m1_experiment import run_m1_development_experiment
 from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
 from kra_analytics.modeling_v2 import run_official_baseline_v2_validation
 from kra_analytics.paths import ProjectPaths
@@ -350,6 +351,17 @@ def model_prepare_development_evaluation() -> None:
     typer.echo(f"validation_access_count={result['validation_access_count']}")
     typer.echo(f"classifier_fitted={result['classifier_fitted']}")
     typer.echo(f"predictions_created={result['predictions_created']}")
+
+
+@model_app.command("run-m1-development")
+def model_run_m1_development() -> None:
+    """Run the sealed B0/M1 comparison inside the development period only."""
+    result = run_m1_development_experiment()
+    typer.echo(f"experiment_version={result['experiment_version']}")
+    typer.echo(f"feature_count={result['feature_count']}")
+    typer.echo(f"folds={len(result['fold_context'])}")
+    typer.echo(f"validation_access_count={result['validation_access_count']}")
+    typer.echo(f"sealed_artifacts_unchanged={result['sealed_artifacts_unchanged']}")
 
 
 @model_app.command("diagnose-time-drift")

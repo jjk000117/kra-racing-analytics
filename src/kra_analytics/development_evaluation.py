@@ -260,6 +260,13 @@ class ExperimentRegistry:
         experiment["status"] = "FROZEN_FOR_VALIDATION"
         self._persist_experiment(experiment)
 
+    def complete_development(self, *, experiment_id: str) -> None:
+        experiment = self._experiment(experiment_id)
+        if set(experiment["fold_metrics"]) != {spec.fold_id for spec in DEVELOPMENT_FOLDS}:
+            raise ValueError("All four development-fold metrics are required before completion")
+        experiment["status"] = "DEVELOPMENT_COMPLETE"
+        self._persist_experiment(experiment)
+
     def _experiment(self, experiment_id: str) -> dict[str, Any]:
         payload = self._read()
         for item in payload["experiments"]:

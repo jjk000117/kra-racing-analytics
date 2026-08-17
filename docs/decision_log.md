@@ -673,3 +673,17 @@
 - 최대 범주 수 87은 HGB 한도 안이며 일부 fold의 unseen은 train-only encoder에서 안전하게 결측으로 처리해야 한다.
 - HGB native 결측 처리를 새 변수로 만들지 않고 기존 결측 계약을 유지해야 모델 복잡도 효과를 더 명확히 비교할 수 있다.
 - scaling은 tree split에 필요하지 않고 두 후보 제한은 development CV 탐색 과잉을 방지한다.
+
+## 2026-08-18 — M1 HGB 폐기 및 추가 설정 탐색 종료
+
+결정:
+
+- M1-A와 M1-B 모두 official 후속 후보로 유지하지 않는다.
+- 판정은 `C — 모델 복잡도만으로 개선 없음 또는 악화`로 확정한다.
+- HGB 설정을 더 탐색하지 않고 다음 개선 축은 Feature 정보 가설로 전환한다.
+
+이유:
+
+- M1-A는 macro/micro Log Loss·Brier가 모든 fold에서 B0보다 악화했다.
+- M1-B는 calibration은 개선됐지만 평균 네 손실 지표가 모두 악화했고 macro Brier 개선 fold가 0/4였다.
+- 후반 fold에서 M1-B의 B0 대비 macro Log Loss 차이가 커져 시간 일관성도 확인되지 않았다.

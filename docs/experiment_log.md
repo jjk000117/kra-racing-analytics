@@ -908,3 +908,22 @@
 ### 다음 실험 아이디어
 
 - 사전 정의된 M1-A/M1-B를 네 development fold에서 실행하고 같은 Logistic 기준과 비교한다.
+
+## 2026-08-18 — M1 HistGradientBoosting development CV
+
+### 실험 내용
+
+- 동일 117개 입력으로 B0 Logistic, M1-A, M1-B를 네 expanding quarterly fold에서 적합·평가했다.
+- 전처리와 모델은 fold train에서만 적합하고 raw probability만 평가했다.
+
+### 결과와 해석
+
+- 평균 macro Log Loss는 B0/M1-A/M1-B가 0.535538/0.542701/0.536636이었다.
+- 평균 macro Brier는 0.178477/0.181670/0.179373이었다.
+- M1-A는 전면 악화했고 M1-B도 Brier 0/4, macro LL 1/4 fold만 개선했다.
+- M1-B calibration은 0/1에 가까워졌지만 손실 악화로 후보 유지 근거가 되지 않았다.
+- unseen 비율이 가장 높은 fold 2에서 특이한 저하는 없었고 실행 실패도 없었다.
+
+### 다음 실험 아이디어
+
+- M1은 폐기하고 Logistic을 고정한 채 F1/F2/F3의 추가 정보 가설을 별도로 설계한다.

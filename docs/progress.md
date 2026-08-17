@@ -526,3 +526,13 @@
 - 모델 학습·prediction·성능 계산·Validation 접근은 수행하지 않았다.
 - 상세 결과: `docs/m1-histgradientboosting-input-preprocessing-contract.md`
 - 다음 추천 작업: 두 설정을 registry에 사전 등록하고 네 development fold에서 M1을 실행한다.
+
+## 2026-08-18 — M1 HistGradientBoosting development 실험 완료
+
+- 동일 117개와 네 development fold에서 B0, M1-A, M1-B를 비교했다.
+- M1-A는 네 손실 지표 모두 4/4 fold에서 B0보다 악화했다.
+- M1-B도 평균 macro Log Loss +0.001098, macro Brier +0.000896으로 악화했고 Brier 개선 fold는 0/4였다.
+- calibration은 M1-B가 개선됐지만 손실 개선이 없어 M1을 `C — 폐기`로 판정했다.
+- Validation 및 2024-07 이후 접근은 0회이고 sealed baseline v2 hash는 유지됐다.
+- 상세 결과: `docs/m1-histgradientboosting-development-results.md`
+- 다음 추천 작업: Logistic을 고정한 F1/F2/F3 Feature 실험 설계를 진행한다.
