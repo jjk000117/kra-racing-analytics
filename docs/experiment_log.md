@@ -997,3 +997,21 @@
 ### 다음 실험 아이디어
 
 - F1+F3 Validation 계약을 봉인한 뒤 B0와 한 번만 비교한다.
+
+## 2026-08-18 — F1+F3 one-time Validation
+
+### 실험 내용
+
+- 133개 raw Logistic과 Train expanding OOF sigmoid를 한 번의 Validation 접근으로 평가했다.
+- 선택 절차를 B0와 전체·월별·사전 정의 세그먼트에서 비교했다.
+
+### 결과와 해석
+
+- Raw/Sigmoid Macro LL은 0.534210/0.533529, Brier는 0.177977/0.177825였다.
+- Sigmoid를 선택했고 B0 대비 Macro LL/Brier는 -0.007073/-0.002639였다.
+- 두 지표 모두 12/12개월 개선해 `PROMOTE` 규칙을 충족했다.
+- Development 개선 방향이 Validation에서도 재현됐지만 최종 모델 확정은 아니다.
+
+### 다음 실험 아이디어
+
+- 133개+sigmoid 절차의 후속 봉인 및 Train+Validation 재적합 여부를 별도로 결정한다.

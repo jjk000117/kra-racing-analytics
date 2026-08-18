@@ -24,6 +24,7 @@ from kra_analytics.feature_bundle_combination_experiment import run_f1_f3_combin
 from kra_analytics.feature_bundle_experiment import run_feature_bundle_development_experiment
 from kra_analytics.feature_bundles import audit_feature_bundles, build_feature_bundles
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
+from kra_analytics.improvement_validation import run_one_time_improvement_validation
 from kra_analytics.improvement_validation_contract import (
     build_improvement_validation_contract,
 )
@@ -430,6 +431,18 @@ def model_seal_improvement_validation_contract() -> None:
         "validation_access_count="
         f"{contract['validation_access_budget']['current_access_count']}"
     )
+
+
+@model_app.command("run-improvement-validation-once")
+def model_run_improvement_validation_once() -> None:
+    """Consume the sole Validation access for the sealed F1+F3 candidate."""
+    result = run_one_time_improvement_validation()
+    typer.echo(f"experiment_version={result['experiment_version']}")
+    typer.echo(f"access_count={result['access_count_after']}")
+    typer.echo(f"train_rows={result['train']['rows']}")
+    typer.echo(f"validation_rows={result['validation']['rows']}")
+    typer.echo(f"selected={result['raw_vs_sigmoid']['selected']}")
+    typer.echo(f"promotion={result['promotion']['decision']}")
 
 
 @model_app.command("diagnose-time-drift")

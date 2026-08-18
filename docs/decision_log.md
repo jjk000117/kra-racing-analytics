@@ -756,3 +756,16 @@
 
 - Validation 결과를 본 뒤 calibration이나 승격 기준을 유리하게 변경하는 것을 방지하기 위해서다.
 - 전체 평균 개선이 특정 소수 월에만 의존하는 후보를 별도로 CONDITIONAL 처리할 필요가 있다.
+
+## 2026-08-18 — F1+F3 Validation PROMOTE
+
+결정:
+
+- F1+F3 sigmoid를 Validation에서 선택된 probability procedure로 기록한다.
+- 133개 Feature representation은 사전 규칙상 `PROMOTE`로 판정한다.
+- 이번 판정을 프로젝트 최종 모델 확정으로 해석하지 않고 재적합과 이후 평가는 별도 결정으로 남긴다.
+
+이유:
+
+- Sigmoid가 raw보다 전체 Macro Log Loss와 Macro Brier를 모두 개선했다.
+- 선택 후보가 B0보다 두 Macro 지표를 개선했고 각 지표가 12/12개월에서 반복됐다.

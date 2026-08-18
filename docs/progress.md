@@ -3,6 +3,15 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-18 — F1+F3 one-time Validation 실행
+
+- 접근 예산 1회를 사용해 Train 28,392행과 Validation 18,615행을 평가했다.
+- Sigmoid가 raw보다 두 Macro 지표를 모두 개선해 선택됐다.
+- 선택 후보는 B0 대비 Macro LL/Brier를 -0.007073/-0.002639 개선하고 12/12개월 반복했다.
+- 사전 규칙에 따라 `PROMOTE`했으며 의미는 Feature representation 개선 재현으로 한정한다.
+- 2025-07 이후 접근과 Train+Validation 재적합은 수행하지 않았다.
+- 상세 문서: `docs/post-baseline-v2-f1-f3-one-time-validation-result.md`
+
 ## 2026-08-18 — F1+F3 one-time Validation 계약 봉인
 
 - 기존 117 + F1 6 + F3 10의 133개 순서와 hash를 Validation 전에 봉인했다.
