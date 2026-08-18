@@ -788,3 +788,18 @@
 
 - Sigmoid가 raw보다 전체 Macro Log Loss와 Macro Brier를 모두 개선했다.
 - 선택 후보가 B0보다 두 Macro 지표를 개선했고 각 지표가 12/12개월에서 반복됐다.
+
+## 2026-08-19 — 첫 race-aware 후보를 선형 pairwise Logistic ranker로 제한
+
+결정:
+
+- 기존 133개와 선형 표현을 유지한 `RA1_LINEAR_PAIRWISE_LOGISTIC_SIGMOID` 하나만 development에서 비교한다.
+- 같은 경주의 모든 PLC 양성-음성 pair를 사용하고 경주별 총 sample weight를 1로 맞춘다.
+- Ranking score는 확률로 취급하지 않고 outer Train 내부 temporal OOF sigmoid로만 확률화한다.
+- 승격은 NDCG@3·Recall@3의 평균 및 3/4 fold 반복 개선과 Macro LL/Brier 비악화를 모두 요구한다.
+
+이유:
+
+- PLC는 경주당 2~4개의 양성이 있는 multi-positive target이므로 양성 내부 순서 없이 양성-음성 비교가 자연스럽다.
+- 선형 pairwise 방식은 HGB처럼 비선형 복잡도를 다시 도입하지 않아 L133과의 차이를 race-aware loss에 가깝게 격리한다.
+- sklearn과 기존 전처리를 재사용할 수 있고 pairwise score의 probability 한계를 고정 OOF calibration으로 분리할 수 있다.

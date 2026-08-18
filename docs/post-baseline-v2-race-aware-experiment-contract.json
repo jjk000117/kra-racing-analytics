@@ -1,0 +1,128 @@
+{
+  "contract_version": "post_baseline_v2_race_aware_ra1_v1",
+  "status": "SEALED_BEFORE_DEVELOPMENT_EXECUTION",
+  "question": "Does race-grouped pairwise learning improve over L133+sigmoid with the same 133 inputs?",
+  "reference": {
+    "candidate_id": "L133_SIGMOID",
+    "feature_count": 133,
+    "feature_hash": "18297f138f759944995bb59bc9cf36f3cde55d81ceb52b45a42c43372b4da182",
+    "feature_source_contract": "docs/post-baseline-v2-improvement-validation-contract.json",
+    "outer_fold_probability_procedure": "fold-train temporal OOF sigmoid; no raw-vs-sigmoid selection"
+  },
+  "candidate": {
+    "candidate_id": "RA1_LINEAR_PAIRWISE_LOGISTIC_SIGMOID",
+    "formulation": "within-race all-positive-vs-all-negative pairwise linear logistic ranking",
+    "feature_count": 133,
+    "feature_hash": "18297f138f759944995bb59bc9cf36f3cde55d81ceb52b45a42c43372b4da182",
+    "race_id_is_feature": false,
+    "new_features_allowed": false,
+    "positive_relevance": 1,
+    "negative_relevance": 0,
+    "positive_internal_ordering": "none",
+    "pair_generation": "all positive-negative pairs plus reversed directed pairs",
+    "directed_pair_weight": "1 / (2 * race_positive_count * race_negative_count)",
+    "pair_sampling": false,
+    "single_label_races": "exclude from pair training and report; retain for evaluation"
+  },
+  "preprocessing": {
+    "fit_scope": "each outer/inner fold train runner rows only",
+    "categorical": "most_frequent imputation + OneHotEncoder(handle_unknown=ignore)",
+    "ordinary_numeric": "median imputation + StandardScaler",
+    "historical_and_f1_count": "NULL to 0 + StandardScaler",
+    "pair_representation": "difference of transformed runner vectors",
+    "evaluation_statistics_forbidden": true
+  },
+  "ranker": {
+    "library": "scikit-learn",
+    "estimator": "LogisticRegression",
+    "penalty": "l2",
+    "C": 1.0,
+    "solver": "lbfgs",
+    "max_iter": 2000,
+    "fit_intercept": false,
+    "class_weight": null,
+    "random_state": 20260817,
+    "additional_settings_allowed": false
+  },
+  "calibration": {
+    "required_for_probability_metrics": true,
+    "method": "sigmoid",
+    "raw_score_is_probability": false,
+    "inner_oof_rule": "first 3 months train; predict next 3 months; expand by 3 months",
+    "inner_preprocessing_and_model_fit_scope": "inner fold train only",
+    "calibrator_fit_source": "outer-train inner temporal OOF runner scores and place_hit only",
+    "other_methods_allowed": false,
+    "selection_allowed": false
+  },
+  "development": {
+    "start_inclusive": "2023-01-01",
+    "end_exclusive": "2024-07-01",
+    "fold_contract": "existing four quarterly expanding folds",
+    "race_group_integrity_required": true,
+    "train_evaluation_race_overlap_allowed": false,
+    "validation_access_allowed": false,
+    "post_2025_07_access_allowed": false
+  },
+  "metrics": {
+    "probability_primary": [
+      "macro_log_loss",
+      "macro_brier"
+    ],
+    "probability_secondary": [
+      "micro_log_loss",
+      "micro_brier",
+      "calibration_intercept",
+      "calibration_slope"
+    ],
+    "ranking_primary": [
+      "macro_ndcg_at_3",
+      "micro_recall_at_3"
+    ],
+    "ranking_secondary": [
+      "top1_plc_hit_rate",
+      "race_any_hit_at_2",
+      "race_any_hit_at_3",
+      "micro_recall_at_1",
+      "micro_recall_at_2",
+      "macro_recall_at_1",
+      "macro_recall_at_2",
+      "macro_recall_at_3",
+      "mean_positive_rank",
+      "mean_positive_percentile_rank",
+      "macro_average_precision"
+    ],
+    "metric_average_grain": "race macro unless explicitly named micro"
+  },
+  "decision_rule": {
+    "floating_tie_absolute_tolerance": 1e-12,
+    "PROMOTE_RACE_AWARE": {
+      "ranking_mean": "both primary ranking metrics improve",
+      "ranking_fold_repetition": "each primary ranking metric improves in at least 3 of 4 folds",
+      "probability_guardrail": "both mean macro log loss and macro brier are no worse"
+    },
+    "CONDITIONAL": [
+      "both ranking primary metrics improve on mean and in at least 3 of 4 folds, while every probability-primary relative degradation is at most 1 percent",
+      "both probability primary means are no worse, but only one ranking primary metric meets 3-of-4 fold repetition"
+    ],
+    "DROP_RACE_AWARE": [
+      "either ranking primary metric does not improve on mean",
+      "both ranking primary metrics fail 3-of-4 fold repetition",
+      "either probability primary relative degradation exceeds 1 percent"
+    ],
+    "calibration_alone_can_promote": false,
+    "top1_alone_can_promote": false,
+    "rules_mutable_after_execution": false
+  },
+  "forbidden": [
+    "feature addition removal or reordering",
+    "F1 or F3 redefinition",
+    "F2 reintroduction",
+    "interaction feature creation",
+    "additional ranker settings or hyperparameter search",
+    "calibration selection",
+    "Validation access",
+    "2025-07 or later access",
+    "L133 PROMOTE revision",
+    "sealed artifact mutation"
+  ]
+}

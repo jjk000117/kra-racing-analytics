@@ -3,6 +3,15 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-19 — Race-aware development 실험 계약 봉인
+
+- PLC가 경주당 2~4개 양성을 갖는 multi-positive target임을 development 구조와 기존 계약에서 확인했다.
+- 133개를 그대로 쓰는 선형 pairwise Logistic ranker 하나를 다음 development 후보로 제한했다.
+- 경주별 동일 pair weight, Train-only preprocessing, inner temporal OOF sigmoid 확률화 계약을 고정했다.
+- NDCG@3·Recall@3와 Macro Log Loss·Brier를 결합한 사전 PROMOTE/CONDITIONAL/DROP 규칙을 봉인했다.
+- 모델 학습·prediction·Validation 및 2025-07 이후 접근은 수행하지 않았다.
+- 상세 문서: `docs/post-baseline-v2-race-aware-experiment-design.md`
+
 ## 2026-08-18 — L133+sigmoid Validation descriptive diagnostic
 
 - 기존 one-time Validation에서 누락된 행 단위 예측을 봉인 계약과 같은 결정론적 재적합으로 복원했다.
