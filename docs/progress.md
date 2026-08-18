@@ -3,6 +3,14 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-18 — F1+F3 조합 development 실험
+
+- 유일한 조합 후보 F1+F3 133개 입력을 B0·F1·F3와 동일 네 fold에서 비교했다.
+- F3 대비 Macro Log Loss와 Macro Brier를 모두 4/4 fold에서 개선했다.
+- `KEEP_COMBINATION`으로 판정하고 F1+F3를 개발단계 최종 후보로 선택했다.
+- Validation 접근은 0회이고 모든 보호 산출물 hash는 유지됐다.
+- 상세 문서: `docs/post-baseline-v2-f1-f3-combination-development-results.md`
+
 ## 2026-08-18 — B0/F1/F2/F3 development 실험
 
 - 동일 Logistic과 네 expanding fold에서 B0 117, F1 123, F2 125, F3 127개 입력을 비교했다.

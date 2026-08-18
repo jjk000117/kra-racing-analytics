@@ -20,6 +20,7 @@ from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
 from kra_analytics.development_evaluation import prepare_development_infrastructure
 from kra_analytics.drift_diagnostics import run_feature_drift_diagnostic
+from kra_analytics.feature_bundle_combination_experiment import run_f1_f3_combination_experiment
 from kra_analytics.feature_bundle_experiment import run_feature_bundle_development_experiment
 from kra_analytics.feature_bundles import audit_feature_bundles, build_feature_bundles
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
@@ -398,6 +399,21 @@ def model_run_feature_bundle_development() -> None:
     typer.echo(f"validation_access_count={result['validation_access_count']}")
     for judgement in result["judgements"]:
         typer.echo(f"{judgement['experiment_id']}={judgement['judgement']}")
+
+
+@model_app.command("run-f1-f3-combination-development")
+def model_run_f1_f3_combination_development() -> None:
+    """Compare the sole F1+F3 combination with its development references."""
+    result = run_f1_f3_combination_experiment()
+    typer.echo(f"experiment_version={result['experiment_version']}")
+    typer.echo(f"development_rows={result['development_rows']}")
+    typer.echo(f"development_races={result['development_races']}")
+    typer.echo(f"validation_access_count={result['validation_access_count']}")
+    typer.echo(f"judgement={result['decision']['judgement']}")
+    typer.echo(
+        "selected_development_candidate="
+        f"{result['decision']['selected_development_candidate']}"
+    )
 
 
 @model_app.command("diagnose-time-drift")
