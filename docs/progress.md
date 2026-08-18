@@ -3,6 +3,16 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-18 — 133-Feature Logistic 구조적 한계 진단
+
+- development 28,392행 중 네 OOF fold 19,168행에서 대표 1D/2D 잔차와 경주 경쟁구조를 진단했다.
+- 낮은 경주 내 확률격차의 Brier 악화·확률합 과소가 4/4 fold에서 반복됐다.
+- `gate × registered_runner_count`, rating, 상대 부담중량, G3F에서 제한적인 반복 구조를 확인했다.
+- rate×count와 다수 absolute×field 관계는 시간 반복성이 약해 Feature 추가 근거로 사용하지 않았다.
+- `MODEL_COMPLEXITY_JUSTIFIED`로 판정하고 133개 고정 단일 HGB 실험을 다음 우선 작업으로 권고했다.
+- Validation 접근은 1회로 유지했고 2024-07 이후 데이터와 보호 산출물은 접근·변경하지 않았다.
+- 상세 문서: `docs/post-baseline-v2-logistic-structure-diagnostic.md`
+
 ## 2026-08-18 — F1+F3 one-time Validation 실행
 
 - 접근 예산 1회를 사용해 Train 28,392행과 Validation 18,615행을 평가했다.

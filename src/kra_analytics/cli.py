@@ -28,6 +28,7 @@ from kra_analytics.improvement_validation import run_one_time_improvement_valida
 from kra_analytics.improvement_validation_contract import (
     build_improvement_validation_contract,
 )
+from kra_analytics.logistic_structure_diagnostics import run_logistic_structure_diagnostic
 from kra_analytics.m1_experiment import run_m1_development_experiment
 from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
 from kra_analytics.modeling_v2 import run_official_baseline_v2_validation
@@ -443,6 +444,20 @@ def model_run_improvement_validation_once() -> None:
     typer.echo(f"validation_rows={result['validation']['rows']}")
     typer.echo(f"selected={result['raw_vs_sigmoid']['selected']}")
     typer.echo(f"promotion={result['promotion']['decision']}")
+
+
+@model_app.command("diagnose-logistic-structure")
+def model_diagnose_logistic_structure() -> None:
+    """Diagnose 133-Feature Logistic residual structure in development folds only."""
+    result = run_logistic_structure_diagnostic()
+    typer.echo(f"development_rows={result['development_rows']}")
+    typer.echo(f"oof_diagnostic_rows={result['oof_diagnostic_rows']}")
+    typer.echo(f"feature_hash={result['feature_hash']}")
+    typer.echo(
+        "validation_access_count="
+        f"{result['validation_access_count_before']}->"
+        f"{result['validation_access_count_after']}"
+    )
 
 
 @model_app.command("diagnose-time-drift")

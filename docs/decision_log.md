@@ -1,5 +1,15 @@
 # 의사결정 기록
 
+## 2026-08-18 — 133개 입력 고정 nonlinear 모델 실험을 우선한다
+
+- 결정: 구조 진단 판정을 `MODEL_COMPLEXITY_JUSTIFIED`로 확정한다.
+- 이유: 낮은 경주 내 예측확률 격차의 과소 확률합과 Brier 악화가 네 development fold에서 반복되고,
+  `gate × registered_runner_count` interaction도 반복됐다.
+- 제한: absolute×field와 rate×count의 다수 관계는 fold 반복성이 약하므로 새 interaction Feature를
+  먼저 추가하지 않는다.
+- 다음 실험: 동일 133개 입력과 네 fold를 유지한 보수적 HGB 설정 하나만 Logistic 133과 비교한다.
+- Validation·post-selection 기간은 사용하지 않고 PROMOTE 판정과 봉인 artifact를 유지한다.
+
 ## 2026-08-12 — Official place baseline v2 입력 후보 117개
 
 - Snapshot 125개 중 현재 사전정보 28개와 Historical 정보 89개를 모델 입력 후보로 둔다.

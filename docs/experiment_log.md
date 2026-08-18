@@ -1,5 +1,26 @@
 # 실험 기록
 
+## 2026-08-18 — 133-Feature Logistic 잔여오차 구조 진단
+
+### 실험 내용
+
+- 2023-01~2024-06 development에서 네 expanding fold raw OOF Logistic prediction을 생성했다.
+- 대표 연속형 1D quantile 잔차, 주변효과를 제거한 2D interaction 잔차와 경주 내부 확률구조를
+  분석했다.
+
+### 결과와 해석
+
+- 진단 cohort는 19,168행·1,821경주였고 feature hash는 봉인된 133개 계약과 일치했다.
+- 낮은 확률격차 경주는 높은 격차 경주보다 Brier가 fold별 0.0121~0.0348 높았으며 예측확률 합은
+  0.387~0.537 낮았다.
+- `gate × registered_runner_count` interaction의 fold 패턴 상관 중앙값은 0.52였다.
+- rate×count 및 다수 absolute×field 관계는 반복성이 약해 즉시 Feature화하지 않았다.
+- 구조적 nonlinear/race-competition 관계가 반복돼 `MODEL_COMPLEXITY_JUSTIFIED`로 판정했다.
+
+### 다음 실험 아이디어
+
+- 기존 M1-B 수준의 단일 HGB 설정을 같은 133개 입력과 네 development fold에서만 비교한다.
+
 ## 2026-08-12 — Official place baseline v2 입력 구조 감사
 
 ### 내용
