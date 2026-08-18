@@ -743,3 +743,16 @@
 
 - F1+F3는 F3보다 Macro Log Loss와 Macro Brier를 4/4 fold에서 모두 개선했다.
 - 평균 개선은 작지만 방향이 반복됐고 B0·F1·F3 결과도 이전 실행과 동일하게 재현됐다.
+
+## 2026-08-18 — F1+F3 one-time Validation 사전 계약
+
+결정:
+
+- 133개 입력 순서·hash와 기존 Logistic/전처리를 Validation 전에 고정한다.
+- raw와 Train temporal OOF sigmoid만 비교하고 두 Macro 지표가 모두 개선될 때만 sigmoid를 쓴다.
+- F1+F3는 B0 대비 두 Macro 지표와 월별 절반 이상 반복성을 만족해야 PROMOTE한다.
+
+이유:
+
+- Validation 결과를 본 뒤 calibration이나 승격 기준을 유리하게 변경하는 것을 방지하기 위해서다.
+- 전체 평균 개선이 특정 소수 월에만 의존하는 후보를 별도로 CONDITIONAL 처리할 필요가 있다.

@@ -3,6 +3,14 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-18 — F1+F3 one-time Validation 계약 봉인
+
+- 기존 117 + F1 6 + F3 10의 133개 순서와 hash를 Validation 전에 봉인했다.
+- raw와 Train temporal OOF sigmoid만 비교하고 두 Macro 지표 모두 개선할 때만 sigmoid를 선택한다.
+- B0 대비 PROMOTE/CONDITIONAL/REJECT와 월별 반복성 규칙을 사전 확정했다.
+- Validation 접근은 0회이며 실행 가능한 1회를 예약했다. 실제 데이터 접근·학습은 하지 않았다.
+- 상세 문서: `docs/post-baseline-v2-improvement-validation-contract.md`
+
 ## 2026-08-18 — F1+F3 조합 development 실험
 
 - 유일한 조합 후보 F1+F3 133개 입력을 B0·F1·F3와 동일 네 fold에서 비교했다.

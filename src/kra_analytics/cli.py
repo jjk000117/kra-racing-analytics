@@ -24,6 +24,9 @@ from kra_analytics.feature_bundle_combination_experiment import run_f1_f3_combin
 from kra_analytics.feature_bundle_experiment import run_feature_bundle_development_experiment
 from kra_analytics.feature_bundles import audit_feature_bundles, build_feature_bundles
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
+from kra_analytics.improvement_validation_contract import (
+    build_improvement_validation_contract,
+)
 from kra_analytics.m1_experiment import run_m1_development_experiment
 from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
 from kra_analytics.modeling_v2 import run_official_baseline_v2_validation
@@ -413,6 +416,19 @@ def model_run_f1_f3_combination_development() -> None:
     typer.echo(
         "selected_development_candidate="
         f"{result['decision']['selected_development_candidate']}"
+    )
+
+
+@model_app.command("seal-improvement-validation-contract")
+def model_seal_improvement_validation_contract() -> None:
+    """Seal the 133-Feature candidate before any Validation access."""
+    contract = build_improvement_validation_contract()
+    typer.echo(f"status={contract['status']}")
+    typer.echo(f"feature_count={contract['candidate']['total_feature_count']}")
+    typer.echo(f"feature_hash={contract['candidate']['feature_hash']}")
+    typer.echo(
+        "validation_access_count="
+        f"{contract['validation_access_budget']['current_access_count']}"
     )
 
 
