@@ -33,7 +33,10 @@ def _bundle_definitions(paths: ProjectPaths) -> list[dict[str, str]]:
     return selected
 
 
-def build_improvement_validation_contract(paths: ProjectPaths | None = None) -> dict[str, Any]:
+def create_improvement_validation_contract(
+    paths: ProjectPaths | None = None,
+) -> dict[str, Any]:
+    """Create the contract payload without writing the sealed artifact."""
     project_paths = paths or ProjectPaths.from_root()
     contracts = _combined_contract(project_paths)
     candidate = contracts["F1+F3"]
@@ -199,6 +202,13 @@ def build_improvement_validation_contract(paths: ProjectPaths | None = None) -> 
             "post-selection temporal evaluation",
         ],
     }
+    return contract
+
+
+def build_improvement_validation_contract(paths: ProjectPaths | None = None) -> dict[str, Any]:
+    """Create and explicitly persist the Validation contract during sealing."""
+    project_paths = paths or ProjectPaths.from_root()
+    contract = create_improvement_validation_contract(project_paths)
     output = project_paths.root / CONTRACT_PATH
     output.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return contract
@@ -210,7 +220,7 @@ def validate_improvement_validation_contract(
     project_paths = paths or ProjectPaths.from_root()
     path = project_paths.root / CONTRACT_PATH
     contract: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
-    expected = build_improvement_validation_contract(project_paths)
+    expected = create_improvement_validation_contract(project_paths)
     if contract != expected:
         raise ValueError("Stored Validation contract differs from the current sealed inputs")
     return contract
