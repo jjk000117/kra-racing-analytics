@@ -1,5 +1,26 @@
 # 실험 기록
 
+## 2026-08-18 — H133 보수적 nonlinear development 실험
+
+### 실험 내용
+
+- 동일 133개 입력·모집단·네 fold에서 raw Logistic과 M1-B 설정 HGB를 비교했다.
+- HGB는 fold-train ordinal encoding, native categorical 처리, median/zero count 대체와 no scaling을
+  사용했다.
+- 사전 진단 영역의 1D 잔차, interaction spread와 L133 gap 구간 race Brier도 함께 비교했다.
+
+### 결과와 해석
+
+- H133−L133 평균 Macro LL/Brier는 +0.003630/+0.001574였고 개선 fold는 각각 0/4였다.
+- H133 calibration 평균은 0/1에 가까워졌지만 Micro 손실도 0/4 fold 개선이었다.
+- rating·gate interaction 잔차 폭은 일부 감소했으나 G3F는 악화했고 low-gap Brier는 4/4 악화했다.
+- `DROP_NONLINEAR`로 판정했으며 구조적 잔여오차가 곧 HGB의 개선 가능성을 뜻하지 않음을 확인했다.
+
+### 다음 실험 아이디어
+
+- 추가 nonlinear 탐색을 중단하고 Logistic 133의 후속 봉인·재적합·공통 temporal evaluation 순서를
+  별도 결정한다.
+
 ## 2026-08-18 — 133-Feature Logistic 잔여오차 구조 진단
 
 ### 실험 내용

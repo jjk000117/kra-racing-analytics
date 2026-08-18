@@ -24,6 +24,7 @@ from kra_analytics.feature_bundle_combination_experiment import run_f1_f3_combin
 from kra_analytics.feature_bundle_experiment import run_feature_bundle_development_experiment
 from kra_analytics.feature_bundles import audit_feature_bundles, build_feature_bundles
 from kra_analytics.feature_snapshot import audit_feature_snapshot, build_feature_snapshot
+from kra_analytics.h133_experiment import run_h133_development_experiment
 from kra_analytics.improvement_validation import run_one_time_improvement_validation
 from kra_analytics.improvement_validation_contract import (
     build_improvement_validation_contract,
@@ -453,6 +454,20 @@ def model_diagnose_logistic_structure() -> None:
     typer.echo(f"development_rows={result['development_rows']}")
     typer.echo(f"oof_diagnostic_rows={result['oof_diagnostic_rows']}")
     typer.echo(f"feature_hash={result['feature_hash']}")
+    typer.echo(
+        "validation_access_count="
+        f"{result['validation_access_count_before']}->"
+        f"{result['validation_access_count_after']}"
+    )
+
+
+@model_app.command("run-h133-development")
+def model_run_h133_development() -> None:
+    """Compare the single conservative H133 candidate with L133 in development only."""
+    result = run_h133_development_experiment()
+    typer.echo(f"development_rows={result['development_rows']}")
+    typer.echo(f"feature_hash={result['feature_contract']['feature_hash']}")
+    typer.echo(f"judgement={result['decision']['judgement']}")
     typer.echo(
         "validation_access_count="
         f"{result['validation_access_count_before']}->"

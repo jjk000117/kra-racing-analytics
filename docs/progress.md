@@ -3,6 +3,15 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-18 — H133 제한 nonlinear development 실험
+
+- 동일 133개 입력으로 L133과 단일 M1-B 설정 H133을 네 development fold에서 비교했다.
+- H133은 Macro LL/Brier를 평균 +0.003630/+0.001574 악화시키고 두 지표 모두 0/4 fold 개선했다.
+- calibration은 0/1에 가까워졌지만 low probability-gap 경주의 Brier도 0/4 개선에 그쳤다.
+- `DROP_NONLINEAR`로 판정하고 추가 HGB tuning 없이 Logistic 133을 주 모델 후보로 유지한다.
+- Validation 접근은 1회로 유지했고 2024-07 이후 데이터와 보호 산출물은 접근·변경하지 않았다.
+- 상세 문서: `docs/post-baseline-v2-h133-development-result.md`
+
 ## 2026-08-18 — 133-Feature Logistic 구조적 한계 진단
 
 - development 28,392행 중 네 OOF fold 19,168행에서 대표 1D/2D 잔차와 경주 경쟁구조를 진단했다.

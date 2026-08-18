@@ -1,5 +1,14 @@
 # 의사결정 기록
 
+## 2026-08-18 — HGB/nonlinear 경로를 종료하고 Logistic 133을 유지한다
+
+- 결정: H133 판정을 `DROP_NONLINEAR`로 확정한다.
+- 근거: Macro Log Loss와 Brier가 평균적으로 모두 악화했고 두 지표의 개선 fold가 0/4였다.
+- calibration은 개선됐지만 사전 계약상 손실 악화를 상쇄하는 선택 근거로 사용하지 않는다.
+- 사전 구조 진단의 low probability-gap 경주에서도 H133 Brier가 4/4 fold 악화했다.
+- 추가 HGB tuning과 다른 boosting family 탐색은 하지 않고 Logistic 133을 주 모델 후보로 유지한다.
+- Validation·post-selection 기간은 계속 보존한다.
+
 ## 2026-08-18 — 133개 입력 고정 nonlinear 모델 실험을 우선한다
 
 - 결정: 구조 진단 판정을 `MODEL_COMPLEXITY_JUSTIFIED`로 확정한다.
