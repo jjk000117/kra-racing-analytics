@@ -18,6 +18,9 @@ from kra_analytics.collectors.api4_3 import (
 )
 from kra_analytics.collectors.api179_1 import Api179Collector
 from kra_analytics.database import initialize_database, missing_required_schemas
+from kra_analytics.descriptive_validation_diagnostic import (
+    run_descriptive_validation_diagnostic,
+)
 from kra_analytics.development_evaluation import prepare_development_infrastructure
 from kra_analytics.drift_diagnostics import run_feature_drift_diagnostic
 from kra_analytics.feature_bundle_combination_experiment import run_f1_f3_combination_experiment
@@ -445,6 +448,16 @@ def model_run_improvement_validation_once() -> None:
     typer.echo(f"validation_rows={result['validation']['rows']}")
     typer.echo(f"selected={result['raw_vs_sigmoid']['selected']}")
     typer.echo(f"promotion={result['promotion']['decision']}")
+
+
+@model_app.command("diagnose-l133-validation-descriptively")
+def model_diagnose_l133_validation_descriptively() -> None:
+    """Reproduce sealed L133 predictions for descriptive Validation diagnostics."""
+    result = run_descriptive_validation_diagnostic()
+    typer.echo(f"diagnostic_version={result['diagnostic_version']}")
+    typer.echo(f"validation_rows={result['validation']['rows']}")
+    typer.echo(f"roc_auc={result['discrimination']['roc_auc']}")
+    typer.echo(f"pr_auc={result['discrimination']['pr_auc_average_precision']}")
 
 
 @model_app.command("diagnose-logistic-structure")

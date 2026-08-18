@@ -3,6 +3,15 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-18 — L133+sigmoid Validation descriptive diagnostic
+
+- 기존 one-time Validation에서 누락된 행 단위 예측을 봉인 계약과 같은 결정론적 재적합으로 복원했다.
+- 기존 Raw/Sigmoid 집계 12개를 절대오차 `1e-12` 안에서 재현했다.
+- ROC-AUC 0.7213, PR-AUC 0.5085(양성률 0.2834의 1.79배)를 확인했다.
+- 경주 내 Top-1 적중률은 59.52%, Top-3 최소 한 적중 포함률은 91.87%, Recall@3은 49.36%였다.
+- 재접근은 `DESCRIPTIVE_DIAGNOSTIC_REACCESS`로 분리했고 모델·PROMOTE·2025-07 이후 구간은 변경·접근하지 않았다.
+- 상세 문서: `docs/l133-sigmoid-validation-descriptive-performance-diagnostic.md`
+
 ## 2026-08-18 — H133 제한 nonlinear development 실험
 
 - 동일 133개 입력으로 L133과 단일 M1-B 설정 H133을 네 development fold에서 비교했다.

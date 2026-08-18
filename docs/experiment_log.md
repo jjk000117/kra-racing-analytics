@@ -1057,3 +1057,24 @@
 ### 다음 실험 아이디어
 
 - 133개+sigmoid 절차의 후속 봉인 및 Train+Validation 재적합 여부를 별도로 결정한다.
+
+## 2026-08-18 — L133+sigmoid Validation descriptive performance diagnostic
+
+### 실험 내용
+
+- 누락된 행 단위 prediction을 복원하기 위해 봉인된 133개 Logistic과 Train temporal OOF sigmoid를 같은 계약으로 결정론적 재적합했다.
+- 기존 Validation 집계를 절대오차 `1e-12`로 대사한 뒤 ROC/PR-AUC, threshold trade-off와 경주 내 Top-K를 계산했다.
+- 기존 model-selection 접근과 구분해 `DESCRIPTIVE_DIAGNOSTIC_REACCESS`로 ledger에 기록했다.
+
+### 결과와 해석
+
+- Raw/Sigmoid의 Macro·Micro Log Loss/Brier와 calibration 12개가 모두 기존 값과 일치했다.
+- ROC-AUC 0.7213, PR-AUC 0.5085로 양성률 기준선 0.2834보다 판별력이 높았다.
+- threshold 0.30은 precision 44.90%, recall 61.56%; 0.50은 precision 60.87%, recall 24.15%였다.
+- 경주 내 Top-1 적중률 59.52%, Top-3 최소 한 적중 포함률 91.87%, 전체 적중마 Recall@3 49.36%였다.
+- 결과는 모델·threshold 재선택에 사용하지 않으며 기존 PROMOTE 판정을 유지한다.
+
+### 다음 실험 아이디어
+
+- 모델 evaluation 단계에서 row-level prediction·target을 기본 산출물로 보존한다.
+- 실제 의사결정 threshold나 Top-K는 향후 배당·공제까지 포함한 별도 betting-stage 계약에서 평가한다.
