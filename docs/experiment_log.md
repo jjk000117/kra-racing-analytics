@@ -1,5 +1,25 @@
 # 실험 기록
 
+## 2026-08-19 — RA1 linear pairwise race-aware development CV
+
+### 실험 내용
+
+- 동일 133개 입력과 네 expanding quarterly fold에서 L133+sigmoid와 RA1+sigmoid를 비교했다.
+- RA1은 경주 내 모든 양성–음성 reverse pair와 경주별 동일 총 weight를 사용했다.
+- 각 outer Train 내부에서 3개월 expanding OOF score로 sigmoid를 적합했다.
+
+### 결과와 해석
+
+- L133/RA1 Macro Log Loss 평균은 0.529077/0.556000, Brier는 0.176366/0.187419였다.
+- NDCG@3는 0.534570/0.534918로 소폭 상승했으나 Recall@3는 0.511621/0.511350이었다.
+- 확률 손실은 4/4 fold 악화했고 Recall@3 개선은 2/4에 그쳐 `DROP_RACE_AWARE`로 판정했다.
+- Pair 불변식, 시간 순서, Train-only 전처리 위반은 0건이었다.
+
+### 다음 실험 아이디어
+
+- RA1 추가 tuning은 하지 않는다. L133+sigmoid를 유지하고 공통 temporal evaluation 실행 여부를
+  별도 계약과 승인 아래 결정한다.
+
 ## 2026-08-18 — H133 보수적 nonlinear development 실험
 
 ### 실험 내용

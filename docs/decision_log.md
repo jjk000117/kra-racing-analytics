@@ -1,5 +1,14 @@
 # 의사결정 기록
 
+## 2026-08-19 — 선형 pairwise RA1 경로 종료
+
+- 결정: 봉인 규칙에 따라 `DROP_RACE_AWARE`로 확정한다.
+- 근거: Macro NDCG@3는 3/4 fold에서 소폭 개선했지만 Micro Recall@3는 평균 악화·2/4 개선에
+  그쳤고, Macro Log Loss/Brier는 4/4 fold에서 악화했다.
+- 확률 손실 상대 악화 5.09%/6.27%는 계약의 1% guardrail을 크게 넘었다.
+- 추가 pairwise 설정 탐색은 하지 않고 L133+sigmoid를 대표 후보로 유지한다.
+- Validation과 공통 post-selection temporal evaluation은 이번 결정에 사용하지 않았다.
+
 ## 2026-08-18 — HGB/nonlinear 경로를 종료하고 Logistic 133을 유지한다
 
 - 결정: H133 판정을 `DROP_NONLINEAR`로 확정한다.

@@ -3,6 +3,15 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-08-19 — RA1 race-aware development 실험 완료
+
+- 동일 133개 입력으로 L133+sigmoid와 선형 pairwise RA1+sigmoid를 네 development fold에서 비교했다.
+- RA1은 NDCG@3 평균을 +0.000348 높였지만 Recall@3는 -0.000271 낮았고 반복성은 2/4였다.
+- Macro Log Loss/Brier는 각각 5.09%/6.27% 악화하고 모든 fold에서 L133보다 나빴다.
+- 사전 계약에 따라 `DROP_RACE_AWARE`로 판정하고 추가 pairwise tuning 없이 경로를 종료한다.
+- Validation 접근 ledger는 1회+descriptive 1회로 유지했고 2024-07 이후 데이터에 접근하지 않았다.
+- 상세 문서: `docs/post-baseline-v2-ra1-development-result.md`
+
 ## 2026-08-19 — Race-aware development 실험 계약 봉인
 
 - PLC가 경주당 2~4개 양성을 갖는 multi-positive target임을 development 구조와 기존 계약에서 확인했다.

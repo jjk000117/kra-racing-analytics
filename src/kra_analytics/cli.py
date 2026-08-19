@@ -37,6 +37,7 @@ from kra_analytics.m1_experiment import run_m1_development_experiment
 from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
 from kra_analytics.modeling_v2 import run_official_baseline_v2_validation
 from kra_analytics.paths import ProjectPaths
+from kra_analytics.race_aware_experiment import run_ra1_development_experiment
 from kra_analytics.runner_count_diagnostics import run_runner_count_loss_diagnostic
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
@@ -486,6 +487,17 @@ def model_run_h133_development() -> None:
         f"{result['validation_access_count_before']}->"
         f"{result['validation_access_count_after']}"
     )
+
+
+@model_app.command("run-ra1-development")
+def model_run_ra1_development() -> None:
+    """Run the single sealed RA1 pairwise experiment in development only."""
+    result = run_ra1_development_experiment()
+    typer.echo(f"development_rows={result['development_rows']}")
+    typer.echo(f"development_races={result['development_races']}")
+    typer.echo(f"feature_hash={result['contract']['feature_hash']}")
+    typer.echo(f"judgement={result['decision']['judgement']}")
+    typer.echo(f"validation_access_count={result['validation_access_count']}")
 
 
 @model_app.command("diagnose-time-drift")
