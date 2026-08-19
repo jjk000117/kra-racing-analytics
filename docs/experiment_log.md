@@ -1098,3 +1098,10 @@
 
 - 모델 evaluation 단계에서 row-level prediction·target을 기본 산출물로 보존한다.
 - 실제 의사결정 threshold나 Top-K는 향후 배당·공제까지 포함한 별도 betting-stage 계약에서 평가한다.
+# 2026-08-20 — Historical Trend 후보 가용성 감사
+
+- 대상은 development 현재행 2023-01-01~2024-06-30 28,392행·2,675경주이며 target과 성능은 사용하지 않았다.
+- F1 time percentile 및 S1F/G3F/G1F recent5 sequence에서 최소 3개 유효 관측을 확보한 비율은 2023년 81.05%, 2024-H1 86.26%였다.
+- recent5 count의 중앙값은 두 기간 모두 5였고, P25는 2023년 3에서 2024-H1 4로 증가했다.
+- 동일 말·동일 날짜 복수 과거 event는 2024-07 이전 0건이었다.
+- 해석: 4개 최소 Trend 후보는 개발 실험이 가능한 가용성을 가지며, 초기 이력 부족은 NULL과 기존 count로 구분해야 한다.

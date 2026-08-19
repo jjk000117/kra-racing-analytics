@@ -1,0 +1,9 @@
+feature_name,period,rows,available_rows,availability_rate,recent5_count_p25,recent5_count_median,recent5_count_p75,recent5_count_max
+horse_recent5_race_time_percentile_trend_per_start,2023,18911,15327,0.810481,3,5,5,5
+horse_recent5_race_time_percentile_trend_per_start,2024-H1,9481,8178,0.862567,4,5,5,5
+horse_recent5_s1f_improvement_trend_seconds_per_start,2023,18911,15327,0.810481,3,5,5,5
+horse_recent5_s1f_improvement_trend_seconds_per_start,2024-H1,9481,8178,0.862567,4,5,5,5
+horse_recent5_g3f_improvement_trend_seconds_per_start,2023,18911,15327,0.810481,3,5,5,5
+horse_recent5_g3f_improvement_trend_seconds_per_start,2024-H1,9481,8178,0.862567,4,5,5,5
+horse_recent5_g1f_improvement_trend_seconds_per_start,2023,18911,15327,0.810481,3,5,5,5
+horse_recent5_g1f_improvement_trend_seconds_per_start,2024-H1,9481,8178,0.862567,4,5,5,5

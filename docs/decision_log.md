@@ -812,3 +812,10 @@
 - PLC는 경주당 2~4개의 양성이 있는 multi-positive target이므로 양성 내부 순서 없이 양성-음성 비교가 자연스럽다.
 - 선형 pairwise 방식은 HGB처럼 비선형 복잡도를 다시 도입하지 않아 L133과의 차이를 race-aware loss에 가깝게 격리한다.
 - sklearn과 기존 전처리를 재사용할 수 있고 pairwise score의 probability 한계를 고정 OOF calibration으로 분리할 수 있다.
+# 2026-08-20 — 첫 Historical Trend bundle을 T1 4개 slope로 제한
+
+- 첫 Trend 실험은 `horse_recent5_race_time_percentile_trend_per_start`와 S1F/G3F/G1F improvement slope 3개로 고정한다.
+- 최근 최대 5개 유효 관측의 observation sequence OLS slope를 쓰며 최소 3개가 필요하다. sectional은 낮은 시간이 좋아지도록 부호를 반전한다.
+- rating은 기존 endpoint change와 중복되고, raw finish/PLC는 field-size·이산성 문제, 마체중은 개선 방향이 불명확해 첫 bundle에서 제외한다.
+- elapsed-day slope는 휴양·출전빈도를 섞으므로 첫 실험에서는 사용하지 않는다.
+- 기존 count companion을 재사용하고 계산 불가는 NULL로 유지한다.

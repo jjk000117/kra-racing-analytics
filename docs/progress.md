@@ -633,3 +633,10 @@
 - Feature 구현·Snapshot 변경·모델 학습·성능 계산·Validation 접근은 수행하지 않았다.
 - 상세 결과: `docs/post-baseline-v2-feature-bundle-design.md`
 - 다음 추천 작업: F1/F2/F3를 각각 독립 candidate로 구현하고 구조·PIT audit부터 수행한다.
+# 2026-08-20 — Historical Trend Feature 설계 감사
+
+- L133의 기존 level/change/variability 표현을 전수 감사하고, 중복을 제거한 T1 Trend bundle 4개를 성능 확인 전에 봉인했다.
+- T1은 F1 time percentile과 S1F/G3F/G1F의 recent5 observation-sequence slope만 사용한다.
+- development 28,392행에서 최소 3개 유효 관측 가용률은 2023년 81.05%, 2024-H1 86.26%였다.
+- Feature·Snapshot·모델은 구현하지 않았고 Validation 및 2024-07 이후 데이터에는 접근하지 않았다.
+- 다음 권장 작업은 T1 4개 구현 및 데이터 수준 PIT/count/NULL/slope 재계산 감사다.
