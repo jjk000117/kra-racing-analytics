@@ -1,5 +1,12 @@
 # 의사결정 기록
 
+## 2026-09-01 — T1은 정상 완주 metric 관측을 유지하고 기존 S1F count 차이는 limitation으로 관리
+
+- T1의 S1F sequence는 봉인 계약대로 정상 완주·유효 S1F만 사용한다.
+- 기존 `horse_recent5_s1f_count`는 S1F 값이 남은 주행중지 event를 포함해 6행에서 T1 실제 count보다 1 컸다.
+- 기존 133개와 count를 소급 수정하거나 신규 T1 count를 추가하지 않는다.
+- T1 값/NULL은 별도 source audit의 실제 유효 count로 결정하고, 6행 정의 차이는 재현 가능한 mismatch 산출물로 관리한다.
+
 ## 2026-08-19 — 선형 pairwise RA1 경로 종료
 
 - 결정: 봉인 규칙에 따라 `DROP_RACE_AWARE`로 확정한다.

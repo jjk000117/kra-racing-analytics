@@ -41,6 +41,7 @@ from kra_analytics.race_aware_experiment import run_ra1_development_experiment
 from kra_analytics.runner_count_diagnostics import run_runner_count_loss_diagnostic
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
+from kra_analytics.trend_features import audit_trend_features, build_trend_features
 from kra_analytics.walk_forward import run_walk_forward_stability
 
 app = typer.Typer(help="KRA racing analytics local pipeline.", no_args_is_help=True)
@@ -313,6 +314,28 @@ def feature_build_post_baseline_bundles() -> None:
 def feature_check_post_baseline_bundles() -> None:
     """Audit the built F1/F2/F3 candidate Feature bundles."""
     issues = audit_feature_bundles()
+    typer.echo(f"issues={len(issues)}")
+    for issue in issues:
+        typer.echo(issue, err=True)
+    if issues:
+        raise typer.Exit(code=1)
+
+
+@feature_app.command("build-historical-trend-t1")
+def feature_build_historical_trend_t1() -> None:
+    """Build and audit the sealed four-Feature Historical Trend T1 candidate."""
+    outcome = build_trend_features()
+    typer.echo(f"rows={outcome.row_count}")
+    typer.echo(f"races={outcome.race_count}")
+    typer.echo(f"trend_features={outcome.feature_count}")
+    typer.echo(f"audit_issues={outcome.audit_issue_count}")
+    typer.echo(f"output_directory={outcome.output_directory}")
+
+
+@feature_app.command("check-historical-trend-t1")
+def feature_check_historical_trend_t1() -> None:
+    """Audit the built Historical Trend T1 candidate without model evaluation."""
+    issues = audit_trend_features()
     typer.echo(f"issues={len(issues)}")
     for issue in issues:
         typer.echo(issue, err=True)

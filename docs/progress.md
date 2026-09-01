@@ -3,6 +3,15 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-09-01 — Historical Trend T1 구현·데이터 감사
+
+- 봉인된 F1 percentile 및 S1F/G3F/G1F recent5 sequence slope 4개를 별도 development candidate에 구현했다.
+- Candidate는 28,392행·2,675경주이고 T1 전체 가용률은 82.79%였다.
+- PIT·시간순서·recent5·NULL·NaN/Inf 위반은 0건, 독립 재계산 24건의 최대 오차는 `4.44e-15`였다.
+- 기존 S1F count와 엄격한 정상 완주 T1 count가 6행에서 달랐으며 주행중지 S1F 잔존값이 원인이었다. 기존 계약은 변경하지 않았다.
+- 모델·prediction·Validation 및 2024-07 이후 평가는 수행하지 않았다.
+- 다음 권장 작업은 동일 development fold에서 L133 대 L133+T1 단일 Logistic 비교다.
+
 ## 2026-08-19 — RA1 race-aware development 실험 완료
 
 - 동일 133개 입력으로 L133+sigmoid와 선형 pairwise RA1+sigmoid를 네 development fold에서 비교했다.

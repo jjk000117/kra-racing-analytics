@@ -1,5 +1,15 @@
 # 실험 기록
 
+## 2026-09-01 — Historical Trend T1 데이터 수준 감사
+
+- 대상: development 2023-01-01~2024-06-30, 28,392행·2,675경주. Target과 성능 지표는 사용하지 않았다.
+- 네 T1 Feature의 전체 non-null은 23,505행(82.79%)이며 2023 81.05%, 2024-H1 86.26%였다.
+- Fold evaluation 가용률은 79.27%, 77.55%, 82.69%, 89.78%였다.
+- PIT·ordering·recent5·count/NULL·NaN/Inf 위반 0건, 같은 말·날짜 복수 event 0건이었다.
+- 실제 24개 표본 독립 OLS 재계산 최대 절대오차는 `4.44e-15`였다.
+- Sectional 극단값은 정상 완주 Raw 원문에서 재현됐으며 파싱·PIT·계산 오류가 아니었다.
+- 해석: T1 구현은 development 실험에 사용할 수 있으며, 기존 S1F companion count 6행 차이는 알려진 비차단 limitation이다.
+
 ## 2026-08-19 — RA1 linear pairwise race-aware development CV
 
 ### 실험 내용
