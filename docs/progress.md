@@ -3,6 +3,15 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-09-07 — Historical Trend T1 development 실험 완료
+
+- 동일 raw Logistic과 네 expanding quarterly fold에서 L133 133개와 LT1 137개를 비교했다.
+- LT1은 Macro Log Loss/Brier 평균을 0.527685/0.175744에서 0.527003/0.175484로 낮췄다.
+- 두 주 지표가 4개 fold 중 3개에서 동시에 개선되어 사전 규칙에 따라 `KEEP_T1`으로 판정했다.
+- 개선폭은 0.13~0.15%로 작아 제한적인 추가 정보로 해석하며 official 후보 승격은 하지 않았다.
+- Validation ledger와 기존 봉인 산출물은 변경하지 않았고 2024-07 이후 데이터 접근은 0건이다.
+- 상세 문서: `docs/post-baseline-v2-t1-development-result.md`
+
 ## 2026-09-01 — Historical Trend T1 구현·데이터 감사
 
 - 봉인된 F1 percentile 및 S1F/G3F/G1F recent5 sequence slope 4개를 별도 development candidate에 구현했다.

@@ -1,5 +1,26 @@
 # 실험 기록
 
+## 2026-09-07 — L133 대 L133+T1 development CV
+
+### 실험 내용
+
+- Development 28,392행·2,675경주와 기존 네 expanding quarterly fold만 사용했다.
+- 동일 raw Logistic·전처리·모집단에서 T1 4개 추가 효과만 비교했다.
+- L133 재실행은 기존 Macro LL/Brier와 절대오차 0으로 재현됐다.
+
+### 결과와 해석
+
+- L133/LT1 Macro Log Loss 평균은 0.527685/0.527003, Brier는 0.175744/0.175484였다.
+- LT1은 두 주 지표를 세 fold에서 동시에 개선했고 fold 3에서만 매우 소폭 악화했다.
+- Race-time percentile trend 계수는 4/4 fold 양수로 가장 안정적이었고 sectional trend는
+  방향 변동이 있었다. 개별 선택에는 사용하지 않았다.
+- 사전 규칙에 따라 `KEEP_T1`이나, 개선폭이 작아 후속 후보 유지 이상의 의미를 부여하지 않는다.
+
+### 다음 실험 아이디어
+
+- 이번 결과만으로 official 후보를 바꾸지 않는다. T1을 포함한 후보의 다음 단계는 별도 계약에서
+  결정하고, T1 재설계나 개별 Feature 탐색은 하지 않는다.
+
 ## 2026-09-01 — Historical Trend T1 데이터 수준 감사
 
 - 대상: development 2023-01-01~2024-06-30, 28,392행·2,675경주. Target과 성능 지표는 사용하지 않았다.

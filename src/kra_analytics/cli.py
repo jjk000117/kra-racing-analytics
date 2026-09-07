@@ -41,6 +41,7 @@ from kra_analytics.race_aware_experiment import run_ra1_development_experiment
 from kra_analytics.runner_count_diagnostics import run_runner_count_loss_diagnostic
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
+from kra_analytics.trend_experiment import run_t1_development_experiment
 from kra_analytics.trend_features import audit_trend_features, build_trend_features
 from kra_analytics.walk_forward import run_walk_forward_stability
 
@@ -447,6 +448,16 @@ def model_run_f1_f3_combination_development() -> None:
         "selected_development_candidate="
         f"{result['decision']['selected_development_candidate']}"
     )
+
+
+@model_app.command("run-t1-development")
+def model_run_t1_development() -> None:
+    """Compare protected L133 with L133 plus the sealed T1 bundle."""
+    result = run_t1_development_experiment()
+    typer.echo(f"experiment_version={result['experiment_version']}")
+    typer.echo(f"development_rows={result['development_rows']}")
+    typer.echo(f"development_races={result['development_races']}")
+    typer.echo(f"judgement={result['decision']['judgement']}")
 
 
 @model_app.command("seal-improvement-validation-contract")

@@ -1,5 +1,14 @@
 # 의사결정 기록
 
+## 2026-09-07 — T1 bundle을 후속 후보로 유지
+
+- 결정: 사전 판정 규칙에 따라 `KEEP_T1`으로 확정한다.
+- 근거: L133 대비 Macro Log Loss와 Macro Brier 평균이 모두 개선됐고 두 지표의 동시 개선이
+  네 temporal fold 중 세 fold에서 반복됐다.
+- 제한: 상대 개선폭은 각각 0.129%, 0.148%로 작고 한 fold에서는 두 지표가 소폭 악화했다.
+- 의미: Trend 정보는 후속 후보로 유지하되 LT1을 official 모델로 승격하거나 L133+sigmoid를
+  변경하지 않는다. T1 정의·window·개별 Feature도 결과에 맞춰 소급 수정하지 않는다.
+
 ## 2026-09-01 — T1은 정상 완주 metric 관측을 유지하고 기존 S1F count 차이는 limitation으로 관리
 
 - T1의 S1F sequence는 봉인 계약대로 정상 완주·유효 S1F만 사용한다.

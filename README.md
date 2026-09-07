@@ -10,7 +10,7 @@
 - 시간 순서를 보존한 개발·검증 절차
 - 성공뿐 아니라 실패한 실험과 중단 근거까지 남기는 재현성
 
-현재는 **2022~2026 데이터 계층과 125개 Feature Snapshot을 구축하고, 기존 117개 입력에 F1·F3를 추가한 133개 Logistic 후보의 Validation 개선을 확인한 상태**입니다. Historical Trend T1 4개도 구현·감사를 마쳤으며, 아직 모델 성능 비교에는 사용하지 않았습니다.
+현재는 **2022~2026 데이터 계층과 125개 Feature Snapshot을 구축하고, 기존 117개 입력에 F1·F3를 추가한 133개 Logistic 후보의 Validation 개선을 확인한 상태**입니다. Historical Trend T1 4개도 구현·감사한 뒤 development 비교에서 작지만 반복된 개선을 확인해 `KEEP_T1` 후속 후보로 유지했습니다.
 
 ## 프로젝트 범위
 
@@ -175,7 +175,7 @@ Historical Trend T1 4개를 구현하고 데이터 수준 감사를 완료했습
 
 Development 28,392행·2,675경주에서 가용률은 82.79%였고 PIT, 순서, NULL, 수기 slope 재계산 감사를 통과했습니다. 아직 target 기반 모델 성능은 확인하지 않았습니다.
 
-다음 실험은 동일 Logistic·동일 네 development fold에서 `L133`과 `L133 + T1`만 비교하여 Trend 정보의 추가 효과를 분리하는 것입니다.
+동일 Logistic·동일 네 development fold에서 `L133`과 `L133 + T1`만 비교한 결과 Macro Log Loss와 Brier가 4개 fold 중 3개에서 함께 개선됐습니다. 평균 상대 개선은 약 0.13~0.15%로 작아, official 후보를 변경하지 않고 T1을 후속 후보로만 유지합니다.
 
 ## 주요 문서
 
@@ -196,6 +196,7 @@ Development 28,392행·2,675경주에서 가용률은 82.79%였고 PIT, 순서, 
 - [H133 Development 결과](docs/post-baseline-v2-h133-development-result.md)
 - [RA1 Development 결과](docs/post-baseline-v2-ra1-development-result.md)
 - [Historical Trend T1 구현 감사](docs/post-baseline-v2-historical-trend-feature-implementation-audit.md)
+- [Historical Trend T1 development 결과](docs/post-baseline-v2-t1-development-result.md)
 
 ## 개발 환경
 
