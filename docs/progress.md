@@ -3,6 +3,15 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-09-08 — PLC branch Aptitude A1 설계 감사 완료
+
+- `plc-dev`에서 현재 137개 Feature의 조건 적합성 표현을 전수 감사했다.
+- 동일등급·동일 주로상태·동일거리 F1 상대경주력·직전 대비 거리 변화로 구성한 A1 7개를 봉인했다.
+- Development-only 최소 3회 가용률은 동일등급 50.95%, 동일 주로 39.13%, 동일거리 F1 42.26%였다.
+- 공통 DuckDB read-only 조회는 가능하지만 source/write DB 분리 설정이 없어 구현 전 write guard가 필요하다.
+- 모델·Validation·2024-07 이후 데이터에는 접근하지 않았다.
+- 상세 문서: `docs/post-baseline-v2-aptitude-feature-design.md`
+
 ## 2026-09-07 — Historical Trend T1 development 실험 완료
 
 - 동일 raw Logistic과 네 expanding quarterly fold에서 L133 133개와 LT1 137개를 비교했다.

@@ -1,0 +1,8 @@
+source_count,development_rows,available_ge_1_rate,available_ge_2_rate,available_ge_3_rate,count_p25,count_median,count_p75,count_p90,count_p95,count_max,year_2023_ge_3_rate,year_2024_h1_ge_3_rate,decision
+same_grade,28392,0.804945,0.641836,0.509510,1,3,6,10,13,47,0.493364,0.541715,INCLUDE_A1
+same_track_condition,28392,0.737074,0.537370,0.391272,0,2,4,7,9,31,0.376077,0.421580,INCLUDE_A1
+same_distance_f1_percentile,28392,0.742392,0.557587,0.422619,0,2,4,8,10,40,0.418116,0.431600,INCLUDE_A1
+near_moisture_5pp,28392,0.869646,0.745034,0.630741,1,4,7,11,13,39,0.602877,0.686320,DEFER_OVERLAP_AND_ARBITRARY_RADIUS
+same_weather,28392,0.849042,0.737919,0.644618,1,4,8,12,15,36,0.622495,0.688746,EXCLUDE_LOW_INCREMENTAL_MEANING
+similar_distance_f1_200m,28392,0.917618,0.827451,0.739539,2,6,10,15,18,46,0.725662,0.767219,EXCLUDE_ARBITRARY_DISTANCE_RADIUS
+last_distance,28392,0.943963,,,,,,,,,,,INCLUDE_A1

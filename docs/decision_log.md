@@ -1,5 +1,13 @@
 # 의사결정 기록
 
+## 2026-09-08 — 첫 Aptitude 연구 bundle을 A1 7개로 봉인
+
+- 동일등급 count/PLC rate, 동일 주로상태 count/PLC rate, 동일거리 F1 percentile count/median,
+  직전 대비 거리 변화로 A1을 구성한다.
+- rate/median은 최소 3개 historical observation이 있을 때만 계산하고 count는 실제 관측 수를 유지한다.
+- 함수율·날씨·유사거리·과거 거리전환 및 조건별 sectional은 중복·임의 경계·희소성 때문에 보류/제외한다.
+- 다음 구현은 공통 DuckDB read-only source와 PLC branch-local output을 명시적으로 분리해야 한다.
+
 ## 2026-09-07 — T1 bundle을 후속 후보로 유지
 
 - 결정: 사전 판정 규칙에 따라 `KEEP_T1`으로 확정한다.
