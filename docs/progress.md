@@ -667,3 +667,12 @@
 - development 28,392행에서 최소 3개 유효 관측 가용률은 2023년 81.05%, 2024-H1 86.26%였다.
 - Feature·Snapshot·모델은 구현하지 않았고 Validation 및 2024-07 이후 데이터에는 접근하지 않았다.
 - 다음 권장 작업은 T1 4개 구현 및 데이터 수준 PIT/count/NULL/slope 재계산 감사다.
+
+## 2026-09-08 — Aptitude A1 구현·데이터 감사 완료
+
+- 공용 DuckDB read-only source와 branch-local experiment DB를 코드 수준에서 분리했다.
+- LT1 137개에 봉인된 A1 7개를 추가한 144개 candidate를 28,392행·2,675경주로 생성했다.
+- 업무키, PIT, count/NULL, 값 범위, 10건 독립 재계산 및 보호 hash 감사에서 이슈는 0건이었다.
+- 모델·prediction·성능 지표·Validation 및 2024-07 이후 데이터에는 접근하지 않았다.
+- 상세 결과: `docs/post-baseline-v2-aptitude-feature-implementation-audit.md`
+- 다음 추천 작업: 동일 development 계약으로 LT1 137 대 LA1 144 Logistic 단일 비교를 사전 봉인한다.

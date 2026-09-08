@@ -843,3 +843,16 @@
 - rating은 기존 endpoint change와 중복되고, raw finish/PLC는 field-size·이산성 문제, 마체중은 개선 방향이 불명확해 첫 bundle에서 제외한다.
 - elapsed-day slope는 휴양·출전빈도를 섞으므로 첫 실험에서는 사용하지 않는다.
 - 기존 count companion을 재사용하고 계산 불가는 NULL로 유지한다.
+
+## 2026-09-08 — 공용 source와 branch-local experiment DB 분리
+
+결정:
+
+- 공용 `kra.duckdb`는 전용 read-only connection으로만 읽는다.
+- A1 candidate와 lineage table은 PLC worktree 내부 `plc_experiments.duckdb`에만 쓴다.
+- source/output 동일 경로와 worktree 밖 output은 실행 전에 거부한다.
+
+이유:
+
+- 병렬 worktree가 동일 공용 DB를 수정하는 위험을 제거하면서 재현 가능한 SQL candidate table을
+  유지하기 위해서다.

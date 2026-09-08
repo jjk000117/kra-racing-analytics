@@ -8,6 +8,7 @@ from typing import Annotated
 import typer
 
 from kra_analytics import __version__
+from kra_analytics.aptitude_features import build_and_audit_aptitude_features
 from kra_analytics.bootstrap_stability import run_bootstrap_stability_diagnostic
 from kra_analytics.canonical import audit_canonical, build_canonical
 from kra_analytics.collectors.api4_3 import (
@@ -342,6 +343,17 @@ def feature_check_historical_trend_t1() -> None:
         typer.echo(issue, err=True)
     if issues:
         raise typer.Exit(code=1)
+
+
+@feature_app.command("build-aptitude-a1")
+def feature_build_aptitude_a1() -> None:
+    """Build and audit sealed A1 into a branch-local experiment database."""
+    outcome = build_and_audit_aptitude_features()
+    typer.echo(f"rows={outcome.row_count}")
+    typer.echo(f"races={outcome.race_count}")
+    typer.echo(f"aptitude_features={outcome.feature_count}")
+    typer.echo(f"audit_issues={outcome.audit_issue_count}")
+    typer.echo(f"output_directory={outcome.output_directory}")
 
 
 @model_app.command("baseline-validation")

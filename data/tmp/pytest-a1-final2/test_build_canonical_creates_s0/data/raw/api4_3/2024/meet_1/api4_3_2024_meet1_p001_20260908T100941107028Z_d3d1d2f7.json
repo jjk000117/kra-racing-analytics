@@ -1,0 +1,1 @@
+{"response": {"header": {"resultCode": "00"}, "body": {"totalCount": 2, "items": {"item": [{"rcDate": "20240105", "meet": "서울", "rcNo": "1", "hrNo": "H1", "chulNo": "1", "ord": "1", "rcName": "일반", "rank": "국6등급"}, {"rcDate": "20240105", "meet": "서울", "rcNo": "1", "hrNo": "H2", "chulNo": "2", "ord": "94", "rcTime": "0", "rcName": "일반", "rank": "국6등급"}]}}}}
