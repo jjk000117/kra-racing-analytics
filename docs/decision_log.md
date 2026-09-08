@@ -843,3 +843,11 @@
 - family와 objective가 함께 달라지는 절차 비교이며 objective 단독 효과라고 해석하지 않는다.
 - primary macro NDCG@3 평균 및 3/4 fold 개선, macro Recall@3 평균 비악화를 KEEP 조건으로 봉인한다.
 - source DB read-only, 모든 후속 output은 ranking worktree 내부. 상세: `docs/ranking-research-v1-contract.md`.
+
+## 2026-09-08 — Ranking v1 구현 경계 고정
+
+- 이미 존재하는 계약 commit b4cd6b0를 유지하고 중복 commit/amend하지 않는다.
+- 봉인된 OHE/median/count0/scaling 표현을 유지한다. Scaling은 tree 필수조건이 아니라 비교 표현 고정이다.
+- OOF 출력 컬럼은 최신 요청의 ranking_within_race_rank/ranking_normalized_score로 구체화한다.
+- ranking 전용 venv에만 설치하고 inherited dependency 버전 drift는 실행 전 실패로 처리한다.
+- 성능 실험 없이 구조 감사와 synthetic smoke까지만 실행한다. 상세: `docs/ranking-v1-implementation-audit.md`.

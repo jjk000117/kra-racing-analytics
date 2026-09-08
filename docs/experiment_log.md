@@ -1144,3 +1144,12 @@
 - legacy R code/CSV에서 과거 NDCG/winner 지표와 Top3=winner-in-selected-three 정의를 확인했다.
 - LightGBM은 전용 Python에 미설치다. 예측·OOF·성능 비교·Validation 데이터 조회는 수행하지 않았다.
 - 다음 실험 아이디어는 봉인된 단일 candidate 실행뿐이다. 상세: `docs/ranking-research-v1-contract.md`.
+
+## 2026-09-08 — Ranking v1 synthetic smoke 및 Development 구조 감사
+
+- 실제 Development positive 수는 2두 7경주 / 3두 2,661경주 / 4두 7경주이며 보정하지 않았다.
+- 네 fold race overlap 0, group sum 일치, PIT/Train median 검사 통과.
+- synthetic 400행에서 고정 LambdaRank fit 2회와 predict/save/reload exact equality를 확인했다.
+- 실제 ranking 성능·OOF·disagreement·KEEP/DROP는 계산하지 않았다. 공통 DB 및 보호 hash 동일.
+- 전체 검사에 남은 기존 export 의존/노트북 lint 제한은 구현 감사 문서에 기록했다.
+- 상세: `docs/ranking-v1-implementation-audit.md`.

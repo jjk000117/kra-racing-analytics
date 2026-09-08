@@ -666,3 +666,12 @@
 - 기존 네 expanding fold, primary macro NDCG@3, OOF join schema, KEEP/DROP를 명시했다.
 - 학습·OOF·Validation 접근·공통 DB write는 없었다. 다음은 전용 dependency/guarded loader/comparator 구현이다.
 - 상세: `docs/ranking-research-v1-contract.md`.
+
+## 2026-09-08 — Ranking v1 구조 구현·감사 완료
+
+- read-only Development loader, L133 group/relevance/PIT 검사, 단일 고정 LambdaRank runner와 OOF adapter를 구현했다.
+- LightGBM 4.6.0 ranking 전용 환경과 exact version drift guard를 준비했다.
+- 28,392행/2,675경주 및 네 fold 구조·Train-only 전처리 감사 통과. 공통 DB SHA256 동일.
+- 관련 Pytest 27개 통과. 기존 export 미복제 테스트 2개와 notebook lint 제한은 별도 기록했다.
+- 실제 Development 모델 학습/예측/성능/OOF는 미실행. 다음은 명시적 요청 후 단일 full 실험이다.
+- 상세: `docs/ranking-v1-implementation-audit.md`.

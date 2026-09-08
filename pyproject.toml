@@ -20,6 +20,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+ranking = ["lightgbm==4.6.0"]
 dev = [
     "jupyterlab>=4.4,<5",
     "ipykernel>=6.29,<8",
