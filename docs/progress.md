@@ -658,3 +658,11 @@
 - development 28,392행에서 최소 3개 유효 관측 가용률은 2023년 81.05%, 2024-H1 86.26%였다.
 - Feature·Snapshot·모델은 구현하지 않았고 Validation 및 2024-07 이후 데이터에는 접근하지 않았다.
 - 다음 권장 작업은 T1 4개 구현 및 데이터 수준 PIT/count/NULL/slope 재계산 감사다.
+
+## 2026-09-08 — Ranking research 데이터 접근 감사 및 계약 봉인
+
+- ranking-dev / 공통 HEAD ef6a38a에서 공통 DB read-only 접근과 Development 28,392행·2,675경주를 확인했다.
+- 첫 후보는 L133 + binary official PLC relevance LightGBM LambdaRank 하나로 봉인했다.
+- 기존 네 expanding fold, primary macro NDCG@3, OOF join schema, KEEP/DROP를 명시했다.
+- 학습·OOF·Validation 접근·공통 DB write는 없었다. 다음은 전용 dependency/guarded loader/comparator 구현이다.
+- 상세: `docs/ranking-research-v1-contract.md`.

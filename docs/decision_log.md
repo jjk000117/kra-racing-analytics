@@ -835,3 +835,11 @@
 - rating은 기존 endpoint change와 중복되고, raw finish/PLC는 field-size·이산성 문제, 마체중은 개선 방향이 불명확해 첫 bundle에서 제외한다.
 - elapsed-day slope는 휴양·출전빈도를 섞으므로 첫 실험에서는 사용하지 않는다.
 - 기존 count companion을 재사용하고 계산 불가는 NULL로 유지한다.
+
+## 2026-09-08 — 첫 ranking 계약은 동일 L133/공식 PLC relevance
+
+- finish-order와 hybrid를 보류하고 relevance=place_hit(0/1), label_gain=[0,1]로 고정한다.
+- T1 추가/F3 제거/여러 relevance 탐색 없이 L133 133개와 기존 전처리를 유지한다.
+- family와 objective가 함께 달라지는 절차 비교이며 objective 단독 효과라고 해석하지 않는다.
+- primary macro NDCG@3 평균 및 3/4 fold 개선, macro Recall@3 평균 비악화를 KEEP 조건으로 봉인한다.
+- source DB read-only, 모든 후속 output은 ranking worktree 내부. 상세: `docs/ranking-research-v1-contract.md`.

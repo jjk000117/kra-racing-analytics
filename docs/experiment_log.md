@@ -1136,3 +1136,11 @@
 - recent5 count의 중앙값은 두 기간 모두 5였고, P25는 2023년 3에서 2024-H1 4로 증가했다.
 - 동일 말·동일 날짜 복수 과거 event는 2024-07 이전 0건이었다.
 - 해석: 4개 최소 Trend 후보는 개발 실험이 가능한 가용성을 가지며, 초기 이력 부족은 NULL과 기존 count로 구분해야 한다.
+
+## 2026-09-08 — Ranking 사전 설계 감사 (모델 실험 미실행)
+
+- Development 접근 감사에서 중복키·canonical 미결합·target NULL은 0이었다.
+- valid-start 모집단은 FINISHED 28,318 / RACE_STOPPED 73 / DISQUALIFIED 1이며 경주당 7~16두였다.
+- legacy R code/CSV에서 과거 NDCG/winner 지표와 Top3=winner-in-selected-three 정의를 확인했다.
+- LightGBM은 전용 Python에 미설치다. 예측·OOF·성능 비교·Validation 데이터 조회는 수행하지 않았다.
+- 다음 실험 아이디어는 봉인된 단일 candidate 실행뿐이다. 상세: `docs/ranking-research-v1-contract.md`.
