@@ -676,3 +676,11 @@
 - 모델·prediction·성능 지표·Validation 및 2024-07 이후 데이터에는 접근하지 않았다.
 - 상세 결과: `docs/post-baseline-v2-aptitude-feature-implementation-audit.md`
 - 다음 추천 작업: 동일 development 계약으로 LT1 137 대 LA1 144 Logistic 단일 비교를 사전 봉인한다.
+
+## 2026-09-09 — Aptitude A1 Development 실험 완료
+
+- 동일 Logistic·동일 네 expanding fold에서 LT1 137과 LA1 144만 비교했다.
+- LA1은 평균 Macro Log Loss/Brier가 각각 약 +0.000012 악화했고 동시 개선은 2/4 fold였다.
+- 사전 규칙에 따라 `DROP_A1`으로 판정했으며 개별 A1 선택이나 재설계는 수행하지 않았다.
+- Validation 및 2024-07 이후 접근은 없고 보호 artifact hash는 유지됐다.
+- 상세 결과: `docs/post-baseline-v2-aptitude-a1-development-results.md`

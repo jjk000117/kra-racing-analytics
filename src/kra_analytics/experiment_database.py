@@ -65,3 +65,21 @@ def connect_experiment_database(
         yield connection
     finally:
         connection.close()
+
+
+@contextmanager
+def connect_experiment_database_read_only(
+    *, database_paths: ExperimentDatabasePaths, paths: ProjectPaths | None = None
+) -> Iterator[DuckDBPyConnection]:
+    project_paths = paths or ProjectPaths.from_root()
+    if not database_paths.experiment.is_file():
+        raise FileNotFoundError(
+            f"Branch-local experiment database does not exist: {database_paths.experiment}"
+        )
+    if not database_paths.experiment.is_relative_to(project_paths.root):
+        raise ValueError("Experiment database must be inside the active worktree")
+    connection = duckdb.connect(str(database_paths.experiment), read_only=True)
+    try:
+        yield connection
+    finally:
+        connection.close()

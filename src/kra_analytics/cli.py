@@ -8,6 +8,7 @@ from typing import Annotated
 import typer
 
 from kra_analytics import __version__
+from kra_analytics.aptitude_experiment import run_a1_development_experiment
 from kra_analytics.aptitude_features import build_and_audit_aptitude_features
 from kra_analytics.bootstrap_stability import run_bootstrap_stability_diagnostic
 from kra_analytics.canonical import audit_canonical, build_canonical
@@ -354,6 +355,15 @@ def feature_build_aptitude_a1() -> None:
     typer.echo(f"aptitude_features={outcome.feature_count}")
     typer.echo(f"audit_issues={outcome.audit_issue_count}")
     typer.echo(f"output_directory={outcome.output_directory}")
+
+
+@model_app.command("aptitude-a1-development")
+def model_aptitude_a1_development() -> None:
+    """Compare sealed LT1 and LA1 on development folds only."""
+    result = run_a1_development_experiment()
+    typer.echo(f"rows={result['development_rows']}")
+    typer.echo(f"races={result['development_races']}")
+    typer.echo(f"judgement={result['decision']['judgement']}")
 
 
 @model_app.command("baseline-validation")

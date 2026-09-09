@@ -1172,3 +1172,20 @@
 ### 다음 실험 아이디어
 
 - 동일 Logistic과 네 development fold에서 LT1 137 대 LA1 144만 비교한다.
+
+## 2026-09-09 — LT1 대 LA1 Development CV
+
+### 실험 내용
+
+- 기존 LT1 137과 A1 7개를 더한 LA1 144를 동일 raw Logistic으로 비교했다.
+- Development 28,392행·2,675경주와 기존 네 expanding fold만 사용했다.
+
+### 결과와 해석
+
+- Macro Log Loss 평균은 0.527003 대 0.527015, Macro Brier는 0.175484 대 0.175497이었다.
+- 두 primary 지표 동시 개선은 fold 2와 fold 4, 총 2/4였다.
+- `DROP_A1`: 현재 봉인된 aptitude bundle은 LT1 이후 안정적인 추가가치를 보이지 않았다.
+
+### 다음 실험 아이디어
+
+- A1은 종료하고 PLC 라인의 다음 연구 과제는 별도 사전 설계가 있을 때 시작한다.

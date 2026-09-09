@@ -856,3 +856,15 @@
 
 - 병렬 worktree가 동일 공용 DB를 수정하는 위험을 제거하면서 재현 가능한 SQL candidate table을
   유지하기 위해서다.
+
+## 2026-09-09 — Aptitude A1 DROP
+
+결정:
+
+- 봉인된 A1 7개 bundle을 `DROP_A1`으로 판정하고 LT1 이후 후보로 승격하지 않는다.
+- 결과를 근거로 A1 일부 Feature 선택, 최소 count 변경 또는 재가공을 하지 않는다.
+
+이유:
+
+- Macro Log Loss와 Brier 평균이 모두 개선되지 않았고 두 지표 동시 개선은 2/4 fold였다.
+- Micro 지표의 미세 개선과 일부 일관된 계수는 primary race-macro 기준을 뒤집지 않는다.
