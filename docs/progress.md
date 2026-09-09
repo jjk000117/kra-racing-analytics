@@ -3,6 +3,14 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-09-09 — Race-relative R1 구현·데이터 감사 완료
+
+- 봉인된 current-field percentile 7개를 branch-local candidate에 구현했다.
+- Candidate는 28,392행·2,675경주이며 LT1 137 + R1 7 = LR1 144 계약을 만족한다.
+- R1 가용률은 73.33%~99.92%, 수기 575행 최대 오차 0, schema·key·PIT·NULL·범위 이슈 0건이었다.
+- 공통 DB와 보호 artifact는 불변이고 모델·Validation·2024-07 이후 평가에는 접근하지 않았다.
+- 상세 문서: `docs/post-baseline-v2-relative-r1-implementation-audit.md`
+
 ## 2026-09-09 — Race-relative Representation R1 설계 감사
 
 - LT1 137개 안의 F1 6개와 F3 10개 상대 표현 및 117개 absolute 입력을 전수 분류했다.
