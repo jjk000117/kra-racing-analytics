@@ -1153,3 +1153,12 @@
 - 실제 ranking 성능·OOF·disagreement·KEEP/DROP는 계산하지 않았다. 공통 DB 및 보호 hash 동일.
 - 전체 검사에 남은 기존 export 의존/노트북 lint 제한은 구현 감사 문서에 기록했다.
 - 상세: `docs/ranking-v1-implementation-audit.md`.
+
+## 2026-09-09 — Ranking v1 four-fold Development experiment
+
+- 133개 L133, binary place_hit relevance, 고정 LightGBM 4.6.0 config로 네 fold를 실행했다.
+- L133/LambdaRank 평균 macro NDCG@3는 0.534570/0.527690, Recall@3는 0.511802/0.503981이었다.
+- Primary 개선은 0/4 fold이며 `DROP_RANKING_V1`로 판정했다.
+- OOF join은 19,168행·1,821경주 100%; Top1 PLC-only/Ranking-only는 154/148경주였다.
+- 실제 ensemble은 실행하지 않았고 oracle은 descriptive upper bound로만 기록했다.
+- 상세: `docs/ranking-v1-development-result.md`.

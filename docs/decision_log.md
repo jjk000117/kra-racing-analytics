@@ -851,3 +851,11 @@
 - OOF 출력 컬럼은 최신 요청의 ranking_within_race_rank/ranking_normalized_score로 구체화한다.
 - ranking 전용 venv에만 설치하고 inherited dependency 버전 drift는 실행 전 실패로 처리한다.
 - 성능 실험 없이 구조 감사와 synthetic smoke까지만 실행한다. 상세: `docs/ranking-v1-implementation-audit.md`.
+
+## 2026-09-09 — 첫 binary PLC LambdaRank는 DROP
+
+- Primary macro NDCG@3가 L133보다 네 fold 모두 낮고 평균 delta가 -0.006880이었다.
+- Macro Recall@3 평균 delta도 -0.007821이므로 사전 KEEP conjunction을 충족하지 못했다.
+- 일부 ranking-only 성공 경주는 descriptive disagreement로만 보존하며 판정을 뒤집지 않는다.
+- 이 판정은 봉인된 v1 후보에 한정하며 모든 ranking 접근의 실패로 일반화하지 않는다.
+- 상세: `docs/ranking-v1-development-result.md`.

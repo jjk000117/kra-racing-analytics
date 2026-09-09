@@ -675,3 +675,12 @@
 - 관련 Pytest 27개 통과. 기존 export 미복제 테스트 2개와 notebook lint 제한은 별도 기록했다.
 - 실제 Development 모델 학습/예측/성능/OOF는 미실행. 다음은 명시적 요청 후 단일 full 실험이다.
 - 상세: `docs/ranking-v1-implementation-audit.md`.
+
+## 2026-09-09 — Ranking v1 Development 실행 및 DROP 판정
+
+- 봉인된 binary PLC LambdaRank와 raw L133을 동일 네 Development fold에서 실행했다.
+- LambdaRank macro NDCG@3 평균은 0.527690으로 L133 0.534570보다 0.006880 낮았고 개선 fold는 0/4였다.
+- Macro Recall@3도 평균 0.007821 낮아 사전 규칙에 따라 `DROP_RANKING_V1`로 판정했다.
+- 19,168행·1,821경주의 양쪽 OOF, fold model, metrics와 disagreement 산출물을 branch-local에 저장했다.
+- 공통 DB 및 보호 hash는 동일하고 Validation/2024-07 이후 접근은 없었다.
+- 상세: `docs/ranking-v1-development-result.md`.

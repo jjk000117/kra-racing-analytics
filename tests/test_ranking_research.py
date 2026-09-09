@@ -325,3 +325,11 @@ def test_environment_drift_guard(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(importlib.metadata, "version", lambda name: "0.0.0")
     with pytest.raises(ValueError, match="Environment drift"):
         validate_environment(ROOT)
+
+
+def test_plc_oof_includes_deterministic_within_race_rank() -> None:
+    frame = sample()
+    expected = expected_oof(frame)
+    plc = make_oof(frame, np.zeros(len(frame)), provenance(), kind="plc")
+    validate_oof(plc, expected, kind="plc")
+    assert plc.plc_within_race_rank.tolist() == [1, 2, 3, 4, 1, 2, 3, 4, 5]

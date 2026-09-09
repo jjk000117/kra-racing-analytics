@@ -84,6 +84,9 @@ def make_oof(
     else:
         result = frame.loc[:, KEYS].copy().reset_index(drop=True)
         result["plc_probability"] = values
+        result["plc_within_race_rank"] = normalize_scores(frame, values)[
+            "ranking_within_race_rank"
+        ].to_numpy()
     expected = expected_oof(frame)
     result = result.merge(expected, on=KEYS, how="left", validate="one_to_one")
     for key in PROVENANCE:
@@ -101,7 +104,11 @@ def validate_oof(
     columns = (
         JOIN_KEYS
         + PROVENANCE
-        + (RANK_COLUMNS + ["runner_count"] if kind == "ranking" else ["plc_probability"])
+        + (
+            RANK_COLUMNS + ["runner_count"]
+            if kind == "ranking"
+            else ["plc_probability", "plc_within_race_rank"]
+        )
     )
     if not set(columns) <= set(frame.columns) or frame[columns].isna().any().any():
         raise ValueError("Incomplete OOF schema")
@@ -138,6 +145,9 @@ def validate_oof(
     if kind == "plc":
         if not frame.plc_probability.between(0, 1).all():
             raise ValueError("Invalid PLC probability")
+        ranks = normalize_scores(frame, frame.plc_probability.to_numpy(dtype=float))
+        if not np.array_equal(frame.plc_within_race_rank, ranks.ranking_within_race_rank):
+            raise ValueError("PLC rank mismatch")
     else:
         check = normalize_scores(frame, frame.ranking_raw_score.to_numpy(dtype=float))
         if not np.isfinite(frame[RANK_COLUMNS].to_numpy(dtype=float)).all():
