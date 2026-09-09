@@ -1189,3 +1189,21 @@
 ### 다음 실험 아이디어
 
 - A1은 종료하고 PLC 라인의 다음 연구 과제는 별도 사전 설계가 있을 때 시작한다.
+
+# 2026-09-09 — Race-relative R1 데이터 수준 감사
+
+### 실험 내용
+
+- 기존 LT1의 seven absolute source를 현재 race 안에서 average-rank percentile로 변환했다.
+- Development 28,392행·2,675경주에서 schema, key, PIT, NULL, tie, 범위와 독립 재계산을 검사했다.
+- Target 관계나 모델 성능은 계산하지 않았다.
+
+### 결과와 해석
+
+- R1 7개 가용률은 73.33%~99.92%이고 LR1 144개 입력 계약과 registry가 일치했다.
+- 실제 575개 runner-feature 재계산 최대 오차와 모든 계약 위반은 0이었다.
+- 구현 품질 blocker는 없지만 예측 추가가치는 아직 확인되지 않았다.
+
+### 다음 실험 아이디어
+
+- 동일 Logistic과 네 development fold에서 LT1 137 대 LR1 144만 비교한다.

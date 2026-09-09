@@ -40,6 +40,7 @@ from kra_analytics.modeling import run_final_test_once, run_validation_and_refit
 from kra_analytics.modeling_v2 import run_official_baseline_v2_validation
 from kra_analytics.paths import ProjectPaths
 from kra_analytics.race_aware_experiment import run_ra1_development_experiment
+from kra_analytics.relative_features import build_and_audit_relative_features
 from kra_analytics.runner_count_diagnostics import run_runner_count_loss_diagnostic
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
@@ -353,6 +354,19 @@ def feature_build_aptitude_a1() -> None:
     typer.echo(f"rows={outcome.row_count}")
     typer.echo(f"races={outcome.race_count}")
     typer.echo(f"aptitude_features={outcome.feature_count}")
+    typer.echo(f"audit_issues={outcome.audit_issue_count}")
+    typer.echo(f"output_directory={outcome.output_directory}")
+
+
+@feature_app.command("build-relative-r1")
+def feature_build_relative_r1() -> None:
+    """Build and audit sealed R1 into a branch-local experiment database."""
+    outcome = build_and_audit_relative_features()
+    typer.echo(f"rows={outcome.row_count}")
+    typer.echo(f"races={outcome.race_count}")
+    typer.echo(f"relative_features={outcome.feature_count}")
+    typer.echo(f"relative_hash={outcome.relative_hash}")
+    typer.echo(f"candidate_hash={outcome.candidate_hash}")
     typer.echo(f"audit_issues={outcome.audit_issue_count}")
     typer.echo(f"output_directory={outcome.output_directory}")
 
