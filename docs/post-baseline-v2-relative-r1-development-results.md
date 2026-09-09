@@ -4,6 +4,8 @@
 
 `KEEP_R1` for the PLC development research line. The sealed R1 bundle produced a small average improvement over LT1 in both primary race-macro losses, repeated in three of four temporal folds. This is not an official-model promotion and Validation was not accessed.
 
+This Development result and its no-post-hoc-change interpretation are sealed before any LR1 Validation reproduction contract is executed.
+
 ## Fixed comparison
 
 - Population: development only, `2023-01-01 <= race_date < 2024-07-01`
