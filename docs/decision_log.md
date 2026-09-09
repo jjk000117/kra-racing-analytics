@@ -877,3 +877,15 @@
 - 제외: 희소한 말×기수 상대값, 동률이 과도한 recent3 Top3, 중복 transformation, race-level field strength.
 - 모델·Feature 구현·Validation은 수행하지 않았으며 후속 `LT1(137)` 대 `LR1(144)` 단일 비교 전에
   구현·데이터 감사를 먼저 수행한다.
+
+## 2026-09-09 — Race-relative R1 KEEP
+
+결정:
+
+- 봉인된 R1 7개 bundle을 development 연구선에서 `KEEP_R1`으로 유지한다.
+- 결과를 근거로 일부 Feature 제거, percentile 정의 변경, z-score 또는 median-gap 추가를 하지 않는다.
+
+이유:
+
+- Macro Log Loss와 Macro Brier 평균이 모두 작게 개선됐고 두 지표 동시 개선이 3/4 fold에서 반복됐다.
+- 평균 개선 폭은 각각 약 0.18%, 0.20%로 작으므로 공식 모델 승격이 아니라 후속 검증 가치만 인정한다.

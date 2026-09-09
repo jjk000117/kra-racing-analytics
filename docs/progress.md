@@ -700,3 +700,12 @@
 - 사전 규칙에 따라 `DROP_A1`으로 판정했으며 개별 A1 선택이나 재설계는 수행하지 않았다.
 - Validation 및 2024-07 이후 접근은 없고 보호 artifact hash는 유지됐다.
 - 상세 결과: `docs/post-baseline-v2-aptitude-a1-development-results.md`
+
+## 2026-09-09 — Race-relative R1 Development 실험 완료
+
+- 동일 Logistic·동일 네 expanding fold에서 LT1 137과 LR1 144만 비교했다.
+- LR1은 평균 Macro Log Loss -0.000942, Macro Brier -0.000352로 작게 개선했고 두 지표 동시 개선은 3/4 fold였다.
+- 사전 판정 원칙에 따라 `KEEP_R1`으로 판정했으며 R1 일부 제거·정의 변경·추가 변환은 수행하지 않았다.
+- Validation 및 2024-07 이후 접근은 없고 보호 artifact hash는 유지됐다.
+- 상세 결과: `docs/post-baseline-v2-relative-r1-development-results.md`
+- 다음 blocker: 별도 봉인 계약 없이는 Validation 재사용이나 공식 후보 승격을 진행하지 않는다.
