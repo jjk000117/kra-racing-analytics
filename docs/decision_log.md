@@ -868,3 +868,12 @@
 
 - Macro Log Loss와 Brier 평균이 모두 개선되지 않았고 두 지표 동시 개선은 2/4 fold였다.
 - Micro 지표의 미세 개선과 일부 일관된 계수는 primary race-macro 기준을 뒤집지 않는다.
+
+# 2026-09-09 — 첫 Race-relative 확장 R1을 7개 percentile로 제한
+
+- 결정: LT1 137개는 유지하고 same-meet, same-meet-distance, 관계자·마주·말×조교사 및 F1 recent5
+  수준의 current-field percentile 7개만 첫 R1 후보로 제안한다.
+- 이유: 개발 가용성이 73.33%~99.92%이고 기존 F3와 동일한 해석·NULL·tie 계약을 재사용할 수 있다.
+- 제외: 희소한 말×기수 상대값, 동률이 과도한 recent3 Top3, 중복 transformation, race-level field strength.
+- 모델·Feature 구현·Validation은 수행하지 않았으며 후속 `LT1(137)` 대 `LR1(144)` 단일 비교 전에
+  구현·데이터 감사를 먼저 수행한다.

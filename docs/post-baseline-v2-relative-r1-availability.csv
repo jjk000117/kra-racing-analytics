@@ -1,0 +1,8 @@
+source_feature,overall_rate,year_2023_rate,year_2024_h1_rate,seoul_rate,busan_rate,tied_nonnull_row_rate
+horse_same_meet_plc_hit_rate,0.9384,0.9304,0.9544,0.9418,0.9338,0.3789
+horse_same_meet_distance_plc_hit_rate,0.7333,0.7250,0.7500,0.7354,0.7305,0.6002
+jockey_same_meet_plc_hit_rate,0.9972,0.9976,0.9965,0.9981,0.9960,0.0025
+trainer_same_meet_plc_hit_rate,0.9992,0.9989,0.9997,0.9992,0.9991,0.1400
+owner_prior_plc_hit_rate,0.9971,0.9970,0.9974,0.9969,0.9975,0.0625
+horse_trainer_prior_plc_hit_rate,0.9192,0.9105,0.9366,0.9232,0.9136,0.3998
+horse_recent5_race_time_percentile_median,0.9429,0.9347,0.9592,0.9451,0.9398,0.2098

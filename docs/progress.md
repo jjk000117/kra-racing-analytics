@@ -3,6 +3,14 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 2026-09-09 — Race-relative Representation R1 설계 감사
+
+- LT1 137개 안의 F1 6개와 F3 10개 상대 표현 및 117개 absolute 입력을 전수 분류했다.
+- 기존 absolute를 유지한 채 current-field average-rank percentile 7개만 추가하는 R1을 제안했다.
+- Development-only 계산 가능률은 73.33%~99.92%였고 target·Validation·2024-07 이후 데이터는 사용하지 않았다.
+- Race-level field-strength summary는 horse-relative 효과와 분리하기 위해 별도 후속 가설로 남겼다.
+- 상세 문서: `docs/post-baseline-v2-race-relative-representation-design.md`
+
 ## 2026-09-08 — PLC branch Aptitude A1 설계 감사 완료
 
 - `plc-dev`에서 현재 137개 Feature의 조건 적합성 표현을 전수 감사했다.
