@@ -141,6 +141,7 @@ data/raw/*
 data/quarantine/*
 data/warehouse/*
 data/exports/*
+data/tmp/
 logs/*
 *.duckdb
 *.duckdb.wal

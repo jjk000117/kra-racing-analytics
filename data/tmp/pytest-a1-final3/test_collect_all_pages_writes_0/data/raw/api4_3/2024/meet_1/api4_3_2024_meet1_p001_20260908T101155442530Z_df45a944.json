@@ -1,1 +1,0 @@
-{"response": {"header": {"resultCode": "00", "resultMsg": "NORMAL SERVICE."}, "body": {"items": {"item": [{"rcDate": "20240105", "meet": "서울", "rcNo": "1", "hrNo": "1"}, {"rcDate": "20240105", "meet": "서울", "rcNo": "1", "hrNo": "2"}]}, "totalCount": 3}}}
