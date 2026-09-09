@@ -859,3 +859,11 @@
 - 일부 ranking-only 성공 경주는 descriptive disagreement로만 보존하며 판정을 뒤집지 않는다.
 - 이 판정은 봉인된 v1 후보에 한정하며 모든 ranking 접근의 실패로 일반화하지 않는다.
 - 상세: `docs/ranking-v1-development-result.md`.
+
+## 2026-09-09 — R2는 F3 10개 제거만 허용
+
+- R2는 L133 순서를 보존하면서 F3 10개만 제거한 123개 입력으로 제한한다.
+- F1은 historical race-relative summary이므로 current-field context ablation에서 유지한다.
+- R1 LambdaRank가 primary comparator이고 L133 Logistic은 secondary context다.
+- KEEP은 R1 대비 NDCG@3 평균·3/4 fold 개선과 Macro Recall@3 평균 비악화를 모두 요구한다.
+- 상세: `docs/ranking-r2-f3-ablation-design.md` 및 JSON contract.

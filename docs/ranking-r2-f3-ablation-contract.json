@@ -1,0 +1,88 @@
+{
+  "contract_version": "ranking_r2_f3_ablation_v1",
+  "status": "SEALED_DESIGN_ONLY",
+  "question": "Does removing only the ten current-field-relative F3 features improve the sealed binary PLC LambdaRank procedure?",
+  "reference": {
+    "candidate_id": "RANK_L133_PLC_LGBM_V1",
+    "result_commit": "215c2b3b7c3f1cc1be5f0ea1c5e23e70863d7243",
+    "result": "DROP_RANKING_V1",
+    "feature_count": 133,
+    "feature_hash": "18297f138f759944995bb59bc9cf36f3cde55d81ceb52b45a42c43372b4da182",
+    "oof_sha256": "6eae0d8844f831c78ab418a6826bf76d135d932d928a1f57cb9993cc78f8439e",
+    "result_json_sha256": "e7f0a3ce34954deb5c41b273ff12a94b95ca1c1668b1f144cf563c4a6b2a17a1"
+  },
+  "candidate": {
+    "candidate_id": "RANK_L123_NO_F3_PLC_LGBM_R2",
+    "derivation": "Preserve L133 order and remove exactly the ordered F3 feature list",
+    "feature_count": 123,
+    "feature_hash": "0b0c545fb5a2135cbd4b8362e3c7bd72231f05b43dbfdfaccec64198dc3469cc",
+    "feature_hash_algorithm": "SHA256 of newline-joined ordered names plus final newline, UTF-8",
+    "f1_retained": true,
+    "t1_added": false,
+    "removed_f3": [
+      "rating_field_percentile",
+      "carried_weight_vs_field_median_kg",
+      "horse_prior_plc_hit_rate_field_percentile",
+      "horse_recent5_plc_hit_rate_field_percentile",
+      "horse_same_distance_plc_hit_rate_field_percentile",
+      "jockey_recent10_plc_hit_rate_field_percentile",
+      "trainer_recent10_plc_hit_rate_field_percentile",
+      "horse_recent5_s1f_field_percentile",
+      "horse_recent5_g3f_field_percentile",
+      "horse_recent5_g1f_field_percentile"
+    ]
+  },
+  "controlled_constants": {
+    "model": "LightGBM 4.6.0 LGBMRanker",
+    "model_config_sha256": "3b30a1f772d995b560c531da3fff8a72a0fe498bd62b9a91dcbd14230c8c24f2",
+    "objective": "lambdarank",
+    "relevance": "official place_hit 0/1",
+    "label_gain": [0, 1],
+    "query": "race_id",
+    "rounds": 200,
+    "seed": 20260908,
+    "early_stopping": false,
+    "hyperparameter_tuning": false,
+    "population": "same 28,392 rows / 2,675 races Development population",
+    "folds": "same four expanding temporal folds",
+    "preprocessing": "same fold-train OHE, median imputation, count-zero imputation, and scaling contract",
+    "validation_access": false
+  },
+  "metrics": {
+    "primary": "equal-weight four-fold mean of race-macro binary PLC NDCG@3",
+    "secondary": [
+      "macro Recall@3",
+      "Top1 PLC hit",
+      "Top3 any PLC hit",
+      "mean PLC hits in Top3"
+    ],
+    "reference_for_decision": "R1 LambdaRank only",
+    "l133_logistic_role": "secondary context only"
+  },
+  "decision_rule": {
+    "tolerance": 1e-12,
+    "KEEP_F3_REMOVAL": "R2 mean primary delta versus R1 is positive, R2 improves primary in at least 3 of 4 folds, and mean macro Recall@3 delta versus R1 is non-negative",
+    "DROP_F3_REMOVAL": "Any KEEP_F3_REMOVAL conjunction is not satisfied in an otherwise valid run",
+    "INVALID": "Any Feature/hash, population, fold, PIT, group, OOF, environment, or protected-artifact contract fails",
+    "secondary_can_override_primary": false,
+    "rules_mutable_after_execution": false
+  },
+  "oof": {
+    "join_key": ["race_id", "horse_id", "race_date", "fold_id"],
+    "outputs": [
+      "ranking_raw_score",
+      "ranking_within_race_rank",
+      "ranking_normalized_score"
+    ],
+    "required_comparators": ["R1", "R2", "L133_PLC"],
+    "full_outer_join_coverage_required": 1.0
+  },
+  "forbidden": [
+    "R2 model training during design audit",
+    "hyperparameter, round, learning-rate, depth, or leaf changes",
+    "F1 removal",
+    "T1 addition",
+    "relevance or population changes",
+    "calibration, ensemble, payout, ROI, or Validation access"
+  ]
+}

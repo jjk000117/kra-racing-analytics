@@ -684,3 +684,12 @@
 - 19,168행·1,821경주의 양쪽 OOF, fold model, metrics와 disagreement 산출물을 branch-local에 저장했다.
 - 공통 DB 및 보호 hash는 동일하고 Validation/2024-07 이후 접근은 없었다.
 - 상세: `docs/ranking-v1-development-result.md`.
+
+## 2026-09-09 — Ranking R2 F3-ablation 계약 봉인
+
+- R1에서 current-field relative F3 10개만 제거한 L123_NO_F3 단일 ablation을 설계했다.
+- F1은 유지하고 모델·relevance·population·fold·전처리·metric은 R1과 동일하게 고정했다.
+- R2 Feature hash는 `0b0c545fb5a2135cbd4b8362e3c7bd72231f05b43dbfdfaccec64198dc3469cc`다.
+- R1 대비 NDCG@3 평균/3-of-4 개선 및 Recall@3 비악화를 사전 KEEP 조건으로 정했다.
+- R2 구현·학습·OOF·Validation 접근은 수행하지 않았다.
+- 상세: `docs/ranking-r2-f3-ablation-design.md`.
