@@ -1162,3 +1162,14 @@
 - OOF join은 19,168행·1,821경주 100%; Top1 PLC-only/Ranking-only는 154/148경주였다.
 - 실제 ensemble은 실행하지 않았고 oracle은 descriptive upper bound로만 기록했다.
 - 상세: `docs/ranking-v1-development-result.md`.
+
+## 2026-09-09 — Ranking R2 F3-ablation Development
+
+- 질문: R1 L133 LambdaRank에서 current-field relative F3 10개만 제거하면 R1 대비 개선되는가?
+- 후보: L123_NO_F3, 동일 binary PLC LambdaRank, 동일 4 folds/전처리/seed/200 rounds.
+- 결과: NDCG@3 0.527690→0.527814 (+0.000124), 개선 3/4 folds;
+  Macro Recall@3 0.503981→0.504769 (+0.000788).
+- 판정: `KEEP_F3_REMOVAL`.
+- 해석: F3 bundle 제거는 이 LambdaRank procedure 내부에서 소폭 유리했지만 fold 4 악화가 있고
+  L133 Logistic 0.534570보다 낮아 standalone 대체 근거는 아니다.
+- 다음 실험: 자동 개시 없음. 결과 보고 후 Ranking 라인의 추가 연구 여부를 별도 결정한다.

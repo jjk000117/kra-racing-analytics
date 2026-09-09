@@ -693,3 +693,13 @@
 - R1 대비 NDCG@3 평균/3-of-4 개선 및 Recall@3 비악화를 사전 KEEP 조건으로 정했다.
 - R2 구현·학습·OOF·Validation 접근은 수행하지 않았다.
 - 상세: `docs/ranking-r2-f3-ablation-design.md`.
+
+## 2026-09-09 — Ranking R2 F3-ablation Development 완료
+
+- 봉인된 L123_NO_F3 LambdaRank를 동일 Development 4 folds에 실행했다.
+- 평균 NDCG@3는 R1 0.527690에서 R2 0.527814로 +0.000124, 개선 fold는 3/4였다.
+- 평균 Macro Recall@3도 +0.000788로 비악화 조건을 통과해 `KEEP_F3_REMOVAL`로 판정했다.
+- R2는 L133 Logistic NDCG@3 0.534570보다 여전히 0.006756 낮다.
+- OOF 19,168행·1,821경주와 fold model/metric/importance를 branch-local에 저장했다.
+- 공통 DB와 보호 artifact는 불변이고 Validation 및 2024-07 이후 평가는 열지 않았다.
+- 상세: `docs/ranking-r2-f3-ablation-development-result.md`.

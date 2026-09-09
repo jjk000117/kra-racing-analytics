@@ -867,3 +867,11 @@
 - R1 LambdaRank가 primary comparator이고 L133 Logistic은 secondary context다.
 - KEEP은 R1 대비 NDCG@3 평균·3/4 fold 개선과 Macro Recall@3 평균 비악화를 모두 요구한다.
 - 상세: `docs/ranking-r2-f3-ablation-design.md` 및 JSON contract.
+
+## 2026-09-09 — R2 F3 제거를 R1 LambdaRank 내부에서 KEEP
+
+- R2 평균 NDCG@3 delta는 +0.000124이고 3/4 fold에서 R1보다 개선했다.
+- 평균 Macro Recall@3 delta도 +0.000788로 guardrail을 지켰다.
+- 봉인된 세 조건을 모두 만족하므로 `KEEP_F3_REMOVAL`로 판정한다.
+- fold 4 악화와 작은 평균 개선을 고려해 F3 일반의 무용성이나 L133 대체로 확대 해석하지 않는다.
+- 추가 ablation, tuning, Validation 및 ensemble 학습은 자동으로 열지 않는다.

@@ -78,6 +78,8 @@ def make_oof(
     provenance: dict[str, str],
     *,
     kind: Literal["ranking", "plc"],
+    expected_feature_hash: str = FEATURE_HASH,
+    expected_contract_version: str = VERSION,
 ) -> pd.DataFrame:
     if kind == "ranking":
         result = normalize_scores(frame, values)
@@ -91,7 +93,13 @@ def make_oof(
     result = result.merge(expected, on=KEYS, how="left", validate="one_to_one")
     for key in PROVENANCE:
         result[key] = provenance[key]
-    validate_oof(result, expected, kind=kind)
+    validate_oof(
+        result,
+        expected,
+        kind=kind,
+        expected_feature_hash=expected_feature_hash,
+        expected_contract_version=expected_contract_version,
+    )
     return result
 
 
@@ -100,6 +108,8 @@ def validate_oof(
     expected: pd.DataFrame,
     *,
     kind: Literal["ranking", "plc"],
+    expected_feature_hash: str = FEATURE_HASH,
+    expected_contract_version: str = VERSION,
 ) -> None:
     columns = (
         JOIN_KEYS
@@ -135,9 +145,9 @@ def validate_oof(
     for name in PROVENANCE:
         if frame[name].nunique() != 1 or not isinstance(frame[name].iloc[0], str):
             raise ValueError("Inconsistent provenance")
-    if not frame.feature_hash.eq(FEATURE_HASH).all():
+    if not frame.feature_hash.eq(expected_feature_hash).all():
         raise ValueError("OOF Feature hash mismatch")
-    if not frame.contract_version.eq(VERSION).all():
+    if not frame.contract_version.eq(expected_contract_version).all():
         raise ValueError("OOF contract version mismatch")
     for name in HASHES:
         if not re.fullmatch(r"[0-9a-f]{64}", frame[name].iloc[0]):
@@ -185,8 +195,16 @@ def write_oof(
     expected: pd.DataFrame,
     *,
     kind: Literal["ranking", "plc"],
+    expected_feature_hash: str = FEATURE_HASH,
+    expected_contract_version: str = VERSION,
 ) -> Path:
-    validate_oof(frame, expected, kind=kind)
+    validate_oof(
+        frame,
+        expected,
+        kind=kind,
+        expected_feature_hash=expected_feature_hash,
+        expected_contract_version=expected_contract_version,
+    )
     path = paths.output(relative)
     manifest = paths.output(relative + ".json")
     if path.exists() or manifest.exists():
@@ -198,7 +216,7 @@ def write_oof(
     with path.open("x", encoding="utf-8", newline="") as stream:
         serialized.to_csv(stream, index=False, float_format="%.17g")
     payload: dict[str, Any] = {
-        "schema_version": VERSION,
+        "schema_version": expected_contract_version,
         "kind": kind,
         "start": serialized.race_date.min(),
         "end": serialized.race_date.max(),
@@ -209,12 +227,17 @@ def write_oof(
 
 
 def load_oof(
-    path: Path, expected: pd.DataFrame, *, kind: Literal["ranking", "plc"]
+    path: Path,
+    expected: pd.DataFrame,
+    *,
+    kind: Literal["ranking", "plc"],
+    expected_feature_hash: str = FEATURE_HASH,
+    expected_contract_version: str = VERSION,
 ) -> pd.DataFrame:
     """Read only a declared Development artifact; reject later windows before opening CSV."""
     meta = json.loads(Path(str(path) + ".json").read_text(encoding="utf-8"))
     if (
-        meta["schema_version"] != VERSION
+        meta["schema_version"] != expected_contract_version
         or meta["kind"] != kind
         or not ("2023-07-01" <= meta["start"] <= meta["end"] < "2024-07-01")
     ):
@@ -227,7 +250,13 @@ def load_oof(
         float_precision="round_trip",
         keep_default_na=False,
     )
-    validate_oof(frame, expected, kind=kind)
+    validate_oof(
+        frame,
+        expected,
+        kind=kind,
+        expected_feature_hash=expected_feature_hash,
+        expected_contract_version=expected_contract_version,
+    )
     return frame
 
 
