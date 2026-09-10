@@ -3,6 +3,43 @@
 이 문서는 프로젝트의 주요 마일스톤 완료 시 갱신한다. 현재 프로젝트 상태를 파악해야 하는
 작업에서는 `progress.md`, `decision_log.md`, `experiment_log.md`를 함께 확인한다.
 
+## 현재 상태와 다음 작업축
+
+- `T1 KEEP`: Historical Trend 4개는 Development에서 작지만 반복된 개선을 보였다.
+- `A1 DROP`: 봉인된 조건 적합성 7개는 LT1 대비 안정적인 개선을 만들지 못했다.
+- `R1 KEEP / REPRODUCE_R1`: LR1 144개는 Development 3/4 fold에서 두 primary 지표를 함께
+  개선했고, 기존 노출 Validation에서도 Macro Log Loss/Brier를 모두 작게 개선했다.
+- LR1은 probability-model candidate이며 fresh final evaluation을 통과한 operating model이 아니다.
+- `2025-07-01` 이후 공통 temporal evaluation 기간은 unopened/protected 상태를 유지한다.
+
+향후 작업은 다음 세 축으로 제한한다.
+
+1. **Final PLC Feature diagnostics**
+   - 전체 최종 Feature의 missing/zero/unique, 분위수·극단값·near-constant를 프로파일링한다.
+   - Pearson/Spearman, high-correlation pair·cluster, 범주형 association, numeric-categorical 관계를
+     확인한다.
+   - 표준화 Logistic 계수와 temporal fold별 부호·안정성, 기존 tree importance를 설명 자료로 본다.
+   - rating↔등급·field percentile, prior↔recent↔same-distance PLC, same-meet 계열, 관계자 계열,
+     F1 recent3↔recent5, sectional, absolute↔field-relative, count↔rate, T1 trend↔level을 중점 감사한다.
+   - 높은 상관이나 낮은 계수·importance만으로 Feature를 삭제하지 않는다. 단순화 가설은 별도
+     사전 봉인 temporal ablation으로만 검증한다. 실제 실행 후 별도 결과 문서를 생성한다.
+2. **Serving feasibility**
+   - `feature-availability-review.md`와 `feature-api-metadata-review.md`를 upstream 근거로 최종 계약을
+     A) 출전표 직접 획득, B) official ID로 historical DB 계산, C) 당일 별도 source 필요,
+     D) serving 시점 생성 불가로 분류한다.
+   - KRA structured source → KRA 웹 structured 정보 → 기타 structured endpoint → PDF fallback 순으로
+     확인하고 이름보다 공식 horse/jockey/trainer/owner ID를 조인 키로 우선한다.
+   - 예정 inference 흐름은 출전표·runner 확정 → ID 연결 → PIT history → absolute/F1/T1 → F3/R1
+     → 당일 상태 갱신 → schema check → PLC 확률 → race Top-1 → market layer다.
+3. **Odds / market layer**
+   - `confirmed-odds-profiling.md`, `market-structure-analysis.md`, `model-scope-decision.md`를 기존 근거로
+     유지하며, historical decision-time 또는 timestamped intraday odds source의 존재부터 조사한다.
+   - KRA 웹·앱 structured request, 제3자 및 commercial source도 후보이며 OpenAPI에 한정하지 않는다.
+   - 원천이 없으면 향후 T-20/T-10/T-5/final snapshot 수집을 검토하되 시점은 데이터 확보 후 별도
+     계약에서 정한다. odds drift·순위 변화·인기도 및 meet/grade/field-size별 변화를 연구한다.
+   - 순수 PLC 모델 `pre-race information → P(PLC)`와 시장 계층
+     `P(PLC) + decision-time odds/expected final odds → bet/pass`를 분리한다.
+
 ## 2026-09-09 — Race-relative R1 구현·데이터 감사 완료
 
 - 봉인된 current-field percentile 7개를 branch-local candidate에 구현했다.

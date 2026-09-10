@@ -10,7 +10,7 @@
 - 시간 순서를 보존한 개발·검증 절차
 - 성공뿐 아니라 실패한 실험과 중단 근거까지 남기는 재현성
 
-현재는 **2022~2026 데이터 계층과 125개 Feature Snapshot을 구축하고, 기존 117개 입력에 F1·F3를 추가한 133개 Logistic 후보의 Validation 개선을 확인한 상태**입니다. Historical Trend T1 4개도 구현·감사한 뒤 development 비교에서 작지만 반복된 개선을 확인해 `KEEP_T1` 후속 후보로 유지했습니다.
+현재는 **2022~2026 데이터 계층과 125개 Feature Snapshot을 구축하고, L133에 T1 4개와 R1 7개를 더한 LR1 144개 Logistic 후보까지 검증한 상태**입니다. LR1은 Development와 기존 노출 Validation reproduction에서 race-macro Log Loss와 Brier를 모두 작게 개선했습니다. 이는 fresh final test나 운영모델 확정을 뜻하지 않으며 2025-07 이후 기간은 계속 보호합니다.
 
 ## 프로젝트 범위
 
@@ -164,7 +164,7 @@ F1+F3는 Development에서 F3 단독보다 Macro Log Loss와 Macro Brier를 모�
 
 성능이 좋지 않은 결과도 계약과 함께 보존하고, 결과를 확인한 뒤 Feature 정의나 설정을 소급 변경하지 않았습니다.
 
-## 현재 진행 중인 연구
+## 현재 PLC 연구 상태
 
 Historical Trend T1 4개를 구현하고 데이터 수준 감사를 완료했습니다.
 
@@ -176,6 +176,14 @@ Historical Trend T1 4개를 구현하고 데이터 수준 감사를 완료했습
 Development 28,392행·2,675경주에서 가용률은 82.79%였고 PIT, 순서, NULL, 수기 slope 재계산 감사를 통과했습니다. 아직 target 기반 모델 성능은 확인하지 않았습니다.
 
 동일 Logistic·동일 네 development fold에서 `L133`과 `L133 + T1`만 비교한 결과 Macro Log Loss와 Brier가 4개 fold 중 3개에서 함께 개선됐습니다. 평균 상대 개선은 약 0.13~0.15%로 작아, official 후보를 변경하지 않고 T1을 후속 후보로만 유지합니다.
+
+조건 적합성 A1은 LT1 대비 안정적 개선이 없어 `DROP_A1`으로 종료했습니다. 반면 current-field
+relative R1 7개를 더한 LR1은 Development 3/4 fold에서 두 primary 손실을 함께 개선했고, 기존 노출
+Validation에서도 Macro Log Loss/Brier를 `0.533332/0.177797`에서 `0.532780/0.177586`으로 낮춰
+`REPRODUCE_R1` 판정을 받았습니다. 개선 폭은 작고 Recall@3·NDCG@3는 소폭 악화했습니다.
+
+다음 큰 단계는 최종 Feature diagnostics, serving feasibility, odds/market layer 조사 순서입니다.
+Feature 진단은 즉시 삭제하기 위한 절차가 아니며, 상관이나 importance만으로 변수를 제거하지 않습니다.
 
 ## 주요 문서
 
@@ -197,6 +205,7 @@ Development 28,392행·2,675경주에서 가용률은 82.79%였고 PIT, 순서, 
 - [RA1 Development 결과](docs/post-baseline-v2-ra1-development-result.md)
 - [Historical Trend T1 구현 감사](docs/post-baseline-v2-historical-trend-feature-implementation-audit.md)
 - [Historical Trend T1 development 결과](docs/post-baseline-v2-t1-development-result.md)
+- [LR1 Validation reproduction 결과](docs/post-baseline-v2-relative-r1-validation-result.md)
 
 ## 개발 환경
 
@@ -234,7 +243,8 @@ python -m kra_analytics collect audit <batch_id>
 ## 아직 포함하지 않은 범위
 
 - L133+sigmoid의 2025-07 이후 공통 temporal evaluation
-- Historical Trend T1의 Development 성능 비교
+- LR1 이후 최종 Feature diagnostics와 serving feasibility audit
+- decision-time odds 원천 조사와 market layer
 - 확정배당과 예측확률을 결합한 betting strategy
 - 공제·배당·수수료를 반영한 경제성 평가
 - 최신 증분 수집과 자동 운영

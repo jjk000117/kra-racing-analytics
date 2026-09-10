@@ -1,5 +1,20 @@
 # 의사결정 기록
 
+## 2026-09-10 — LR1은 재현된 probability-model candidate로 유지
+
+- LR1은 Development `KEEP_R1`과 기존 노출 Validation `REPRODUCE_R1`을 통과한 확률모델 후보로
+  유지한다.
+- 이는 fresh test를 통과한 최종 operating model 승격을 뜻하지 않으며 2025-07 이후 기간은 계속
+  unopened/protected로 둔다.
+- 확률모델과 odds·bet/pass 의사결정을 담당하는 market/betting layer는 분리한다.
+
+## 2026-09-10 — Feature 진단과 제거 결정 분리
+
+- missingness, 분포, 상관, 계수와 importance는 최종 Feature 구조를 이해하는 descriptive
+  diagnostics로 사용한다.
+- 높은 correlation이나 낮은 coefficient/importance만으로 Feature를 자동 제거하지 않는다.
+- 제거·단순화 가설은 필요할 때 별도 predeclared temporal ablation으로 검증한다.
+
 ## 2026-09-08 — 첫 Aptitude 연구 bundle을 A1 7개로 봉인
 
 - 동일등급 count/PLC rate, 동일 주로상태 count/PLC rate, 동일거리 F1 percentile count/median,

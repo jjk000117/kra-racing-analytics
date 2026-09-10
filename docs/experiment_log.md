@@ -1236,6 +1236,12 @@
 ### 결과와 해석
 
 - Macro Log Loss는 0.533332에서 0.532780, Macro Brier는 0.177797에서 0.177586으로 개선됐다.
+- Micro Log Loss/Brier는 0.530992/0.176809에서 0.530406/0.176581로 개선됐다.
+- Calibration intercept/slope는 0.034218/1.014303에서 0.042160/1.016116이었다.
+- Top-1 PLC hit는 59.69%에서 59.81%로 소폭 상승했지만 Recall@3은 49.49%에서 49.13%,
+  NDCG@3은 0.518946에서 0.516545로 소폭 하락했다.
 - 봉인 규칙에 따라 `REPRODUCE_R1`이며 Development와 primary 방향이 일치한다.
 - 개선 폭은 작고 Recall@3·NDCG@3는 소폭 악화했으므로 확률 손실 재현 이상의 의미를 부여하지 않는다.
+- 개별 R1 기여와 profitability는 확인하지 않았다. 상세 계약·수치는
+  `docs/post-baseline-v2-relative-r1-validation-result.md`를 따른다.
 - 2025-07 이후 unopened period에는 접근하지 않았다.
