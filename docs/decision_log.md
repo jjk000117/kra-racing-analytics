@@ -889,3 +889,15 @@
 
 - Macro Log Loss와 Macro Brier 평균이 모두 작게 개선됐고 두 지표 동시 개선이 3/4 fold에서 반복됐다.
 - 평균 개선 폭은 각각 약 0.18%, 0.20%로 작으므로 공식 모델 승격이 아니라 후속 검증 가치만 인정한다.
+
+## 2026-09-10 — LR1 Validation REPRODUCE_R1
+
+결정:
+
+- 봉인된 판정 규칙에 따라 LR1을 `REPRODUCE_R1`으로 판정한다.
+- 이 결과는 기존 노출 Validation의 재현 검사이며 fresh final test로 표현하지 않는다.
+
+이유:
+
+- LR1의 race-macro Log Loss와 Brier가 LT1보다 각각 0.000552, 0.000211 낮았다.
+- 개선은 Development와 같은 방향이지만 작으며, secondary ranking 지표의 혼재는 primary 판정을 바꾸지 않는다.

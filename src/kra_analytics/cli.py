@@ -42,6 +42,7 @@ from kra_analytics.paths import ProjectPaths
 from kra_analytics.race_aware_experiment import run_ra1_development_experiment
 from kra_analytics.relative_experiment import run_r1_development_experiment
 from kra_analytics.relative_features import build_and_audit_relative_features
+from kra_analytics.relative_validation import run_r1_validation_reproduction
 from kra_analytics.runner_count_diagnostics import run_runner_count_loss_diagnostic
 from kra_analytics.staging import audit_staging_batch, load_staging_batch
 from kra_analytics.star import audit_star, build_star
@@ -387,6 +388,15 @@ def model_relative_r1_development() -> None:
     result = run_r1_development_experiment()
     typer.echo(f"rows={result['development_rows']}")
     typer.echo(f"races={result['development_races']}")
+    typer.echo(f"judgement={result['decision']['judgement']}")
+
+
+@model_app.command("relative-r1-validation-reproduction")
+def model_relative_r1_validation_reproduction() -> None:
+    """Run the sealed LT1 versus LR1 check on previously exposed Validation."""
+    result = run_r1_validation_reproduction()
+    typer.echo(f"validation_rows={result['validation']['rows']}")
+    typer.echo(f"validation_races={result['validation']['races']}")
     typer.echo(f"judgement={result['decision']['judgement']}")
 
 

@@ -709,3 +709,11 @@
 - Validation 및 2024-07 이후 접근은 없고 보호 artifact hash는 유지됐다.
 - 상세 결과: `docs/post-baseline-v2-relative-r1-development-results.md`
 - 다음 blocker: 별도 봉인 계약 없이는 Validation 재사용이나 공식 후보 승격을 진행하지 않는다.
+
+## 2026-09-10 — LR1 Validation 재현 검사 완료
+
+- 기존 노출 Validation 18,615행·1,759경주에서 LT1 137과 LR1 144의 고정 OOF sigmoid 절차를 비교했다.
+- LR1은 Macro Log Loss를 0.533332에서 0.532780, Macro Brier를 0.177797에서 0.177586으로 작게 낮췄다.
+- 두 primary 지표가 모두 개선되어 봉인 규칙대로 `REPRODUCE_R1`으로 판정했다.
+- fresh test가 아니며 2025-07 이후 unopened period에는 접근하지 않았다.
+- 상세 결과: `docs/post-baseline-v2-relative-r1-validation-result.md`
