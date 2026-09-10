@@ -1,5 +1,31 @@
 # 실험 기록
 
+## 2026-09-10 — LR1 144개 최종 Feature descriptive diagnostic
+
+### 진단 내용
+
+- Development 28,392행·2,675경주에서 LR1 144개의 분포, 결측, Pearson/Spearman,
+  categorical association, numeric-categorical 관계와 네 temporal fold의 표준화 Logistic
+  계수를 감사했다.
+- Feature 성능 선택, ablation, Validation 및 2024-07 이후 데이터 접근은 수행하지 않았다.
+
+### 결과와 해석
+
+- 수치형 완전 상수는 0개, 99% near-constant는 7개였다. exact duplicate 13쌍, 완전
+  선형관계 27쌍, |Spearman| 0.9 이상 116쌍을 확인했다.
+- recent valid-count, 경주 상금, rating 및 PLC/착순 요약 family에 큰 중복 component가 있었다.
+- T1 trend와 대응 level 상관은 거의 0이었고, rating field percentile도 절대 rating과 낮은
+  상관을 보여 별도 표현을 유지했다.
+- 133개 수치형 중 86개는 네 fold에서 같은 계수 부호였으나 높은 공선성 때문에 개별 계수를
+  인과적 중요도로 해석하지 않는다. 재사용 가능한 LR1 tree importance는 없어서 새로 학습하지
+  않았다.
+
+### 다음 실험 아이디어
+
+- 완전 중복 count, 고정비율 상금, near-constant finish-rate/count, 희소 `race_type`을 소수
+  family 단위의 사전 봉인 temporal ablation 후보로 검토한다.
+- 진단만으로 Feature를 제거하지 않는다.
+
 ## 2026-09-08 — Aptitude A1 사전 가용성 감사
 
 ### 감사 내용

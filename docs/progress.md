@@ -11,6 +11,8 @@
   개선했고, 기존 노출 Validation에서도 Macro Log Loss/Brier를 모두 작게 개선했다.
 - LR1은 probability-model candidate이며 fresh final evaluation을 통과한 operating model이 아니다.
 - `2025-07-01` 이후 공통 temporal evaluation 기간은 unopened/protected 상태를 유지한다.
+- LR1 144개 최종 descriptive Feature 진단을 Development 범위에서 완료했다. exact duplicate
+  13쌍과 완전 선형관계 27쌍, near-constant 수치형 7개를 확인했으나 Feature 변경은 하지 않았다.
 
 향후 작업은 다음 세 축으로 제한한다.
 
@@ -21,8 +23,9 @@
    - 표준화 Logistic 계수와 temporal fold별 부호·안정성, 기존 tree importance를 설명 자료로 본다.
    - rating↔등급·field percentile, prior↔recent↔same-distance PLC, same-meet 계열, 관계자 계열,
      F1 recent3↔recent5, sectional, absolute↔field-relative, count↔rate, T1 trend↔level을 중점 감사한다.
-   - 높은 상관이나 낮은 계수·importance만으로 Feature를 삭제하지 않는다. 단순화 가설은 별도
-     사전 봉인 temporal ablation으로만 검증한다. 실제 실행 후 별도 결과 문서를 생성한다.
+   - 실행 결과는 `plc-final-feature-diagnostic-result.md`에 기록했다. 높은 상관이나 낮은
+     계수만으로 Feature를 삭제하지 않으며 단순화 가설은 별도 사전 봉인 temporal ablation으로만
+     검증한다.
 2. **Serving feasibility**
    - `feature-availability-review.md`와 `feature-api-metadata-review.md`를 upstream 근거로 최종 계약을
      A) 출전표 직접 획득, B) official ID로 historical DB 계산, C) 당일 별도 source 필요,
