@@ -1,0 +1,104 @@
+{
+  "contract_version": "plc_prize_bonus_structural_redundancy_ablation_v1",
+  "sealed_on": "2026-09-10",
+  "purpose": "Test whether one representative from each perfectly linear prize and bonus family preserves Development probability loss.",
+  "upstream_evidence": "docs/plc-final-feature-diagnostic-result.md",
+  "scope": {
+    "start": "2023-01-01",
+    "end_exclusive": "2024-07-01",
+    "development_only": true,
+    "validation_access_allowed": false,
+    "post_2024_07_access_allowed": false,
+    "post_2025_07_access_allowed": false
+  },
+  "baseline": {
+    "name": "LR1",
+    "feature_count": 144,
+    "feature_hash": "7fec6229b3b355d34e664823407765c9a597eacdafa11a733048ba2eaff1a85a"
+  },
+  "challenger": {
+    "name": "LR1_PRIZE_BONUS_SIMPLIFIED",
+    "feature_count": 138,
+    "feature_hash": "e767676c30493b51f9f5548cf417fd2503a79bf08120ac41be01027fb410f260",
+    "derivation": "Preserve LR1 order and remove only remove_features.",
+    "retain_representatives": [
+      "race_first_prize",
+      "race_bonus_1"
+    ],
+    "remove_features": [
+      "race_second_prize",
+      "race_third_prize",
+      "race_fourth_prize",
+      "race_fifth_prize",
+      "race_bonus_2",
+      "race_bonus_3"
+    ]
+  },
+  "fixed_model_contract": {
+    "model": "sklearn.linear_model.LogisticRegression",
+    "penalty": "l2",
+    "C": 1.0,
+    "solver": "lbfgs",
+    "max_iter": 2000,
+    "class_weight": null,
+    "random_state": 20260817,
+    "preprocessing": "Existing LR1 Train-only ColumnTransformer contract",
+    "probability": "raw Logistic probability",
+    "target": "official PLC place_hit",
+    "population": "Existing LR1 Development population"
+  },
+  "temporal_folds": [
+    {
+      "fold_id": "fold_1",
+      "train": "2023-01-01/2023-06-30",
+      "evaluation": "2023-07-01/2023-09-30"
+    },
+    {
+      "fold_id": "fold_2",
+      "train": "2023-01-01/2023-09-30",
+      "evaluation": "2023-10-01/2023-12-31"
+    },
+    {
+      "fold_id": "fold_3",
+      "train": "2023-01-01/2023-12-31",
+      "evaluation": "2024-01-01/2024-03-31"
+    },
+    {
+      "fold_id": "fold_4",
+      "train": "2023-01-01/2024-03-31",
+      "evaluation": "2024-04-01/2024-06-30"
+    }
+  ],
+  "primary_metrics": [
+    "race_macro_log_loss",
+    "race_macro_brier"
+  ],
+  "secondary_metrics": [
+    "micro_log_loss",
+    "micro_brier",
+    "calibration_intercept",
+    "calibration_slope",
+    "top1_plc_hit_rate",
+    "recall_at_3",
+    "ndcg_at_3"
+  ],
+  "decision_rule": {
+    "keep": "Both primary mean deltas (challenger minus LR1) must be <= 0 and both primary deltas must be <= 0 together in at least 3 of 4 folds.",
+    "drop": "Any KEEP condition is not met.",
+    "labels": [
+      "KEEP_PRIZE_BONUS_SIMPLIFICATION",
+      "DROP_PRIZE_BONUS_SIMPLIFICATION"
+    ],
+    "secondary_can_override": false,
+    "post_hoc_threshold_change_allowed": false
+  },
+  "prohibited": [
+    "Feature changes beyond the six sealed removals",
+    "Hyperparameter tuning",
+    "Validation access",
+    "Loading rows on or after 2024-07-01",
+    "Post-2025-07 access",
+    "Causal coefficient interpretation",
+    "Fresh-generalization claims"
+  ]
+}
