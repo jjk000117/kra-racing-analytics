@@ -1,5 +1,27 @@
 # 실험 기록
 
+## 2026-09-10 — Prize/Bonus Structural Redundancy Ablation
+
+### 실험 내용
+
+- Feature 진단에서 완전 선형으로 확인된 1~5위 상금과 bonus 1~3을 대상으로, LR1 144개와
+  `race_first_prize`·`race_bonus_1`만 대표로 유지한 138개를 Development 네 fold에서 비교했다.
+- Logistic, preprocessing, seed, population과 target을 고정하고 raw probability만 평가했다.
+
+### 결과와 해석
+
+- Macro Log Loss는 0.526061에서 0.526071로 `+0.00000994`, Macro Brier는 0.175132에서
+  0.175134로 `+0.00000204` 악화했다.
+- 두 primary 지표가 함께 비악화한 fold는 2/4로 봉인된 최소 3/4 조건을 충족하지 못해
+  `DROP_PRIZE_BONUS_SIMPLIFICATION`으로 판정했다.
+- 변화는 매우 작다. 상금 정보가 무용하다는 뜻이 아니라 현재 L2 Logistic에서 대표 변수
+  축약이 temporal loss 유지 조건을 충족하지 못했다는 결과다.
+
+### 다음 실험 아이디어
+
+- LR1 144개를 유지한다. 다른 단순화 가설은 이 결과와 섞지 않고 별도 계약으로 검토한다.
+- Validation 및 post-2025-07 기간은 열지 않는다.
+
 ## 2026-09-10 — LR1 144개 최종 Feature descriptive diagnostic
 
 ### 진단 내용
