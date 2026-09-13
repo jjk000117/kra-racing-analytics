@@ -1316,3 +1316,24 @@
 ### 다음 실험 아이디어
 
 - 이 축약 경로는 종료한다. 새로운 사전 봉인 계약 없이 count 정의나 정규화를 변경하지 않는다.
+
+## 2026-09-14 — LR1 near-constant finish-rate Development ablation
+
+### 실험 내용
+
+- diagnostic 99% near-constant flag를 받은 finish-rate 5개만 제거한 139개 challenger를
+  LR1 144와 동일 raw Logistic 및 네 expanding fold로 비교했다.
+- recent10 count saturation과 다른 중복·범주형·PLC rate 연구는 분리했다.
+
+### 결과와 해석
+
+- Macro Log Loss 평균은 0.526061에서 0.525798로 `-0.00026290`, Macro Brier는
+  0.175132에서 0.175063으로 `-0.00006898` 개선했다.
+- 상대 변화는 각각 -0.04998%, -0.03939%로 작고, 두 primary 동시 비악화는 3/4 fold였다.
+- 봉인 규칙에 따라 `KEEP_NEAR_CONSTANT_FINISH_RATE_SIMPLIFICATION`으로 판정한다.
+- 이 결과는 제거 Feature의 일반적 무용성이나 개별 Feature 중요도를 뜻하지 않는다.
+
+### 다음 실험 아이디어
+
+- 139개 simplification을 후속 연구 후보로 기록하되, 별도 사전 계약 없이 Validation 재사용이나
+  다른 축약과의 결합을 수행하지 않는다.

@@ -770,3 +770,14 @@
 - 사전 규칙에 따라 `DROP_EXACT_COUNT_SIMPLIFICATION`으로 판정하고 LR1 144를 유지한다.
 - Validation 접근과 2024-07 이후 로드는 0이며 source/branch-local DB hash는 유지됐다.
 - 상세 결과: `docs/plc-exact-count-structural-redundancy-ablation-result.md`
+
+## 2026-09-14 — Near-constant finish-rate Development ablation 완료
+
+- diagnostic 99% near-constant flag를 받은 finish-rate 5개만 제거한 139개 challenger를
+  LR1 144와 비교했다.
+- 평균 Macro Log Loss/Brier가 각각 `-0.00026290`, `-0.00006898` 개선했고 두 지표 동시
+  비악화는 3/4 fold였다.
+- 사전 규칙에 따라 `KEEP_NEAR_CONSTANT_FINISH_RATE_SIMPLIFICATION`으로 판정했다.
+- 개선 폭은 작으며, Validation 접근과 2024-07 이후 로드는 0이고 source/branch-local DB
+  hash는 유지됐다.
+- 상세 결과: `docs/plc-near-constant-finish-rate-ablation-result.md`
