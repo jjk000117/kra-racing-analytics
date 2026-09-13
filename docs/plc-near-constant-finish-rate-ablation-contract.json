@@ -1,0 +1,144 @@
+{
+  "contract_version": "plc_near_constant_finish_rate_ablation_v1",
+  "sealed_on": "2026-09-14",
+  "purpose": "Test whether removing only diagnostically flagged near-constant finish-rate Features preserves LR1 Development probability loss.",
+  "hypothesis": "Finish-rate Features that are almost always one in the completed-run population may add limited predictive information, but near-constancy alone does not establish uselessness.",
+  "upstream_evidence": {
+    "report": "docs/plc-final-feature-diagnostic-result.md",
+    "numeric_profile": {
+      "path": "data/exports/diagnostics/plc_final_feature_diagnostic_v1/numeric_profile.csv",
+      "sha256": "432b0b56591a9dac5585be396291f767cc1ff8d3c52b02160999294b8c245122"
+    },
+    "feature_contract": {
+      "path": "data/exports/diagnostics/plc_final_feature_diagnostic_v1/feature_contract.csv",
+      "sha256": "24f148bc45309a6064393ebf9565bc7aa2bb2affc1e4a09356512f3d5b80f0c0"
+    },
+    "special_family_relationships": {
+      "path": "data/exports/diagnostics/plc_final_feature_diagnostic_v1/special_family_relationships.csv",
+      "sha256": "724e2db39983771ad9f2237d0d34d23982a6303cc4de7d2fb2d079588938f8f1"
+    }
+  },
+  "scope": {
+    "start": "2023-01-01",
+    "end_exclusive": "2024-07-01",
+    "expected_rows": 28392,
+    "expected_races": 2675,
+    "development_only": true,
+    "validation_access_allowed": false,
+    "post_2024_07_access_allowed": false,
+    "post_2025_07_access_allowed": false
+  },
+  "selection_rule": {
+    "feature_family": "finish-rate",
+    "required_diagnostic_flag": "near_constant_99pct_flag=True",
+    "dominant_value_rate_threshold": 0.99,
+    "target_or_performance_used_to_select": false
+  },
+  "baseline": {
+    "name": "LR1",
+    "feature_count": 144,
+    "feature_hash": "7fec6229b3b355d34e664823407765c9a597eacdafa11a733048ba2eaff1a85a",
+    "ordered_feature_list": {
+      "path": "docs/post-baseline-v2-relative-r1-registry.csv",
+      "sha256": "63b282c63035b4269662a759de63f38bb8e2c780af243a074ccede5c0726a5c1",
+      "rule": "Use LR1 rows in registry position order."
+    }
+  },
+  "challenger": {
+    "name": "LR1_NEAR_CONSTANT_FINISH_RATE_SIMPLIFIED",
+    "feature_count": 139,
+    "feature_hash": "6b6b737fface03ed636302454db0d2ed9ffcdaf0e8b96f64cc5cfcba1b3cbaf9",
+    "ordered_feature_list": {
+      "derivation": "Preserve the sealed LR1 order and remove only remove_features."
+    },
+    "remove_features": [
+      {
+        "feature_name": "horse_recent3_finish_rate",
+        "dominant_value": 1.0,
+        "dominant_value_rate_non_null": 0.9958583634938994,
+        "missing_rate": 0.0560369118061425
+      },
+      {
+        "feature_name": "horse_recent5_finish_rate",
+        "dominant_value": 1.0,
+        "dominant_value_rate_non_null": 0.993880825342338,
+        "missing_rate": 0.0560369118061425
+      },
+      {
+        "feature_name": "horse_recent10_finish_rate",
+        "dominant_value": 1.0,
+        "dominant_value_rate_non_null": 0.9904108055669564,
+        "missing_rate": 0.0560369118061425
+      },
+      {
+        "feature_name": "horse_same_distance_finish_rate",
+        "dominant_value": 1.0,
+        "dominant_value_rate_non_null": 0.9925079425292808,
+        "missing_rate": 0.2572203437588053
+      },
+      {
+        "feature_name": "horse_same_meet_distance_finish_rate",
+        "dominant_value": 1.0,
+        "dominant_value_rate_non_null": 0.9924600334049152,
+        "missing_rate": 0.2619399830938292
+      }
+    ]
+  },
+  "fixed_model_contract": {
+    "model": "sklearn.linear_model.LogisticRegression",
+    "penalty": "l2",
+    "C": 1.0,
+    "solver": "lbfgs",
+    "max_iter": 2000,
+    "class_weight": null,
+    "random_state": 20260817,
+    "preprocessing": "Existing LR1 Train-only ColumnTransformer contract",
+    "probability": "raw Logistic probability",
+    "target": "official PLC place_hit",
+    "population": "Existing LR1 Development population"
+  },
+  "temporal_folds": [
+    {"fold_id": "fold_1", "train": "2023-01-01/2023-06-30", "evaluation": "2023-07-01/2023-09-30"},
+    {"fold_id": "fold_2", "train": "2023-01-01/2023-09-30", "evaluation": "2023-10-01/2023-12-31"},
+    {"fold_id": "fold_3", "train": "2023-01-01/2023-12-31", "evaluation": "2024-01-01/2024-03-31"},
+    {"fold_id": "fold_4", "train": "2023-01-01/2024-03-31", "evaluation": "2024-04-01/2024-06-30"}
+  ],
+  "primary_metrics": ["race_macro_log_loss", "race_macro_brier"],
+  "secondary_metrics": [
+    "micro_log_loss",
+    "micro_brier",
+    "calibration_intercept",
+    "calibration_slope",
+    "top1_plc_hit_rate",
+    "recall_at_3",
+    "ndcg_at_3"
+  ],
+  "decision_rule": {
+    "keep": "Both primary mean deltas (challenger minus LR1) must be <= 0 and both primary deltas must be <= 0 together in at least 3 of 4 folds.",
+    "drop": "Any KEEP condition is not met.",
+    "labels": ["KEEP_NEAR_CONSTANT_FINISH_RATE_SIMPLIFICATION", "DROP_NEAR_CONSTANT_FINISH_RATE_SIMPLIFICATION"],
+    "secondary_can_override": false,
+    "post_hoc_threshold_change_allowed": false,
+    "practical_equivalence_margin": null
+  },
+  "excluded_from_ablation": [
+    "recent10 start count",
+    "jockey and trainer counts",
+    "prize and bonus Features",
+    "exact-duplicate counts",
+    "race_type",
+    "PLC hit rates",
+    "finish-rate Features not flagged near-constant at 99 percent",
+    "all other non-finish-rate Features"
+  ],
+  "prohibited": [
+    "Feature changes beyond the five sealed removals",
+    "Hyperparameter tuning",
+    "Validation access",
+    "Loading rows on or after 2024-07-01",
+    "Post-2025-07 access",
+    "Post-hoc decision-rule changes",
+    "Causal or general feature-importance claims",
+    "Fresh-generalization claims"
+  ]
+}
