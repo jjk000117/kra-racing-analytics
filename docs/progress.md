@@ -760,3 +760,13 @@
 - 두 primary 지표가 모두 개선되어 봉인 규칙대로 `REPRODUCE_R1`으로 판정했다.
 - fresh test가 아니며 2025-07 이후 unopened period에는 접근하지 않았다.
 - 상세 결과: `docs/post-baseline-v2-relative-r1-validation-result.md`
+
+## 2026-09-14 — Exact-count 중복 축약 Development ablation 완료
+
+- 진단 artifact의 값·NULL pattern 동일 count 3개 그룹에서 대표 count만 남긴 137개
+  challenger를 LR1 144와 비교했다.
+- 평균 Macro Log Loss/Brier가 각각 `+0.00006689`, `+0.00001948` 악화했고 두 지표 동시
+  비악화는 1/4 fold였다.
+- 사전 규칙에 따라 `DROP_EXACT_COUNT_SIMPLIFICATION`으로 판정하고 LR1 144를 유지한다.
+- Validation 접근과 2024-07 이후 로드는 0이며 source/branch-local DB hash는 유지됐다.
+- 상세 결과: `docs/plc-exact-count-structural-redundancy-ablation-result.md`

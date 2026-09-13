@@ -1293,3 +1293,26 @@
 - 개별 R1 기여와 profitability는 확인하지 않았다. 상세 계약·수치는
   `docs/post-baseline-v2-relative-r1-validation-result.md`를 따른다.
 - 2025-07 이후 unopened period에는 접근하지 않았다.
+
+## 2026-09-14 — LR1 exact-count 중복 축약 Development ablation
+
+### 실험 내용
+
+- 진단 artifact에서 값과 NULL pattern이 모두 같은 count pair 13개를 세 연결 성분으로
+  재구성했다.
+- 각 성분에서 일반적인 race-time/start count 하나만 유지해 LR1 144와 challenger 137을
+  동일 raw Logistic 및 네 expanding fold로 비교했다.
+
+### 결과와 해석
+
+- Macro Log Loss 평균은 0.526061에서 0.526128로 `+0.00006689`, Macro Brier는
+  0.175132에서 0.175152로 `+0.00001948` 악화했다.
+- 두 primary 지표 동시 비악화는 1/4 fold였다.
+- `DROP_EXACT_COUNT_SIMPLIFICATION`: 차이는 매우 작지만 봉인된 유지 조건을 충족하지 못해
+  LR1 144개를 유지한다.
+- 이는 count 정보의 일반적 무용성을 뜻하지 않으며 현재 L2 Logistic의 정규화가 중복 열 수에
+  영향을 받는 조건에서의 Development 결과다.
+
+### 다음 실험 아이디어
+
+- 이 축약 경로는 종료한다. 새로운 사전 봉인 계약 없이 count 정의나 정규화를 변경하지 않는다.
