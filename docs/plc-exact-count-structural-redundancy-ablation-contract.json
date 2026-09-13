@@ -1,0 +1,135 @@
+{
+  "contract_version": "plc_exact_count_structural_redundancy_ablation_v1",
+  "sealed_on": "2026-09-14",
+  "purpose": "Test whether one representative from each value-and-NULL-identical count group preserves LR1 Development probability loss.",
+  "upstream_evidence": {
+    "report": "docs/plc-final-feature-diagnostic-result.md",
+    "exact_pair_artifact": {
+      "path": "data/exports/diagnostics/plc_final_feature_diagnostic_v1/exact_or_perfect_linear_numeric_pairs.csv",
+      "sha256": "a2c98b63a947a63ca7e87f52a32051f183f11d706cbd34656ba053d8a68582a1"
+    },
+    "special_family_artifact": {
+      "path": "data/exports/diagnostics/plc_final_feature_diagnostic_v1/special_family_relationships.csv",
+      "sha256": "724e2db39983771ad9f2237d0d34d23982a6303cc4de7d2fb2d079588938f8f1"
+    },
+    "feature_contract_artifact": {
+      "path": "data/exports/diagnostics/plc_final_feature_diagnostic_v1/feature_contract.csv",
+      "sha256": "24f148bc45309a6064393ebf9565bc7aa2bb2affc1e4a09356512f3d5b80f0c0"
+    }
+  },
+  "scope": {
+    "start": "2023-01-01",
+    "end_exclusive": "2024-07-01",
+    "expected_rows": 28392,
+    "expected_races": 2675,
+    "development_only": true,
+    "validation_access_allowed": false,
+    "post_2024_07_access_allowed": false,
+    "post_2025_07_access_allowed": false
+  },
+  "baseline": {
+    "name": "LR1",
+    "feature_count": 144,
+    "feature_hash": "7fec6229b3b355d34e664823407765c9a597eacdafa11a733048ba2eaff1a85a",
+    "ordered_feature_list": {
+      "path": "docs/post-baseline-v2-relative-r1-registry.csv",
+      "sha256": "63b282c63035b4269662a759de63f38bb8e2c780af243a074ccede5c0726a5c1",
+      "rule": "Use LR1 rows in registry position order."
+    }
+  },
+  "challenger": {
+    "name": "LR1_EXACT_COUNT_SIMPLIFIED",
+    "feature_count": 137,
+    "feature_hash": "3f8ba91bcfbfc6b96479f9e5b6729f3d12ba8d9049e4bf0e745effdfe02a32e7",
+    "ordered_feature_list": {
+      "derivation": "Preserve the sealed LR1 order and remove only remove_features."
+    },
+    "exact_duplicate_groups": [
+      {
+        "group": "recent3_valid_race_time_g3f_g1f_f1_count",
+        "retain": "horse_recent3_race_time_count",
+        "remove": [
+          "horse_recent3_g3f_count",
+          "horse_recent3_g1f_count",
+          "horse_recent3_race_relative_time_count"
+        ]
+      },
+      {
+        "group": "recent5_valid_race_time_g3f_g1f_f1_count",
+        "retain": "horse_recent5_race_time_count",
+        "remove": [
+          "horse_recent5_g3f_count",
+          "horse_recent5_g1f_count",
+          "horse_recent5_race_relative_time_count"
+        ]
+      },
+      {
+        "group": "recent5_start_weight_count",
+        "retain": "horse_recent5_start_count",
+        "remove": [
+          "horse_recent5_weight_count"
+        ]
+      }
+    ],
+    "remove_features": [
+      "horse_recent3_g3f_count",
+      "horse_recent3_g1f_count",
+      "horse_recent3_race_relative_time_count",
+      "horse_recent5_g3f_count",
+      "horse_recent5_g1f_count",
+      "horse_recent5_race_relative_time_count",
+      "horse_recent5_weight_count"
+    ]
+  },
+  "fixed_model_contract": {
+    "model": "sklearn.linear_model.LogisticRegression",
+    "penalty": "l2",
+    "C": 1.0,
+    "solver": "lbfgs",
+    "max_iter": 2000,
+    "class_weight": null,
+    "random_state": 20260817,
+    "preprocessing": "Existing LR1 Train-only ColumnTransformer contract",
+    "probability": "raw Logistic probability",
+    "target": "official PLC place_hit",
+    "population": "Existing LR1 Development population"
+  },
+  "temporal_folds": [
+    {"fold_id": "fold_1", "train": "2023-01-01/2023-06-30", "evaluation": "2023-07-01/2023-09-30"},
+    {"fold_id": "fold_2", "train": "2023-01-01/2023-09-30", "evaluation": "2023-10-01/2023-12-31"},
+    {"fold_id": "fold_3", "train": "2023-01-01/2023-12-31", "evaluation": "2024-01-01/2024-03-31"},
+    {"fold_id": "fold_4", "train": "2023-01-01/2024-03-31", "evaluation": "2024-04-01/2024-06-30"}
+  ],
+  "primary_metrics": ["race_macro_log_loss", "race_macro_brier"],
+  "secondary_metrics": [
+    "micro_log_loss",
+    "micro_brier",
+    "calibration_intercept",
+    "calibration_slope",
+    "top1_plc_hit_rate",
+    "recall_at_3",
+    "ndcg_at_3"
+  ],
+  "decision_rule": {
+    "keep": "Both primary mean deltas (challenger minus LR1) must be <= 0 and both primary deltas must be <= 0 together in at least 3 of 4 folds.",
+    "drop": "Any KEEP condition is not met.",
+    "labels": ["KEEP_EXACT_COUNT_SIMPLIFICATION", "DROP_EXACT_COUNT_SIMPLIFICATION"],
+    "secondary_can_override": false,
+    "post_hoc_threshold_change_allowed": false
+  },
+  "excluded_from_ablation": [
+    "Perfectly linear but value-different pairs",
+    "Prize and bonus Features",
+    "Near-constant rate/count Features",
+    "race_type"
+  ],
+  "prohibited": [
+    "Feature changes beyond the seven sealed removals",
+    "Hyperparameter tuning",
+    "Validation access",
+    "Loading rows on or after 2024-07-01",
+    "Post-2025-07 access",
+    "Feature-importance claims about retained representatives",
+    "Fresh-generalization claims"
+  ]
+}
