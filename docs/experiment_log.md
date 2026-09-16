@@ -1382,3 +1382,27 @@
 
 - 이 전체 제거 경로는 종료한다. 별도 계약 없이 일부 금액 Feature를 사후 선택하거나
   Validation에서 재평가하지 않는다.
+
+## 2026-09-16 — Balanced class-weight Development ablation
+
+### 실험 내용
+
+- 동일한 provisional 137개 Feature에서 unweighted Logistic과 `class_weight='balanced'`만
+  비교했다.
+- 두 후보 모두 각 outer train 내부의 expanding temporal OOF raw 예측으로 sigmoid를 따로
+  적합하고 같은 네 Development fold에서 평가했다.
+
+### 결과와 해석
+
+- balanced의 calibrated Macro Log Loss/Brier 평균 delta는 각각 `+0.00046319`,
+  `+0.00028202`였고 두 primary 동시 비악화는 0/4 fold였다.
+- balanced raw Macro LL/Brier는 `0.608696`/`0.210383`으로 확률 수준이 크게 왜곡됐고,
+  sigmoid가 이를 `0.527895`/`0.176101`까지 복구했지만 unweighted보다 나빴다.
+- 사전 규칙에 따라 `DROP_BALANCED`로 판정하며 class-weight 외 설정은 변경하지 않았다.
+- 이 결과는 class imbalance의 일반적 무관함을 뜻하지 않고 현재 probability objective에만
+  해당한다.
+
+### 다음 실험 아이디어
+
+- balanced 경로는 종료한다. 별도 계약 없이 custom weight, resampling 또는 threshold 조정을
+  수행하지 않는다.

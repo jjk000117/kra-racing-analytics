@@ -802,3 +802,13 @@
 - 사전 규칙에 따라 `DROP_MONETARY_FAMILY_REMOVAL`로 판정하고 137개 후보를 유지한다.
 - Validation 접근과 2024-07 이후 로드는 0이며 source/branch-local DB hash는 유지됐다.
 - 상세 결과: `docs/plc-monetary-family-full-removal-sequential-ablation-result.md`
+
+## 2026-09-16 — Balanced class-weight Development ablation 완료
+
+- 동일한 provisional 137개 입력에서 `class_weight=None`과 `balanced`만 비교하고 양쪽에
+  후보별 temporal OOF sigmoid를 적용했다.
+- balanced의 calibrated Macro Log Loss/Brier가 각각 `+0.00046319`, `+0.00028202`
+  악화했고 두 지표 동시 비악화는 0/4 fold였다.
+- 사전 규칙에 따라 `DROP_BALANCED`로 판정하고 unweighted 137 절차를 유지한다.
+- Validation 및 2024-07 이후 접근은 0이고 source/branch-local DB hash는 유지됐다.
+- 상세 결과: `docs/plc-balanced-class-weight-development-ablation-result.md`
