@@ -1,0 +1,111 @@
+{
+  "contract_version": "plc_balanced_class_weight_development_ablation_v1",
+  "sealed_on": "2026-09-16",
+  "purpose": "Test whether sklearn class_weight=balanced improves temporally calibrated PLC probability loss relative to the identical unweighted 137-feature Logistic procedure.",
+  "hypothesis": "Balanced class weighting may change positive discrimination, but need not improve final probability quality after the same temporal OOF sigmoid calibration.",
+  "upstream_evidence": {
+    "baseline_contract": {
+      "path": "docs/plc-saturated-recent10-count-sequential-ablation-contract.json",
+      "sha256": "be4b5fa90c37ae3aa675186fd33540dd000d950d3ffd1e621cf0c8672f298b50"
+    },
+    "baseline_result_report": {
+      "path": "docs/plc-saturated-recent10-count-sequential-ablation-result.md",
+      "sha256": "1449938ee1a0efe3e54aa7047cc6b9ce40b39d52fb0c384762d9b159f59ecc88"
+    },
+    "baseline_result_artifact": {
+      "path": "data/exports/modeling/plc_saturated_recent10_count_sequential_ablation_v1/result.json",
+      "sha256": "79870ed67edebc6d117d41d184636b750d449196af482fe06bddf4d1de6df4fb"
+    },
+    "latest_monetary_ablation_result": {
+      "path": "docs/plc-monetary-family-full-removal-sequential-ablation-result.md",
+      "sha256": "0af39a83f50bb4ca7726cf73450d0d99064ac648240e3bc3465554a92084e306"
+    }
+  },
+  "scope": {
+    "start": "2023-01-01",
+    "end_exclusive": "2024-07-01",
+    "expected_rows": 28392,
+    "expected_races": 2675,
+    "development_only": true,
+    "validation_access_allowed": false,
+    "post_2024_07_access_allowed": false,
+    "post_2025_07_access_allowed": false
+  },
+  "feature_contract": {
+    "feature_count": 137,
+    "feature_hash": "7dd442ec9e2f2be47f438947bbec9e51d7f6851514f3400455f3e4292898417e",
+    "baseline_and_challenger_identical": true,
+    "feature_changes_allowed": false
+  },
+  "baseline": {
+    "name": "UNWEIGHTED_137_SIGMOID",
+    "class_weight": null
+  },
+  "challenger": {
+    "name": "BALANCED_137_SIGMOID",
+    "class_weight": "balanced",
+    "sklearn_weight_definition": "n_samples / (n_classes * bincount(y)) computed independently for every fitted training subset"
+  },
+  "fixed_model_contract": {
+    "model": "sklearn.linear_model.LogisticRegression",
+    "penalty": "l2",
+    "C": 1.0,
+    "solver": "lbfgs",
+    "max_iter": 2000,
+    "random_state": 20260817,
+    "preprocessing": "Existing 137-feature Train-only ColumnTransformer contract",
+    "target": "official PLC place_hit",
+    "population": "Existing LR1-derived Development population",
+    "only_model_difference": "class_weight=None versus class_weight=balanced"
+  },
+  "calibration_contract": {
+    "method": "sigmoid",
+    "fit_source": "Each outer fold training period's expanding temporal OOF raw probabilities only",
+    "oof_rule": "Use the first 3 calendar months for fitting, predict the next 3 months, then expand training by 3 months and repeat.",
+    "preprocessing_scope": "Every OOF model fits preprocessing on its own historical training subset only",
+    "class_weight_scope": "Each candidate uses its sealed class_weight in both OOF models and the outer full-training model",
+    "evaluation_probability": "Apply the candidate-specific OOF sigmoid calibrator to that candidate's outer-fold raw probabilities",
+    "selection_or_method_change_allowed": false
+  },
+  "temporal_folds": [
+    {"fold_id": "fold_1", "train": "2023-01-01/2023-06-30", "evaluation": "2023-07-01/2023-09-30"},
+    {"fold_id": "fold_2", "train": "2023-01-01/2023-09-30", "evaluation": "2023-10-01/2023-12-31"},
+    {"fold_id": "fold_3", "train": "2023-01-01/2023-12-31", "evaluation": "2024-01-01/2024-03-31"},
+    {"fold_id": "fold_4", "train": "2023-01-01/2024-03-31", "evaluation": "2024-04-01/2024-06-30"}
+  ],
+  "primary_metrics": ["calibrated_race_macro_log_loss", "calibrated_race_macro_brier"],
+  "secondary_metrics": [
+    "calibrated_micro_log_loss",
+    "calibrated_micro_brier",
+    "calibrated_calibration_intercept",
+    "calibrated_calibration_slope",
+    "calibrated_top1_plc_hit_rate",
+    "calibrated_recall_at_3",
+    "calibrated_ndcg_at_3",
+    "raw_race_macro_log_loss",
+    "raw_race_macro_brier",
+    "raw_micro_log_loss",
+    "raw_micro_brier"
+  ],
+  "decision_rule": {
+    "keep": "Both calibrated primary mean deltas (balanced minus unweighted) must be <= 0 and both calibrated primary deltas must be <= 0 together in at least 3 of 4 folds.",
+    "drop": "Any KEEP condition is not met.",
+    "labels": ["KEEP_BALANCED", "DROP_BALANCED"],
+    "secondary_can_override": false,
+    "post_hoc_threshold_change_allowed": false,
+    "practical_equivalence_margin": null
+  },
+  "prohibited": [
+    "Feature changes",
+    "Hyperparameter tuning",
+    "Custom class weights",
+    "Resampling",
+    "Focal loss",
+    "Calibration selection or method changes",
+    "Validation access",
+    "Loading rows on or after 2024-07-01",
+    "Post-2025-07 access",
+    "Post-hoc decision-rule changes",
+    "General claims about class imbalance from this single experiment"
+  ]
+}
