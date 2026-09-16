@@ -792,3 +792,13 @@
 - 개선 폭, 특히 Brier 차이는 매우 작다. Validation 접근과 2024-07 이후 로드는 0이고
   source/branch-local DB hash는 유지됐다.
 - 상세 결과: `docs/plc-saturated-recent10-count-sequential-ablation-result.md`
+
+## 2026-09-16 — Monetary Feature family 전체 제거 순차 Development ablation 완료
+
+- 현재 KEEP 누적 상태의 137개 후보에서 상금/bonus 금액 Feature 8개만 제거한 129개
+  challenger를 비교했다.
+- 평균 Macro Log Loss는 `+0.00002242` 악화하고 Macro Brier는 `-0.00002077` 개선했으며,
+  두 primary 동시 비악화는 1/4 fold였다.
+- 사전 규칙에 따라 `DROP_MONETARY_FAMILY_REMOVAL`로 판정하고 137개 후보를 유지한다.
+- Validation 접근과 2024-07 이후 로드는 0이며 source/branch-local DB hash는 유지됐다.
+- 상세 결과: `docs/plc-monetary-family-full-removal-sequential-ablation-result.md`

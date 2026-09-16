@@ -1359,3 +1359,26 @@
 
 - 137개 순차 simplification을 연구 후보로 기록하되 별도 계약 없이 Validation 재사용이나
   추가 축약과의 결합을 수행하지 않는다.
+
+## 2026-09-16 — Monetary Feature family 전체 제거 순차 Development ablation
+
+### 실험 내용
+
+- 직전 KEEP 누적 상태의 137개 후보에서 prize/bonus 금액 Feature 8개만 모두 제거했다.
+- `race_grade`, `race_prize_condition`, rating/history와 다른 race context는 유지한 채 동일 raw
+  Logistic 및 네 expanding fold로 비교했다.
+
+### 결과와 해석
+
+- Macro Log Loss 평균은 0.525713에서 0.525735로 `+0.00002242` 악화했고 Macro Brier는
+  0.175062에서 0.175041로 `-0.00002077` 개선했다.
+- 상대 변화는 각각 `+0.004265%`, `-0.011864%`로 매우 작고 두 primary 동시 비악화는
+  1/4 fold였다.
+- 사전 규칙에 따라 `DROP_MONETARY_FAMILY_REMOVAL`로 판정한다.
+- 이는 상금 정보의 독립적 중요도나 인과효과를 뜻하지 않으며, 현재 137개 L2 Logistic의
+  Development 결과로만 해석한다.
+
+### 다음 실험 아이디어
+
+- 이 전체 제거 경로는 종료한다. 별도 계약 없이 일부 금액 Feature를 사후 선택하거나
+  Validation에서 재평가하지 않는다.
