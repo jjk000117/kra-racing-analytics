@@ -781,3 +781,14 @@
 - 개선 폭은 작으며, Validation 접근과 2024-07 이후 로드는 0이고 source/branch-local DB
   hash는 유지됐다.
 - 상세 결과: `docs/plc-near-constant-finish-rate-ablation-result.md`
+
+## 2026-09-16 — Saturated recent10 count 순차 Development ablation 완료
+
+- 직전 KEEP된 139개 candidate에서 기수·조교사 recent10 start count 2개만 추가 제거한
+  137개 challenger를 비교했다.
+- 평균 Macro Log Loss/Brier가 각각 `-0.00008543`, `-0.00000187` 개선했고 두 지표 동시
+  비악화는 3/4 fold였다.
+- 사전 규칙에 따라 `KEEP_SATURATED_RECENT10_COUNT_SIMPLIFICATION`으로 판정했다.
+- 개선 폭, 특히 Brier 차이는 매우 작다. Validation 접근과 2024-07 이후 로드는 0이고
+  source/branch-local DB hash는 유지됐다.
+- 상세 결과: `docs/plc-saturated-recent10-count-sequential-ablation-result.md`

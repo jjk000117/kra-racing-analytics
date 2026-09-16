@@ -1337,3 +1337,25 @@
 
 - 139개 simplification을 후속 연구 후보로 기록하되, 별도 사전 계약 없이 Validation 재사용이나
   다른 축약과의 결합을 수행하지 않는다.
+
+## 2026-09-16 — Saturated recent10 count 순차 Development ablation
+
+### 실험 내용
+
+- 직전 KEEP된 139개 finish-rate simplified candidate를 baseline으로 사용했다.
+- diagnostic 99% near-constant flag를 받은 기수·조교사 recent10 start count 2개만 추가
+  제거한 137개 challenger를 동일 raw Logistic 및 네 expanding fold로 비교했다.
+
+### 결과와 해석
+
+- Macro Log Loss 평균은 0.525798에서 0.525713으로 `-0.00008543`, Macro Brier는
+  0.175063에서 0.175062로 `-0.00000187` 개선했다.
+- 상대 변화는 각각 -0.01625%, -0.00107%로 매우 작고, 두 primary 동시 비악화는 3/4
+  fold였다.
+- 봉인 규칙에 따라 `KEEP_SATURATED_RECENT10_COUNT_SIMPLIFICATION`으로 판정한다.
+- 이는 포화 count나 기수·조교사 이력의 일반적 무용성을 뜻하지 않는다.
+
+### 다음 실험 아이디어
+
+- 137개 순차 simplification을 연구 후보로 기록하되 별도 계약 없이 Validation 재사용이나
+  추가 축약과의 결합을 수행하지 않는다.
