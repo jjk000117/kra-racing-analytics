@@ -812,3 +812,18 @@
 - 사전 규칙에 따라 `DROP_BALANCED`로 판정하고 unweighted 137 절차를 유지한다.
 - Validation 및 2024-07 이후 접근은 0이고 source/branch-local DB hash는 유지됐다.
 - 상세 결과: `docs/plc-balanced-class-weight-development-ablation-result.md`
+
+## 2026-09-16 — Provisional 137 Serving Feasibility Audit 완료
+
+- provisional 137개 입력의 순서·개수·hash를 코드로 재현하고 A 23 / B 109 / C 5 /
+  D 0으로 전수 분류했다.
+- 모든 Feature의 의미와 후보 원천은 식별됐지만, timestamped pre-race ingestion, final
+  active-field/change feed, race-day horse-weight 운영 원천, next-race builder, entity
+  resolution provenance가 없어 전체 추론 상태는 `NOT YET`이다.
+- exact cutoff는 확정하지 않았다. T-10~T-5분은 shadow capture로 먼저 확인할 운영 후보이며,
+  출전취소·DNS·기수변경이 있으면 F3/R1을 전체 active field에서 다시 계산해야 한다.
+- API/웹 호출, 모델·prediction·성능 계산, Validation/2024-07 이후 데이터 접근, DB 변경은
+  수행하지 않았다.
+- 상세 결과: `docs/plc-serving-feasibility.md`
+- 다음 추천 작업: 공식 사전 원천을 여러 cutoff에 timestamped Raw로 저장하는 read-only
+  shadow-serving pilot을 별도 계약으로 설계한다.

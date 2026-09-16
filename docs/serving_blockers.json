@@ -1,0 +1,49 @@
+{
+  "audit_version": "plc_serving_feasibility_v1",
+  "candidate": {
+    "feature_count": 137,
+    "feature_hash": "7dd442ec9e2f2be47f438947bbec9e51d7f6851514f3400455f3e4292898417e",
+    "status": "provisional"
+  },
+  "category_counts": {
+    "A_direct_current_entry_or_official_structured": 23,
+    "B_pit_safe_historical_calculation": 109,
+    "C_separate_race_day_source_required": 5,
+    "D_unavailable_or_uncertain": 0
+  },
+  "full_inference_now": "NOT_YET",
+  "top_blockers": [
+    {
+      "priority": 1,
+      "blocker": "No timestamped pre-race snapshot ingestion with observed_at and source-version lineage",
+      "affected": "A and C current inputs; reproducibility of every prediction"
+    },
+    {
+      "priority": 2,
+      "blocker": "No authoritative final active-runner/scratch/DNS/jockey-change feed and recomputation trigger",
+      "affected": "registered_runner_count and all F3/R1 field-relative features"
+    },
+    {
+      "priority": 3,
+      "blocker": "Race-day horse-weight API25_1 access and posting/refresh timing remain operationally unconfirmed",
+      "affected": "current_horse_weight_kg and current_horse_weight_change_kg"
+    },
+    {
+      "priority": 4,
+      "blocker": "No parameterized next-race feature builder and inference orchestration for the provisional 137-feature contract",
+      "affected": "B historical features, contract gate, prediction generation"
+    },
+    {
+      "priority": 5,
+      "blocker": "Entity resolution does not explicitly separate genuine cold start from failed ID joins",
+      "affected": "horse/jockey/trainer/owner and interaction histories; owner_id is the weakest key"
+    }
+  ],
+  "cutoff_candidates": [
+    {"candidate": "entry_sheet_release", "coverage": "A and most B", "limitation": "field not final; C missing or stale"},
+    {"candidate": "race_day_morning", "coverage": "A, B, some track/weather", "limitation": "horse weight and late changes may be unavailable"},
+    {"candidate": "T_minus_30_minutes", "coverage": "likely most A/B/C", "limitation": "late scratch/jockey/weight updates still require monitoring"},
+    {"candidate": "T_minus_10_to_5_minutes", "coverage": "best candidate for all 137", "limitation": "exact KRA publication timing and operational stability are not yet evidenced"}
+  ],
+  "recommended_next_step": "Implement a read-only shadow-serving pilot that captures timestamped official pre-race snapshots and late changes without placing bets or changing the research database."
+}

@@ -1,0 +1,13 @@
+stage_order,stage_name,inputs,outputs,current_status,cutoff_sensitivity,primary_blocker
+1,prediction_cutoff_trigger,"race_id, planned cutoff",cutoff_event,NOT_IMPLEMENTED,high,"exact cutoff and trigger source are not fixed"
+2,current_entry_ingestion,"API26_2/API72_2 pre-race fields",versioned current-entry snapshot,HISTORICAL_ONLY,high,"no observed_at/source-version lineage collector"
+3,race_day_ingestion,"official weather/track/moisture and API25_1 or official horse-weight screen",versioned race-day snapshot,HISTORICAL_ONLY,high,"structured capture, timestamps, and refresh cadence are absent"
+4,active_runner_and_entity_resolution,"entry snapshot, scratches, jockey changes, horse/jockey/trainer/owner IDs","final active field and resolved entity keys",PARTIAL_RESEARCH,critical,"final-field/change feed and unresolved-key status are absent"
+5,historical_asof_lookup,"resolved IDs, feature_as_of, canonical and semantic history",PIT-safe historical event slices,IMPLEMENTED_RESEARCH,medium,"research SQL is not parameterized as a serving job"
+6,base_historical_aggregation,"historical event slices",base long-term/recent/aptitude/entity features,IMPLEMENTED_RESEARCH,low,"cold-start vs failed-join provenance is not explicit"
+7,F1_and_T1_derivation,"historical valid race cohorts and ordered event sequences",race-relative and trend features,IMPLEMENTED_RESEARCH,low,"must reuse sealed min-count/PIT contracts in online builder"
+8,F3_and_R1_field_relative_derivation,"complete active field plus upstream A/B values",field-relative percentiles and differences,IMPLEMENTED_RESEARCH,critical,"must recompute after scratch/DNS/jockey/current-input changes"
+9,feature_contract_validation,"ordered 137 columns",count/order/hash/range/null audit,PARTIAL_RESEARCH,medium,"no live fail-closed contract gate"
+10,preprocess_and_inference,"137-row feature frame and sealed preprocessing/model artifacts",raw and sigmoid PLC probabilities,NOT_IMPLEMENTED,medium,"no production inference orchestration for provisional 137 candidate"
+11,prediction_lineage_and_monitoring,"source snapshots, feature hash, model hash, predictions",auditable prediction record,NOT_IMPLEMENTED,critical,"no persisted cutoff/source/model lineage contract"
+12,late_change_recompute,"scratch, DNS, jockey/weight/track updates",superseding pre-race snapshot and predictions,NOT_IMPLEMENTED,critical,"no idempotent invalidation/recompute policy"
