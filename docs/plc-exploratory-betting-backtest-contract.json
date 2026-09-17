@@ -1,0 +1,111 @@
+{
+  "contract_version": "plc_exploratory_betting_backtest_v1",
+  "sealed_on": "2026-09-17",
+  "purpose": "Describe the historical economic behavior of the provisional 137-feature PLC probability procedure using Development temporal OOF predictions and final official PLC settlement data; do not select a deployable betting strategy.",
+  "interpretation": "Exploratory hindsight backtest only. Final odds and confirmed payouts are post-cutoff information and must not be represented as deployable ROI.",
+  "authorization": {
+    "row_level_oof_artifact_missing": true,
+    "deterministic_oof_restoration_authorized_by_user": true,
+    "authorization_date": "2026-09-16",
+    "restoration_only": true,
+    "model_or_feature_selection_allowed": false
+  },
+  "upstream_model": {
+    "name": "UNWEIGHTED_137_SIGMOID",
+    "feature_count": 137,
+    "feature_hash": "7dd442ec9e2f2be47f438947bbec9e51d7f6851514f3400455f3e4292898417e",
+    "class_weight": null,
+    "model": "sklearn.linear_model.LogisticRegression",
+    "penalty": "l2",
+    "C": 1.0,
+    "solver": "lbfgs",
+    "max_iter": 2000,
+    "random_state": 20260817,
+    "preprocessing": "Existing 137-feature fold-Train-only ColumnTransformer contract",
+    "calibration": "Each outer training window's expanding three-month temporal OOF raw predictions fit one sigmoid calibrator; evaluation rows are transformed once.",
+    "source_contract": "docs/plc-balanced-class-weight-development-ablation-contract.json",
+    "source_result": "data/exports/modeling/plc_balanced_class_weight_development_ablation_v1/result.json",
+    "reproduction_tolerance": 1e-12
+  },
+  "scope": {
+    "model_development_start": "2023-01-01",
+    "model_development_end_exclusive": "2024-07-01",
+    "outer_oof_evaluation_start": "2023-07-01",
+    "outer_oof_evaluation_end_exclusive": "2024-07-01",
+    "expected_development_rows": 28392,
+    "expected_development_races": 2675,
+    "expected_oof_rows": 19168,
+    "expected_oof_races": 1821,
+    "validation_access_allowed": false,
+    "post_2024_07_access_allowed": false,
+    "post_2025_07_access_allowed": false
+  },
+  "temporal_folds": [
+    {"fold_id": "fold_1", "train": "2023-01-01/2023-06-30", "evaluation": "2023-07-01/2023-09-30"},
+    {"fold_id": "fold_2", "train": "2023-01-01/2023-09-30", "evaluation": "2023-10-01/2023-12-31"},
+    {"fold_id": "fold_3", "train": "2023-01-01/2023-12-31", "evaluation": "2024-01-01/2024-03-31"},
+    {"fold_id": "fold_4", "train": "2023-01-01/2024-03-31", "evaluation": "2024-04-01/2024-06-30"}
+  ],
+  "payout_contract": {
+    "official_settlement_source": "canonical.winning_payout",
+    "official_pool_code": "연식",
+    "official_join": "race_id plus selected gate_no equals horse_no_1",
+    "official_odds_field": "confirmed_odds",
+    "all_runner_final_market_odds_source": "canonical.runner_result.place_odds",
+    "all_runner_join": "race_id plus horse_id",
+    "settlement_precedence": "confirmed_odds is authoritative for realized winning returns; place_odds is used only for market relationship and hindsight EV diagnostics",
+    "preflight_coverage": {
+      "oof_rows_with_place_odds": 19168,
+      "official_positive_rows_matched": 5462,
+      "official_positive_rows_missing": 0,
+      "place_odds_vs_confirmed_odds_mismatches": 6,
+      "mismatch_races": 3
+    },
+    "odds_semantics": "Decimal gross-return multiplier including stake. Winning gross return equals stake multiplied by official confirmed_odds; losing gross return is zero.",
+    "invalid_or_ambiguous_rows": "Fail closed: exclude a race if the selected runner lacks a unique official settlement match when place_hit is true, or if payout keys are duplicated or invalid. Report every exclusion."
+  },
+  "fixed_analyses": {
+    "top1_rule": "Exactly one unit on the highest sigmoid probability runner in every eligible OOF race.",
+    "top1_tie_break": ["sigmoid_probability descending", "gate_no ascending", "horse_id ascending"],
+    "confidence_thresholds": [0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7],
+    "probability_bucket_edges": [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+    "hindsight_ev_formula": "sigmoid_probability * final_place_odds - 1",
+    "hindsight_edge_bins": ["(-inf,-0.50]", "(-0.50,0.00]", "(0.00,0.25]", "(0.25,0.50]", "(0.50,1.00]", "(1.00,inf)"],
+    "stake_per_bet": 1.0,
+    "gross_return_formula": "place_hit ? confirmed_odds : 0",
+    "profit_formula": "gross_return - stake",
+    "roi_formula": "sum(profit) / sum(stake)",
+    "risk_order": ["race_date ascending", "race_id ascending"],
+    "rolling_window_bets": 100,
+    "outlier_sensitivity": ["remove highest one winning confirmed payout", "remove highest five winning confirmed payouts"],
+    "monthly_summary": true
+  },
+  "decision_boundary": {
+    "strategy_selection_allowed": false,
+    "threshold_selection_allowed": false,
+    "claim_of_profitability_allowed": false,
+    "claim_of_deployability_allowed": false,
+    "reason": "Final odds and payouts are unavailable at the prediction cutoff and the same Development OOF period is used for description."
+  },
+  "protected_assets": {
+    "source_database_path": "C:/Users/jjk00/Documents/GitHub/kra-racing-analytics/data/warehouse/kra.duckdb",
+    "source_database_sha256": "0f760634f63e8c4f606688202e41b2513735eb8a1122b4d586f64fc075e89e01",
+    "experiment_database_path": "data/warehouse/plc_experiments.duckdb",
+    "experiment_database_sha256": "7994a4ddc8564904971f8b5df4e92d15ddb481d03199eaeeebba797ac991340f",
+    "database_write_allowed": false,
+    "other_worktree_write_allowed": false
+  },
+  "prohibited": [
+    "Validation access",
+    "Loading rows on or after 2024-07-01",
+    "Post-2025-07 access",
+    "Feature changes",
+    "Model or calibration changes",
+    "Hyperparameter tuning",
+    "Post-hoc threshold or strategy selection",
+    "Using final payout as a prediction-time Feature",
+    "Presenting hindsight ROI as deployable performance",
+    "Database writes",
+    "Push"
+  ]
+}
