@@ -1406,3 +1406,28 @@
 
 - balanced 경로는 종료한다. 별도 계약 없이 custom weight, resampling 또는 threshold 조정을
   수행하지 않는다.
+
+## 2026-09-17 — PLC 탐색적 배팅·경제성 백테스트
+
+### 실험 내용
+
+- provisional 137개 Logistic의 네 Development outer evaluation에서 동일 OOF sigmoid 확률을
+  복구하고 공식 연승 적중 정산배당과 결합했다.
+- 모든 적격 경주 Top1 고정 1단위, 사전 고정 confidence grid, probability/사후 EV bucket,
+  월별·낙폭·연속손실·100-bet rolling ROI 및 최고 적중배당 제거 민감도를 기술했다.
+- final odds와 payout은 prediction cutoff 뒤 정보이므로 어떤 rule도 선택하지 않았다.
+
+### 결과와 해석
+
+- OOF 19,168행·1,821경주의 target/payout 연결률은 100%, 기존 fold 집계 재현 최대오차는 0이었다.
+- Top1 적중률은 61.39%였지만 ROI는 -13.20%였고, 고정 confidence grid 전부와 12개월 전부
+  음수였다.
+- 모델 확률과 final place odds의 Spearman은 -0.7771로 높은 확률이 낮은 배당과 강하게
+  연결됐다.
+- 최고 적중배당 1건·5건 제거 후 ROI도 -13.46%, -14.34%여서 양의 수익이 소수 고배당에
+  의존한 결과는 아니었다.
+
+### 다음 실험 아이디어
+
+- 본 경로에서 threshold를 더 탐색하지 않는다. 실제 pre-race 가격 기반 연구는 timestamped
+  decision-time odds와 scratches/변경정보가 확보된 뒤 별도 계약으로 시작한다.

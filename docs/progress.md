@@ -827,3 +827,16 @@
 - 상세 결과: `docs/plc-serving-feasibility.md`
 - 다음 추천 작업: 공식 사전 원천을 여러 cutoff에 timestamped Raw로 저장하는 read-only
   shadow-serving pilot을 별도 계약으로 설계한다.
+
+## 2026-09-17 — PLC 탐색적 배팅·경제성 백테스트 완료
+
+- provisional 137 절차의 네 Development temporal OOF를 결정론적으로 복원했고 기존 fold 지표와
+  최대 오차 0으로 일치했다.
+- 19,168행·1,821경주에서 공식 PLC target·정산배당 연결률은 100%였고 제외 경주는 없었다.
+- 모든 경주 Top1 고정 1단위 베팅은 적중률 61.39%, 순손익 -240.4, ROI -13.20%였다.
+- 사전 고정 confidence threshold 8개와 12개 월 모두 ROI가 음수였다.
+- final odds는 사후정보이므로 결과는 탐색적 historical settlement 진단으로만 기록하고 전략을
+  선택하지 않았다.
+- 상세 결과: `docs/plc-exploratory-betting-backtest-result.md`
+- 다음 blocker: 실행 가능한 market edge 검증 전 timestamped decision-time odds 및 실제
+  pre-race 변경정보 수집 계약이 필요하다.
